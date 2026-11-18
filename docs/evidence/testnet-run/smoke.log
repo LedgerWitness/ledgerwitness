@@ -1,0 +1,113 @@
+issuers GA3XEFMZWAQ4ACTIVURGI7TDXVMR3HTD7PRUMIDIOXZMHPNSAZ7RMEWU GAGNBPZDOOXHZZOGXRUY2VTSPBL7JU4GESYB26NZNPJQFEQLVUTK33SY
+holder GAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKEUKX sender GDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT45JPN
+cap40-signed-payload-signer: tx 9daafa395f5981d107d6076b9d30d1ddd91c2c135cd874070b1c6a29ee7695df ledger 5804257 (246520 bytes)
+muxed-large-ids-payment: tx cefa0af8e191fce2c3ab80860dbd6d61516005166861f29e526e4d3c56dc6d3e ledger 5804258 (148196 bytes)
+lp-trustline-issuer-order: tx d93c7ce14e68ca04589174619328c69d0718b4a2fc042b9641dc33f59c5fc2ed ledger 5804259 (161792 bytes)
+cap73-sac-trust: tx 06302f6fc1b574a870fcf4a429e37b790c1907cbb7757e873cf1581f5b09418c ledger 5804261 (580696 bytes)
+== cap40-signed-payload-signer: ledger 5804257, tx 9daafa395f5981d107d6076b9d30d1ddd91c2c135cd874070b1c6a29ee7695df
+PASS ledger 5804257
+    ok   header_hash                22d7ea4ab79e766bfa58097b323beb8dcf86a82cbac1fb71a010dc53da0a71ee
+    ok   ledger_hash_matches_source 22d7ea4ab79e766bfa58097b323beb8dcf86a82cbac1fb71a010dc53da0a71ee
+    ok   ledger_sequence            5804257
+    ok   protocol_version           30
+    ok   tx_set_hash                68fe76016b394230ec59828c1dd633ebdd112a83f6c795aa4f4e6566501fb85c
+    ok   validator_signature        tx set signed by sdftest2 (GCUCJTIYXSOXKBSNFGNFWW5MUQ54HKRPGJUTQFJ5RQXZXNOLNXYDHRAP)
+    ok   tx_set_result_hash         19 results
+    ok   envelopes_match_results    19 envelopes hash to the processed results under the declared passphrase
+    ok   focus_tx_present           tx_processing[0]
+== cap73-sac-trust: ledger 5804261, tx 06302f6fc1b574a870fcf4a429e37b790c1907cbb7757e873cf1581f5b09418c
+PASS ledger 5804261
+    ok   header_hash                46e2a0e33f5d93ea45a07d53b04cfa53973175bd399531c2998beda42a95bc12
+    ok   ledger_hash_matches_source 46e2a0e33f5d93ea45a07d53b04cfa53973175bd399531c2998beda42a95bc12
+    ok   ledger_sequence            5804261
+    ok   protocol_version           30
+    ok   tx_set_hash                123b945ee93c788400bc32568be40e98a246642440f33e70267d0741fd4367b9
+    ok   validator_signature        tx set signed by sdftest2 (GCUCJTIYXSOXKBSNFGNFWW5MUQ54HKRPGJUTQFJ5RQXZXNOLNXYDHRAP)
+    ok   tx_set_result_hash         24 results
+    ok   envelopes_match_results    24 envelopes hash to the processed results under the declared passphrase
+    ok   focus_tx_present           tx_processing[23]
+== lp-trustline-issuer-order: ledger 5804259, tx d93c7ce14e68ca04589174619328c69d0718b4a2fc042b9641dc33f59c5fc2ed
+PASS ledger 5804259
+    ok   header_hash                25bd1fc90487b8107b7dbf33c46ce9e09ca201874cdcdae5ec368333ac19e9c2
+    ok   ledger_hash_matches_source 25bd1fc90487b8107b7dbf33c46ce9e09ca201874cdcdae5ec368333ac19e9c2
+    ok   ledger_sequence            5804259
+    ok   protocol_version           30
+    ok   tx_set_hash                caa8611d6b6e321e72968418b5332d62f075eb57d1aa354c929e0e2dfebc142c
+    ok   validator_signature        tx set signed by sdftest1 (GDKXE2OZMJIPOSLNA6N6F2BVCI3O777I2OOC4BV7VOYUEHYX7RTRYA7Y)
+    ok   tx_set_result_hash         18 results
+    ok   envelopes_match_results    18 envelopes hash to the processed results under the declared passphrase
+    ok   focus_tx_present           tx_processing[3]
+== muxed-large-ids-payment: ledger 5804258, tx cefa0af8e191fce2c3ab80860dbd6d61516005166861f29e526e4d3c56dc6d3e
+PASS ledger 5804258
+    ok   header_hash                1566d20054a3586692de1feea1f78b556962399daa5e9e0167884c5c62597f42
+    ok   ledger_hash_matches_source 1566d20054a3586692de1feea1f78b556962399daa5e9e0167884c5c62597f42
+    ok   ledger_sequence            5804258
+    ok   protocol_version           30
+    ok   tx_set_hash                5264359f115087efd95ea315e8620c9fa7b7b15a85a3af09f0e8931a3af598c0
+    ok   validator_signature        tx set signed by sdftest2 (GCUCJTIYXSOXKBSNFGNFWW5MUQ54HKRPGJUTQFJ5RQXZXNOLNXYDHRAP)
+    ok   tx_set_result_hash         11 results
+    ok   envelopes_match_results    11 envelopes hash to the processed results under the declared passphrase
+    ok   focus_tx_present           tx_processing[3]
+
+4/4 fresh testnet captures passed check-ledger
+
+== cap40-signed-payload-signer: ledger 5804257 (protocol 30), tx 9daafa395f5981d107d6076b9d30d1ddd91c2c135cd874070b1c6a29ee7695df, tx_success
+   core   signed-payload signer key (P…): PDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44AAAAAOWYY3LEBZWSZ3OMVSCA4DBPFWG6YLEFQQDEOJAMJ4XIZLTEEAAAAEPWQ  (= submitted)
+   AS DOCUMENTED @stellar/stellar-sdk 17.4.0: reads what core recorded
+      ledger decode: ok
+      = signed-payload signer key (P…): PDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44AAAAAOWYY3LEBZWSZ3OMVSCA4DBPFWG6YLEFQQDEOJAMJ4XIZLTEEAAAAEPWQ
+   AS DOCUMENTED @stellar/stellar-sdk 17.2.0: reads what core recorded
+      ledger decode: error: LedgerCloseMeta.v2.v2.ledgerHeader.header.scpValue.ext.v: unknown enum value 3
+      = signed-payload signer key (P…): PDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44AAAAAOWYY3LEBZWSZ3OMVSCA4DBPFWG6YLEFQQDEOJAMJ4XIZLTEEAAAAEPWQ
+
+== cap73-sac-trust: ledger 5804261 (protocol 30), tx 06302f6fc1b574a870fcf4a429e37b790c1907cbb7757e873cf1581f5b09418c, tx_success
+   core   contract called: CDRFC4IVRQKPUZE32DXGDAJASWB2JC4Y7XSML6ISAGOXS4TPLLZ3ZVCY  (= submitted)
+   core   function: trust
+   core   trustor argument: GAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKEUKX  (= submitted)
+   core   trustline core created: GAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKEUKX|LCKC:GA3XEFMZWAQ4ACTIVURGI7TDXVMR3HTD7PRUMIDIOXZMHPNSAZ7RMEWU  (= submitted)
+   core   contract events core recorded: 0
+   AS DOCUMENTED @stellar/stellar-sdk 17.4.0: reads what core recorded
+      ledger decode: ok
+      = contract called: CDRFC4IVRQKPUZE32DXGDAJASWB2JC4Y7XSML6ISAGOXS4TPLLZ3ZVCY
+      = function: trust
+      = trustor argument: GAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKEUKX
+   AS DOCUMENTED @stellar/stellar-sdk 17.2.0: reads what core recorded
+      ledger decode: error: LedgerCloseMeta.v2.v2.ledgerHeader.header.scpValue.ext.v: unknown enum value 3
+      = contract called: CDRFC4IVRQKPUZE32DXGDAJASWB2JC4Y7XSML6ISAGOXS4TPLLZ3ZVCY
+      = function: trust
+      = trustor argument: GAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKEUKX
+
+== lp-trustline-issuer-order: ledger 5804259 (protocol 30), tx d93c7ce14e68ca04589174619328c69d0718b4a2fc042b9641dc33f59c5fc2ed, tx_success
+   core   liquidity pool ID: eb62f293197be8203aa0aff8d6fa811bfd3f8adea7acffa88314696f313885b5  (= submitted)
+   AS DOCUMENTED @stellar/stellar-sdk 17.4.0: reads what core recorded
+      ledger decode: ok
+      = liquidity pool ID: eb62f293197be8203aa0aff8d6fa811bfd3f8adea7acffa88314696f313885b5
+   AS DOCUMENTED @stellar/stellar-sdk 17.2.0: rejects valid input
+      ledger decode: error: LedgerCloseMeta.v2.v2.ledgerHeader.header.scpValue.ext.v: unknown enum value 3
+      transaction parse: error: Assets are not in lexicographic order
+
+== muxed-large-ids-payment: ledger 5804258 (protocol 30), tx cefa0af8e191fce2c3ab80860dbd6d61516005166861f29e526e4d3c56dc6d3e, tx_success
+   core   transaction source (M…): MDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44ABAAAAAAAAAAHSSM
+   core   operation source (M…): MDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT457777777777777J74
+   core   payment destination (M…): MAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKF7777777777776WDU
+   core   transaction source muxed ID: 9007199254740993  (= submitted)
+   core   operation source muxed ID: 18446744073709551615  (= submitted)
+   core   destination muxed ID: 18446744073709551615  (= submitted)
+   AS DOCUMENTED @stellar/stellar-sdk 17.4.0: reads what core recorded
+      ledger decode: ok
+      = transaction source (M…): MDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44ABAAAAAAAAAAHSSM
+      = operation source (M…): MDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT457777777777777J74
+      = payment destination (M…): MAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKF7777777777776WDU
+      = transaction source muxed ID: 9007199254740993
+      = operation source muxed ID: 18446744073709551615
+      = destination muxed ID: 18446744073709551615
+   AS DOCUMENTED @stellar/stellar-sdk 17.2.0: reads what core recorded
+      ledger decode: error: LedgerCloseMeta.v2.v2.ledgerHeader.header.scpValue.ext.v: unknown enum value 3
+      = transaction source (M…): MDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44ABAAAAAAAAAAHSSM
+      = operation source (M…): MDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT457777777777777J74
+      = payment destination (M…): MAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKF7777777777776WDU
+      = transaction source muxed ID: 9007199254740993
+      = operation source muxed ID: 18446744073709551615
+      = destination muxed ID: 18446744073709551615
+
+OK: 8 SDK observations on 4 fresh captures, 0 unexpected (SDK behaviour, or core and submitted values disagreeing)

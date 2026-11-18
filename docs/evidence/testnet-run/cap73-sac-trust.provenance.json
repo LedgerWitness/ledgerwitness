@@ -3,12 +3,12 @@
   "network_passphrase": "Test SDF Network ; September 2015",
   "rpc_url": "https://soroban-testnet.stellar.org",
   "rpc_method": "getLedgers",
-  "ledger": 5802899,
-  "ledger_hash": "01d3f4e689773edc61a08916841bb67b116e2d765af5e3f08ac3c13e426fd3e9",
-  "ledger_close_time": "1795038135",
-  "tx_hash": "de6a647586b6014c057a2c44b643783ac337db73f60afb274fcac1c15f9a60a6",
+  "ledger": 5804261,
+  "ledger_hash": "46e2a0e33f5d93ea45a07d53b04cfa53973175bd399531c2998beda42a95bc12",
+  "ledger_close_time": "1795044945",
+  "tx_hash": "06302f6fc1b574a870fcf4a429e37b790c1907cbb7757e873cf1581f5b09418c",
   "sdk": "@stellar/stellar-sdk@17.4.0",
-  "asset": "LCKC:GC66SWVISWSVJYYBH3OBZK2X4UOSIUBK2UZIPWVIVYO6LFCEZTODJQV3",
-  "sac_contract_id": "CB3FVKQADIDURXL2K3N6WTZUR55C6BMRCTU6SGNBJGPNPBRXKFCRQA3E",
-  "trustor": "GCAIUYFRFJPPKW4YSI7MEZMX2ZURFWP5KCSKO75VDIMFGFEVUZTICUZT"
+  "asset": "LCKC:GA3XEFMZWAQ4ACTIVURGI7TDXVMR3HTD7PRUMIDIOXZMHPNSAZ7RMEWU",
+  "sac_contract_id": "CDRFC4IVRQKPUZE32DXGDAJASWB2JC4Y7XSML6ISAGOXS4TPLLZ3ZVCY",
+  "trustor": "GAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKEUKX"
 }

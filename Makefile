@@ -10,7 +10,7 @@ REQUIRE_PASS := --require-pass stellar-xdr \
                 --require-pass github.com/stellar/go-stellar-sdk \
                 --require-pass "@stellar/stellar-sdk 17.4.0"
 
-.PHONY: all verify test runners conform repro-js repro-wallet-backend capture testnet-smoke clean
+.PHONY: all verify test runners conform repro-js repro-wallet-backend capture testnet-smoke testnet-evidence clean
 
 all: verify test conform repro-js
 
@@ -49,6 +49,22 @@ capture:
 # the ledger hash Horizon reports. Writes to testnet; never touches mainnet.
 testnet-smoke:
 	generators/testnet-capture/smoke.sh
+
+# Offline re-check of the recorded live run in docs/evidence/testnet-run/:
+# ledger commitments, validator signature and the two SDK releases, against
+# the raw ledgers saved at capture time. Contacts no network.
+EVIDENCE := docs/evidence/testnet-run
+testnet-evidence:
+	cargo build -q --locked -p ledgerwitness
+	@for p in $(EVIDENCE)/*.provenance.json; do \
+	  shape=$$(basename $$p .provenance.json); \
+	  tx=$$(node -p "require('./$$p').tx_hash"); \
+	  hash=$$(node -p "require('./$$p').ledger_hash"); \
+	  echo "== $$shape"; \
+	  target/debug/ledgerwitness check-ledger $(EVIDENCE)/$$shape.LedgerCloseMeta.xdr \
+	    --tx-hash $$tx --ledger-hash $$hash || exit 1; \
+	done
+	node generators/testnet-capture/sdk-check.mjs $(EVIDENCE) target/debug/ledgerwitness
 
 clean:
 	rm -rf target results

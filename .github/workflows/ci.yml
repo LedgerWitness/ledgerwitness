@@ -55,6 +55,8 @@ jobs:
         run: make conform
       - name: js-stellar-sdk pre/post-fix reproductions
         run: make repro-js
+      - name: Recorded live testnet run, re-checked offline
+        run: make testnet-evidence
       - name: Wallet replay report assertions (stored evidence only)
         run: node --test reproductions/wallet-backend/check-results.test.mjs
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

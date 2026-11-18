@@ -1,0 +1,329 @@
+{
+  "tool": "generators/testnet-capture/sdk-check.mjs",
+  "sdks": [
+    "@stellar/stellar-sdk 17.4.0",
+    "@stellar/stellar-sdk 17.2.0"
+  ],
+  "captures": [
+    {
+      "shape": "cap40-signed-payload-signer",
+      "ledger": 5804257,
+      "protocol": 30,
+      "tx_hash": "9daafa395f5981d107d6076b9d30d1ddd91c2c135cd874070b1c6a29ee7695df",
+      "core_result": "tx_success",
+      "core_facts": [
+        {
+          "value": "signed-payload signer key (P…)",
+          "core": "PDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44AAAAAOWYY3LEBZWSZ3OMVSCA4DBPFWG6YLEFQQDEOJAMJ4XIZLTEEAAAAEPWQ",
+          "submitted": "PDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44AAAAAOWYY3LEBZWSZ3OMVSCA4DBPFWG6YLEFQQDEOJAMJ4XIZLTEEAAAAEPWQ",
+          "agree": true
+        }
+      ],
+      "sdks": [
+        {
+          "sdk": "@stellar/stellar-sdk 17.4.0",
+          "ledger_decode": "ok",
+          "transaction_parse": "ok",
+          "values": [
+            {
+              "value": "signed-payload signer key (P…)",
+              "expected": "PDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44AAAAAOWYY3LEBZWSZ3OMVSCA4DBPFWG6YLEFQQDEOJAMJ4XIZLTEEAAAAEPWQ",
+              "observed": "PDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44AAAAAOWYY3LEBZWSZ3OMVSCA4DBPFWG6YLEFQQDEOJAMJ4XIZLTEEAAAAEPWQ",
+              "match": true
+            }
+          ],
+          "verdict": "reads what core recorded",
+          "as_documented": true
+        },
+        {
+          "sdk": "@stellar/stellar-sdk 17.2.0",
+          "ledger_decode": "error: LedgerCloseMeta.v2.v2.ledgerHeader.header.scpValue.ext.v: unknown enum value 3",
+          "transaction_parse": "ok",
+          "values": [
+            {
+              "value": "signed-payload signer key (P…)",
+              "expected": "PDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44AAAAAOWYY3LEBZWSZ3OMVSCA4DBPFWG6YLEFQQDEOJAMJ4XIZLTEEAAAAEPWQ",
+              "observed": "PDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44AAAAAOWYY3LEBZWSZ3OMVSCA4DBPFWG6YLEFQQDEOJAMJ4XIZLTEEAAAAEPWQ",
+              "match": true
+            }
+          ],
+          "verdict": "reads what core recorded",
+          "as_documented": true
+        }
+      ]
+    },
+    {
+      "shape": "cap73-sac-trust",
+      "ledger": 5804261,
+      "protocol": 30,
+      "tx_hash": "06302f6fc1b574a870fcf4a429e37b790c1907cbb7757e873cf1581f5b09418c",
+      "core_result": "tx_success",
+      "core_facts": [
+        {
+          "value": "contract called",
+          "core": "CDRFC4IVRQKPUZE32DXGDAJASWB2JC4Y7XSML6ISAGOXS4TPLLZ3ZVCY",
+          "submitted": "CDRFC4IVRQKPUZE32DXGDAJASWB2JC4Y7XSML6ISAGOXS4TPLLZ3ZVCY",
+          "agree": true
+        },
+        {
+          "value": "function",
+          "core": "trust",
+          "submitted": null,
+          "agree": true
+        },
+        {
+          "value": "trustor argument",
+          "core": "GAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKEUKX",
+          "submitted": "GAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKEUKX",
+          "agree": true
+        },
+        {
+          "value": "trustline core created",
+          "core": "GAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKEUKX|LCKC:GA3XEFMZWAQ4ACTIVURGI7TDXVMR3HTD7PRUMIDIOXZMHPNSAZ7RMEWU",
+          "submitted": "GAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKEUKX|LCKC:GA3XEFMZWAQ4ACTIVURGI7TDXVMR3HTD7PRUMIDIOXZMHPNSAZ7RMEWU",
+          "agree": true
+        },
+        {
+          "value": "contract events core recorded",
+          "core": "0",
+          "submitted": null,
+          "agree": true
+        }
+      ],
+      "sdks": [
+        {
+          "sdk": "@stellar/stellar-sdk 17.4.0",
+          "ledger_decode": "ok",
+          "transaction_parse": "ok",
+          "values": [
+            {
+              "value": "contract called",
+              "expected": "CDRFC4IVRQKPUZE32DXGDAJASWB2JC4Y7XSML6ISAGOXS4TPLLZ3ZVCY",
+              "observed": "CDRFC4IVRQKPUZE32DXGDAJASWB2JC4Y7XSML6ISAGOXS4TPLLZ3ZVCY",
+              "match": true
+            },
+            {
+              "value": "function",
+              "expected": "trust",
+              "observed": "trust",
+              "match": true
+            },
+            {
+              "value": "trustor argument",
+              "expected": "GAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKEUKX",
+              "observed": "GAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKEUKX",
+              "match": true
+            }
+          ],
+          "verdict": "reads what core recorded",
+          "as_documented": true
+        },
+        {
+          "sdk": "@stellar/stellar-sdk 17.2.0",
+          "ledger_decode": "error: LedgerCloseMeta.v2.v2.ledgerHeader.header.scpValue.ext.v: unknown enum value 3",
+          "transaction_parse": "ok",
+          "values": [
+            {
+              "value": "contract called",
+              "expected": "CDRFC4IVRQKPUZE32DXGDAJASWB2JC4Y7XSML6ISAGOXS4TPLLZ3ZVCY",
+              "observed": "CDRFC4IVRQKPUZE32DXGDAJASWB2JC4Y7XSML6ISAGOXS4TPLLZ3ZVCY",
+              "match": true
+            },
+            {
+              "value": "function",
+              "expected": "trust",
+              "observed": "trust",
+              "match": true
+            },
+            {
+              "value": "trustor argument",
+              "expected": "GAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKEUKX",
+              "observed": "GAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKEUKX",
+              "match": true
+            }
+          ],
+          "verdict": "reads what core recorded",
+          "as_documented": true
+        }
+      ]
+    },
+    {
+      "shape": "lp-trustline-issuer-order",
+      "ledger": 5804259,
+      "protocol": 30,
+      "tx_hash": "d93c7ce14e68ca04589174619328c69d0718b4a2fc042b9641dc33f59c5fc2ed",
+      "core_result": "tx_success",
+      "core_facts": [
+        {
+          "value": "liquidity pool ID",
+          "core": "eb62f293197be8203aa0aff8d6fa811bfd3f8adea7acffa88314696f313885b5",
+          "submitted": "eb62f293197be8203aa0aff8d6fa811bfd3f8adea7acffa88314696f313885b5",
+          "agree": true
+        }
+      ],
+      "sdks": [
+        {
+          "sdk": "@stellar/stellar-sdk 17.4.0",
+          "ledger_decode": "ok",
+          "transaction_parse": "ok",
+          "values": [
+            {
+              "value": "liquidity pool ID",
+              "expected": "eb62f293197be8203aa0aff8d6fa811bfd3f8adea7acffa88314696f313885b5",
+              "observed": "eb62f293197be8203aa0aff8d6fa811bfd3f8adea7acffa88314696f313885b5",
+              "match": true
+            }
+          ],
+          "verdict": "reads what core recorded",
+          "as_documented": true
+        },
+        {
+          "sdk": "@stellar/stellar-sdk 17.2.0",
+          "ledger_decode": "error: LedgerCloseMeta.v2.v2.ledgerHeader.header.scpValue.ext.v: unknown enum value 3",
+          "transaction_parse": "error: Assets are not in lexicographic order",
+          "values": [],
+          "verdict": "rejects valid input",
+          "as_documented": true
+        }
+      ]
+    },
+    {
+      "shape": "muxed-large-ids-payment",
+      "ledger": 5804258,
+      "protocol": 30,
+      "tx_hash": "cefa0af8e191fce2c3ab80860dbd6d61516005166861f29e526e4d3c56dc6d3e",
+      "core_result": "tx_success",
+      "core_facts": [
+        {
+          "value": "transaction source (M…)",
+          "core": "MDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44ABAAAAAAAAAAHSSM",
+          "submitted": null,
+          "agree": true
+        },
+        {
+          "value": "operation source (M…)",
+          "core": "MDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT457777777777777J74",
+          "submitted": null,
+          "agree": true
+        },
+        {
+          "value": "payment destination (M…)",
+          "core": "MAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKF7777777777776WDU",
+          "submitted": null,
+          "agree": true
+        },
+        {
+          "value": "transaction source muxed ID",
+          "core": "9007199254740993",
+          "submitted": "9007199254740993",
+          "agree": true
+        },
+        {
+          "value": "operation source muxed ID",
+          "core": "18446744073709551615",
+          "submitted": "18446744073709551615",
+          "agree": true
+        },
+        {
+          "value": "destination muxed ID",
+          "core": "18446744073709551615",
+          "submitted": "18446744073709551615",
+          "agree": true
+        }
+      ],
+      "sdks": [
+        {
+          "sdk": "@stellar/stellar-sdk 17.4.0",
+          "ledger_decode": "ok",
+          "transaction_parse": "ok",
+          "values": [
+            {
+              "value": "transaction source (M…)",
+              "expected": "MDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44ABAAAAAAAAAAHSSM",
+              "observed": "MDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44ABAAAAAAAAAAHSSM",
+              "match": true
+            },
+            {
+              "value": "operation source (M…)",
+              "expected": "MDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT457777777777777J74",
+              "observed": "MDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT457777777777777J74",
+              "match": true
+            },
+            {
+              "value": "payment destination (M…)",
+              "expected": "MAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKF7777777777776WDU",
+              "observed": "MAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKF7777777777776WDU",
+              "match": true
+            },
+            {
+              "value": "transaction source muxed ID",
+              "expected": "9007199254740993",
+              "observed": "9007199254740993",
+              "match": true
+            },
+            {
+              "value": "operation source muxed ID",
+              "expected": "18446744073709551615",
+              "observed": "18446744073709551615",
+              "match": true
+            },
+            {
+              "value": "destination muxed ID",
+              "expected": "18446744073709551615",
+              "observed": "18446744073709551615",
+              "match": true
+            }
+          ],
+          "verdict": "reads what core recorded",
+          "as_documented": true
+        },
+        {
+          "sdk": "@stellar/stellar-sdk 17.2.0",
+          "ledger_decode": "error: LedgerCloseMeta.v2.v2.ledgerHeader.header.scpValue.ext.v: unknown enum value 3",
+          "transaction_parse": "ok",
+          "values": [
+            {
+              "value": "transaction source (M…)",
+              "expected": "MDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44ABAAAAAAAAAAHSSM",
+              "observed": "MDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44ABAAAAAAAAAAHSSM",
+              "match": true
+            },
+            {
+              "value": "operation source (M…)",
+              "expected": "MDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT457777777777777J74",
+              "observed": "MDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT457777777777777J74",
+              "match": true
+            },
+            {
+              "value": "payment destination (M…)",
+              "expected": "MAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKF7777777777776WDU",
+              "observed": "MAL7E7II2744GSVTNUZZR7B2MDM4JHOQH3CTOODY3UDWP5TQZVNKF7777777777776WDU",
+              "match": true
+            },
+            {
+              "value": "transaction source muxed ID",
+              "expected": "9007199254740993",
+              "observed": "9007199254740993",
+              "match": true
+            },
+            {
+              "value": "operation source muxed ID",
+              "expected": "18446744073709551615",
+              "observed": "18446744073709551615",
+              "match": true
+            },
+            {
+              "value": "destination muxed ID",
+              "expected": "18446744073709551615",
+              "observed": "18446744073709551615",
+              "match": true
+            }
+          ],
+          "verdict": "reads what core recorded",
+          "as_documented": true
+        }
+      ]
+    }
+  ],
+  "unexpected": 0
+}

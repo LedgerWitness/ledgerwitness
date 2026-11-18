@@ -3,11 +3,11 @@
   "network_passphrase": "Test SDF Network ; September 2015",
   "rpc_url": "https://soroban-testnet.stellar.org",
   "rpc_method": "getLedgers",
-  "ledger": 5802895,
-  "ledger_hash": "cea5afdb4abc904bf487ba68256db33307146a10dee8f222fd188f844c451c37",
-  "ledger_close_time": "1795038115",
-  "tx_hash": "af5f405dd0408477df2c9fa923f4ff5305268933a74e8a0bd95a68c0bffe9922",
+  "ledger": 5804257,
+  "ledger_hash": "22d7ea4ab79e766bfa58097b323beb8dcf86a82cbac1fb71a010dc53da0a71ee",
+  "ledger_close_time": "1795044925",
+  "tx_hash": "9daafa395f5981d107d6076b9d30d1ddd91c2c135cd874070b1c6a29ee7695df",
   "sdk": "@stellar/stellar-sdk@17.4.0",
-  "signer_key": "PCIULJ57H7JGFU2J5YD5WHUT7WCEQLRKTXTCORXHWLBUCQJU6VMLCAAAAAOWYY3LEBZWSZ3OMVSCA4DBPFWG6YLEFQQDEOJAMJ4XIZLTEEAAAADAVI",
+  "signer_key": "PDN6435LPXLK6UEWWNRI65WVK45DTBMVVLRHAPYYD4PBEJS6AMT44AAAAAOWYY3LEBZWSZ3OMVSCA4DBPFWG6YLEFQQDEOJAMJ4XIZLTEEAAAAEPWQ",
   "payload_hex": "6c636b207369676e6564207061796c6f61642c20323920627974657321"
 }
