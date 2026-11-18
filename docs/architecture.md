@@ -1115,7 +1115,7 @@ not establish real target delivery or database durability.
 |---|---|---|
 | High | Offline generation | A pinned local-core workflow generates the agreed corpus with external networking disabled under both passphrases; record configuration, reproducibility and no dependence on public-network funds or keys. Online capture alone does not close this gate. |
 | High | Trust and admission | Retain source records and per-expectation evidence; maintainers distinguish declared checksums from authenticated provenance and approve synthetic evidence substance. No claim of whole-ledger consensus verification. |
-| High | Stable inputs and reports | Versioned run records bind reports to fixture/manifest digests and runner builds; a stale report and an altered fixture fail comparison. Until then verify and compare one unchanged checkout. |
+| High | Stable inputs and reports | Reports are bound to manifest, ledger and envelope digests, and a stale report fails comparison (§10). Still needed: binding to runner builds beyond the library label. |
 | High | Replay progress and oracle | Freeze adapter/oracle wire schemas. A fetched-but-uncommitted ledger cannot pass; absent/unsupported oracle is inconclusive; seeded wrong values, drops and rollback/retry cases are classified with diffs. |
 | High | Transport qualification | Pin target and SDK commits. Test actual requests, pagination/retry behavior and finite-range completion. Qualify S3-compatible delivery separately from staged files. Missing prerequisite state/ledgers is reported explicitly. |
 | High | Resource lifecycle | Measure and set numeric budgets; demonstrate rejection of oversized inputs and termination/cleanup of hung, recursive or memory-exhausting targets and descendants. Preserve bounded diagnostics. |
@@ -1137,12 +1137,12 @@ been secured.
 | Required outcome | PoC evidence | Evidence still needed for delivery |
 |---|---|---|
 | Language-neutral corpus, generator and CAP coverage | Five core-emitted testnet entries, JSON schema, recorded provenance, XDR assertions and testnet capture (§4–5) | An audited CAP/shape denominator; independently reviewed expectations; additional required cases; pinned core golden differential tests; reproducible isolated local-core generation under both passphrases |
-| SDK conformance in JS, Go and Rust | Three runners, 14 probes, byte-exact round trips, current/historical matrix, and JS pre/post-fix reproductions (§9–11) | Artifact- and build-bound runner reports, class-aware coverage for SDK-only inputs, current stable pins checked at release, and matrix-backed regressions for the specified SDK sightings |
+| SDK conformance in JS, Go and Rust | Three runners, 14 probes, byte-exact round trips, reports bound to their input digests, current/historical matrix, JS pre/post-fix reproductions (§9–11), and a live two-release JS check on fresh testnet captures (§5.2) | Build-bound runner reports, class-aware coverage for SDK-only inputs, current stable pins checked at release, and matrix-backed regressions for the specified SDK sightings |
 | Replay against an indexer | Typed comparator, fixture-bound sidecars and synthetic-observation tests (§12) | Mock-RPC compatibility profile, isolated unmodified target, durable database observation, adapter contract and end-to-end pre/post-fix #729, #731 and #716 checks |
 | Three ingestion-mistake checks | Rule designs and threat boundaries (§13) | Executable Go analyzers, positive and negative seeded examples, documented blind spots, and a pinned wallet-backend run with findings triaged |
 | Indexer-hardening guide | Proposed outline and evidence requirements (§14) | Field-by-field source-backed guide, versioned limits, checklist, cross-check with manifest and review by a core or platform engineer |
 | SDF pipeline findings | Historical #729 in-process reproduction and stored reports (§11) | Real ingestion and committed-storage evidence, minimal reproductions, severity and CAP mapping, and a filed issue or appropriate private disclosure reference for each finding |
-| Release, CI and maintenance | Local commands, lockfiles, CI configuration and upgrade procedure (§16–17) | Hosted CI evidence, tested offline and resource-bounded workflows, tagged release, named maintainers and an agreed post-launch maintenance commitment including the first protocol upgrade |
+| Release, CI and maintenance | Local commands, lockfiles, hosted CI passing on GitHub, an offline re-check of a recorded live run, and upgrade procedure (§16–17) | Tested offline and resource-bounded workflows, tagged release, named maintainers and an agreed post-launch maintenance commitment including the first protocol upgrade |
 
 ### 20.1 Reproducible evidence
 
