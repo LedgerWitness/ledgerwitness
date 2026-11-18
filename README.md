@@ -10,9 +10,8 @@ The project builds a shared kit made of three parts:
 - tools that check SDKs and indexers against those ledgers;
 - guidance for writing ledger readers that do not break on them.
 
-This repository is the **proof of concept**. It works today against real
-Stellar testnet data. The sections below show what it already does and what
-the complete project will add.
+This repository holds the design of the complete kit and a **proof of
+concept** of part of it, running on real Stellar testnet data.
 
 ## Why
 
@@ -32,20 +31,37 @@ against.
 
 ## The complete project
 
-| Deliverable | What it does | Proof of concept |
+| Deliverable | What the complete project delivers | In the proof of concept |
 |---|---|---|
-| **Corpus and generator** | Ledgers with rare shapes, one entry per shape, tagged with the CAP and protocol that introduced it, with expected decoded values; tools that produce them | **Implemented:** 5 real testnet entries covering 6 CAPs (0027, 0038, 0040, 0067, 0073, 0088), live testnet generator, data-lake extraction. **Planned:** full CAP coverage, local stellar-core generator for testnet and mainnet passphrases |
-| **Verifier** | Proves each entry is intact and really came from the network | **Implemented:** hash, decode/re-encode, header commitments, network binding, validator signature, alternate-copy equivalence |
-| **SDK conformance runner** | Runs every entry through the JavaScript, Go and Rust SDKs and reports where they disagree with the network or each other | **Implemented:** 3 runners, 14 probes, comparison matrix with reports bound to the exact inputs. **Planned:** more shapes and SDK releases |
-| **Replay harness** | Feeds the corpus into a real indexer and reports shapes it stores wrongly or drops | **Partial:** comparison of stored results against expected changes, and an in-process wallet-backend #729 reproduction. **Planned:** indexer adapters (mock RPC, data-lake layout) and database-backed replay |
-| **Go indexer linter** | Flags three ingestion mistakes in indexer source code | **Planned** (design in [architecture §13](docs/architecture.md)) |
-| **Indexer-hardening guide** | Which fields stellar-core validates, safe limits, participants from meta, muxed and signed-payload handling | **Planned** (design in [architecture §14](docs/architecture.md)) |
-| **Findings** | Defects the corpus finds in real pipelines, reported to their maintainers | **Planned:** none filed yet |
+| **Corpus and generator** | <ul><li>One entry per rare shape, tagged with the CAP and protocol that introduced it, with expected decoded values and a per-CAP coverage registry.</li><li>Only ledgers stellar-core actually emitted: from testnet or mainnet history, or generated offline by a pinned local stellar-core under both network passphrases. Hand-made entries are labelled synthetic.</li><li>The shapes that have already broken SDKs: issuer ordering, muxed accounts, IDs that decode to a different value than they encode, vectors at maximum length, nested authorization, map keys that collide after conversion.</li><li>Agreement with stellar-core's `--check-lcm` goldens.</li></ul> | **Implemented:**<ul><li>5 real testnet entries covering 6 CAPs (0027, 0038, 0040, 0067, 0073, 0088), protocols 28 and 30</li><li>live testnet generator and data-lake extraction</li><li>port of core's `--check-lcm` comparison</li></ul>**Planned:** offline local-core generator for both passphrases, mainnet entries, the remaining shapes, golden import, complete CAP registry |
+| **Verifier** | Checks that each entry is intact and came from the network it claims, offline. | **Implemented:** hashes, decode/re-encode, header commitments, network binding, validator signature, alternate-copy equivalence |
+| **SDK conformance runner** | <ul><li>Runs every entry through the JavaScript, Go and Rust SDKs in CI.</li><li>Reports where they disagree with the network or with each other.</li><li>Opens a sibling issue in each SDK that shares a defect another SDK fixed.</li><li>Reproduces js-stellar-sdk #1766, #1785 and #1789 on their pre-fix releases.</li></ul> | **Implemented:**<ul><li>3 runners and 14 probes</li><li>comparison matrix bound to the exact input files</li><li>the three JS SDK issues reproduced before and after their fixes</li><li>two JS SDK releases checked live on fresh testnet transactions</li></ul>**Planned:** more shapes and releases, sibling-issue workflow |
+| **Replay harness** | <ul><li>Feeds the corpus to a real indexer through an input it already reads (mock RPC `getLedgers` first, then the Galexie data-lake layout), using a documented adapter interface.</li><li>Reports each shape the indexer stores wrongly or drops, with bounded memory.</li><li>Its reference adapter for wallet-backend reproduces #729, #731 and #716 before their fixes and passes after.</li></ul> | **Partial:**<ul><li>comparison of stored results against expected changes</li><li>#729 reproduced on wallet-backend's own indexer at the pre-fix and fix commits, in process</li></ul>**Planned:** adapter interface, mock RPC, database-backed replay, #731 and #716 |
+| **Go indexer linter** | Flags three mistakes in indexer source:<ul><li>trusting fields stellar-core does not validate;</li><li>recursing over authorization trees or nested ScVals without depth or size caps;</li><li>taking participants from the envelope instead of the meta.</li></ul>Flags seeded violations and runs clean on current wallet-backend. | **Planned** (design in [architecture §13](docs/architecture.md)) |
+| **Indexer-hardening guide** | <ul><li>Which transaction fields core validates, field by field.</li><li>Recommended caps, participants from meta, muxed and signed-payload handling (SEP-0023).</li><li>A checklist matching the linter rules.</li></ul>Its tables are checked against the corpus manifests and reviewed by a core or platform engineer before publication. | **Planned** (design in [architecture §14](docs/architecture.md)) |
+| **Findings** | The corpus run against at least one SDF pipeline (wallet-backend or stellar-etl), each failure triaged (severity, CAP, minimal entry) and reported to its maintainers. | Two observations triaged, neither a defect; nothing filed yet |
+| **Release and maintenance** | Tests and CI for every tool, a tagged release, and maintenance through the first protocol upgrade after delivery. | **Implemented:** CI runs every offline check on each push and pull request. **Planned:** tagged release, upgrade procedure in practice |
+
+### What the proof of concept covers, and why
+
+The proof of concept takes one working slice through each layer, rather
+than finishing any one deliverable:
+
+1. **Real data with provenance.** Real testnet ledgers whose origin is
+   checked offline.
+2. **SDK conformance.** Three SDKs compared on those ledgers.
+3. **Known bugs reproduced.** Upstream bugs reproduced before and after
+   their fixes.
+4. **Live check.** One command that repeats all of it on testnet.
+
+The linter, the guide, database-backed replay and offline generation are
+designed in [docs/architecture.md](docs/architecture.md) but not built.
 
 ## See it work on testnet
 
 ```sh
 npm ci --prefix generators/testnet-capture
+npm ci --prefix runners/javascript
 make testnet-smoke
 ```
 
@@ -55,15 +71,25 @@ This command:
    funded by friendbot;
 2. captures each resulting ledger exactly as the network served it;
 3. checks every capture against the ledger hash Horizon reports, the validator
-   signature in the header, and the submitted transaction.
+   signature in the header, and the submitted transaction;
+4. runs JS SDK 17.4.0 and 17.2.0 on every capture, and compares what they read
+   with what stellar-core recorded in the ledger and with what was submitted.
 
-A recorded run ends with `4/4 fresh testnet captures passed check-ledger`
-([log](docs/evidence/testnet-run/check-ledger.log)).
+The recorded run of 2026-11-18 ([docs/evidence/testnet-run/](docs/evidence/testnet-run/))
+ends with:
+
+```
+4/4 fresh testnet captures passed check-ledger
+OK: 8 SDK observations on 4 fresh captures, 0 unexpected
+```
+
+In that run, SDK 17.4.0 read every value as core recorded it. SDK 17.2.0
+rejected the valid pool trustline in ledger 5804259 with "Assets are not in
+lexicographic order". The raw ledgers are saved, so `make testnet-evidence`
+re-checks the run offline; CI does this on every push.
 
 [docs/evidence/liquidity-pool-issuer-order.md](docs/evidence/liquidity-pool-issuer-order.md)
-follows one case from the raw ledger to the result. It is a real testnet
-transaction that JS SDK 17.2.0 rejects and current SDKs read correctly,
-including a fresh live reproduction.
+follows that case from the raw ledger to the result.
 
 ## Quick start (offline)
 
@@ -80,6 +106,7 @@ make verify      # check every corpus entry       -> "5 entries, 5 passed, 0 fai
 make test        # unit, tamper and CLI tests
 make conform     # run the three SDKs and compare -> prints the table below
 make repro-js    # JS SDK bugs before/after fixes -> "40/40 ... match the documented behaviour"
+make testnet-evidence  # recorded live testnet run, re-checked offline
 ```
 
 `make conform` fails if a current SDK release disagrees with the expected
@@ -231,6 +258,7 @@ docs/            architecture, specifications, evidence, research, findings
 |---|---|
 | [docs/architecture.md](docs/architecture.md) | Full technical design: trust model, implemented and planned components, requirements traceability |
 | [docs/evidence/liquidity-pool-issuer-order.md](docs/evidence/liquidity-pool-issuer-order.md) | One case from raw ledger to SDK results, with a live testnet reproduction |
+| [docs/evidence/testnet-run/](docs/evidence/testnet-run/README.md) | The recorded live testnet run: raw ledgers, provenance, logs and SDK results |
 | [corpus/README.md](corpus/README.md) | Corpus format for consumers |
 | [docs/spec/probes.md](docs/spec/probes.md) | The 14 values every SDK runner computes, and the report format |
 | [docs/spec/normalization.md](docs/spec/normalization.md) | When two copies of a ledger count as the same |
