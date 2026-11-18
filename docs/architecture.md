@@ -373,10 +373,23 @@ captured ledger fetches its hash from Horizon independently and runs
 - the validator signature;
 - the presence of the submitted transaction.
 
-It exits non-zero unless all four captures pass. A recorded run, with
-provenance and the full check output, is kept in `docs/evidence/testnet-run/`.
+It then runs `generators/testnet-capture/sdk-check.mjs`, which puts
+@stellar/stellar-sdk 17.4.0 and 17.2.0 through every capture. For each shape
+it compares what the SDK reads (signed-payload signer, muxed accounts and
+IDs, pool ID, contract call) with two independent sources: what core recorded
+in the same ledger, read with rs-stellar-xdr, and what the capture tool
+submitted. Each release has a documented expected behaviour. 17.2.0 must
+still reject the pool trustline (js-stellar-sdk#1766) and fail on the
+protocol-30 header, and must read everything else correctly.
+
+The script exits non-zero unless all four captures pass both stages.
 Horizon can trail RPC by a few ledgers, so the script retries for up to a
 minute per ledger.
+
+A recorded run is kept in `docs/evidence/testnet-run/` with the raw ledgers,
+provenance, full log and SDK report. `make testnet-evidence` re-checks it
+offline, and CI runs that target. Offline, the ledger hash comes from the RPC
+record; the Horizon match is in the log from capture time.
 
 ### 5.3 Local stellar-core generation (design)
 
@@ -1002,6 +1015,8 @@ filed or published without that review step.
    - `make conform` (Rust, Go and JS 17.4.0 must pass; JS 17.2.0 is reported
      only);
    - `make repro-js`;
+   - `make testnet-evidence` (the recorded live testnet run, re-checked
+     offline);
    - wallet replay report checker tests against stored evidence;
    - uploads the matrix as an artifact.
 3. The wallet-backend replay is not in pull-request CI. It builds two
@@ -1013,8 +1028,11 @@ Both CI jobs explicitly install Rust 1.94.1; the conformance job also installs
 Node 22 and Go from `runners/go/go.mod`. The workspace includes Rust tests
 for validator attestation and Node report-checker tests; use the test runner's
 output for the current count.
-The Rust, Go and JavaScript runners and the JS reproductions have been rerun
-against the current code; the wallet-backend replay and hosted CI have not.
+Hosted CI passed on the first push to GitHub. On 2026-11-18 the full
+three-SDK matrix, the JS reproductions and the wallet-backend #729 replay
+were rerun locally against the current code. The replay used a fresh clone
+of wallet-backend at the two pinned commits, and its reports were
+byte-identical to the stored ones.
 Known limitations are listed in §18. `make test` runs Rust and
 the Node report-checker tests.
 
@@ -1025,7 +1043,8 @@ replay. A green current corpus is not evidence those planned components work.
 **Entry points**
 
 - `make verify`, `make test`, `make conform`, `make repro-js`,
-  `make repro-wallet-backend WALLET_BACKEND=…`, `make capture`.
+  `make testnet-evidence`, `make repro-wallet-backend WALLET_BACKEND=…`,
+  `make capture`, `make testnet-smoke` (live, testnet only).
 
 ## 17. Versioning and protocol upgrades
 

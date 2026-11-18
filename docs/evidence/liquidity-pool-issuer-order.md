@@ -84,23 +84,33 @@ Notes on the table:
 
 ## Live reproduction on testnet
 
-`make testnet-smoke` submits the shape again, with fresh throwaway keys, and
-checks the result. A recorded run (`docs/evidence/testnet-run/`):
+`make testnet-smoke` submits the shape again with fresh throwaway keys,
+checks the new ledger, and runs both JS SDK releases on it
+(`generators/testnet-capture/sdk-check.mjs`). The pool ID it expects is the
+one stellar-core wrote into the ledger, read with rs-stellar-xdr, not one
+computed by either SDK.
+
+Recorded run of 2026-11-18, 23:35 UTC (`docs/evidence/testnet-run/`):
 
 | Item | Value |
 |---|---|
-| Ledger | 5802897 |
-| Transaction | `97b957be9a43d5206c61b4c32ee6a9b57ab9e9078a345ca10059278f1a4e27ea` |
-| Issuers | `GCGJBKDN…FWKV` (bytes `8c90…`) and `GC66SWVI…DJQV3` (bytes `bde9…`): byte order and text order disagree |
-| Header hash | matches Horizon (`f6a984f6…48df`) |
+| Ledger | 5804259, protocol 30 |
+| Transaction | `d93c7ce14e68ca04589174619328c69d0718b4a2fc042b9641dc33f59c5fc2ed` (3 ChangeTrust operations, successful; Horizon agrees) |
+| Issuers | `GAGNBPZD…33SY` (key bytes `0cd0…`) and `GA3XEFMZ…MEWU` (key bytes `3772…`): as text `GA3…` sorts first, as bytes `GAG…` does |
+| Header hash | matches Horizon (`25bd1fc9…e9c2`) |
 | Validator signature | `sdftest1` |
-| JS SDK 17.2.0 on the fresh transaction | throws "Assets are not in lexicographic order" |
-| JS SDK 17.4.0 on the fresh transaction | parses it; pool ID `aeacb9a4…3e07`, equal to the pool ID core recorded in the ledger (`LCXKZONE…OKHT`) |
+| Pool ID core recorded | `eb62f293197be8203aa0aff8d6fa811bfd3f8adea7acffa88314696f313885b5` |
+| JS SDK 17.4.0 | parses the transaction and derives the same pool ID |
+| JS SDK 17.2.0 | **throws "Assets are not in lexicographic order"** |
 
-All four fresh captures in that run (signed-payload signer, muxed payment, this
-pool trustline, contract-created trustline) passed `ledgerwitness check-ledger`.
-Fresh runs produce new accounts and new bytes: what is reproducible is the
-shape and the behaviour, not byte identity.
+The same run captured the other three shapes. 17.4.0 read every checked
+value exactly as core recorded it (signed-payload signer, muxed IDs 2^53+1
+and 2^64−1, the asset contract's `trust` call). 17.2.0 read those three
+transactions correctly and failed only on the pool trustline. Fresh runs
+produce new accounts and new bytes: what reproduces is the shape and each
+SDK's behaviour, not byte identity.
+
+The raw ledgers are saved, so the run can be re-checked without a network.
 
 ## Reproduce it
 
@@ -108,15 +118,17 @@ Offline, from a clean checkout:
 
 ```sh
 npm ci --prefix runners/javascript
-make verify          # 5 entries, 5 passed
-make conform         # the table above, as results/conformance/matrix.md
+make verify            # 5 entries, 5 passed
+make conform           # the table above, as results/conformance/matrix.md
+make testnet-evidence  # re-checks the recorded live run from its saved bytes
 ```
 
 Live, on testnet (submits four transactions with throwaway keys):
 
 ```sh
 npm ci --prefix generators/testnet-capture
-make testnet-smoke   # "4/4 fresh testnet captures passed check-ledger"
+make testnet-smoke     # "4/4 fresh testnet captures passed check-ledger"
+                       # "OK: 8 SDK observations on 4 fresh captures, 0 unexpected"
 ```
 
 ## Limits

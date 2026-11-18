@@ -42,6 +42,13 @@ spec are versioned separately (`schema_version`, `probe_spec`).
 - `docs/evidence/liquidity-pool-issuer-order.md`: one case from raw ledger to
   SDK results.
 
+- `generators/testnet-capture/sdk-check.mjs`: runs JS SDK 17.4.0 and
+  17.2.0 over fresh testnet captures and compares what they read with what
+  core recorded and with the submitted values; `make testnet-smoke` runs it.
+- `make testnet-evidence`: offline re-check of the recorded live run, also
+  run in CI. The recorded run now keeps the raw ledgers (testnet ledgers
+  5804257–5804261).
+
 ### Fixed
 - Runners report failed entries under their ID; Rust catches panics per entry;
   Go reports muxed-destination decode errors; JS maps REVOKE_SPONSORSHIP.
