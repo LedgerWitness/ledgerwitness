@@ -1,0 +1,163 @@
+{
+  "schema_version": "0.1.0",
+  "id": "core.testnet.cap73.sac-trust-trustline.p30",
+  "description": "InvokeHostFunction calling the Stellar Asset Contract trust(address) function (CAP-0073): core creates an i64::MAX trustline for a G-account and the operation emits no contract event.",
+  "cap_ids": [
+    "CAP-0073",
+    "CAP-0088"
+  ],
+  "protocol_versions": [
+    30
+  ],
+  "shape_tags": [
+    "op:invoke_host_function",
+    "sac:trust",
+    "meta:trustline_created_by_contract",
+    "event:none",
+    "auth:source_account",
+    "header:stellar_value_signed_ms"
+  ],
+  "fixture_class": "core_emitted_valid",
+  "network_passphrase": "Test SDF Network ; September 2015",
+  "source_kind": "galexie_datalake",
+  "source_url_or_ledger": {
+    "url": "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/testnet/2025-12-18/FFA915FF--5696000-5759999/FFA89C5C--5727139.xdr.zst",
+    "ledger": 5727139,
+    "ledger_hash": "6af475c52fb2874e371d763504a7d82b9ec7387c0a467cccacd71cc2e3f0178d",
+    "object_sha256": "57965067fd43ce5b943c1cb5451229820564b7fe3d058c434a5577ba9dd375f5"
+  },
+  "core_version_and_commit": {
+    "value": "stellar-core 30.0.0 (0e49751aa9ddf892302cca02cea7f3f5d97df9f1)",
+    "basis": "captiveCoreVersion reported by the testnet RPC (getVersionInfo) at capture time; the data-lake emitter does not publish its core build, so this identifies the network's core release rather than the exact process that wrote the primary artifact"
+  },
+  "generator_version": "generators/testnet-capture/capture-testnet.mjs (@stellar/stellar-sdk 17.4.0)",
+  "deterministic_seed": null,
+  "xdr_type": "LedgerCloseMeta",
+  "xdr_path": "ledger.xdr",
+  "sha256": "751cc37e9818b3513ad2c10a54d8db72295a455d21a3bf9b1ef81efc3ddcc850",
+  "focus": {
+    "tx_hash": "398b92b37c92dc17771e1098756d1b29b4a9be8ed2a1b669dbc33e20311d6ff0"
+  },
+  "expected_decoded_values": {
+    "xdr_json": [
+      {
+        "pointer": "/v2/ledger_header/header/ledger_seq",
+        "value": 5727139
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/1/v1/execution_stages/0/0/1/tx/tx/operations/0/body/invoke_host_function/host_function/invoke_contract/function_name",
+        "value": "trust"
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/1/v1/execution_stages/0/0/1/tx/tx/operations/0/body/invoke_host_function/host_function/invoke_contract/contract_address",
+        "value": "CA4EKC4NZTODI6CBPZAWN5JFZ532TDCQVJ3QKENTXK3YX3XPBY3WU7XF"
+      },
+      {
+        "pointer": "/v2/tx_processing/13/tx_apply_processing/v4/operations/0/changes/0/created/data/trustline/limit",
+        "value": "9223372036854775807",
+        "why": "CAP-0073: unlimited trustline"
+      },
+      {
+        "pointer": "/v2/tx_processing/13/tx_apply_processing/v4/operations/0/events",
+        "value": [],
+        "why": "CAP-0073: trust emits no event"
+      }
+    ],
+    "probes": {
+      "ledger_sequence": 5727139,
+      "protocol_version": 30,
+      "tx_count": 15,
+      "focus": {
+        "tx_hash": "398b92b37c92dc17771e1098756d1b29b4a9be8ed2a1b669dbc33e20311d6ff0",
+        "successful": true,
+        "tx_source": "GCAK23MGEQQF3UFCNGIWPTJR3APJP2ELHD2DTOPDDLWWLGRQJMNXXZEB",
+        "tx_source_muxed_id": null,
+        "op_types": [
+          "INVOKE_HOST_FUNCTION"
+        ],
+        "op_sources": [
+          null
+        ],
+        "muxed_ids": [],
+        "meta_signer_keys": [],
+        "meta_created_trustlines": [
+          "GCAK23MGEQQF3UFCNGIWPTJR3APJP2ELHD2DTOPDDLWWLGRQJMNXXZEB|LCKC:GDXIEX2ASJJNSQ454PDOZICQZM6YSWXKH7VHFPJFSSTXY547BN6LD4KB"
+        ],
+        "envelope_pool_ids": [],
+        "op_contract_event_counts": [
+          0
+        ]
+      }
+    }
+  },
+  "expected_state_changes_or_participants": {
+    "participants_from_meta": [
+      "GCAK23MGEQQF3UFCNGIWPTJR3APJP2ELHD2DTOPDDLWWLGRQJMNXXZEB"
+    ],
+    "trustline_changes": [
+      {
+        "account": "GCAK23MGEQQF3UFCNGIWPTJR3APJP2ELHD2DTOPDDLWWLGRQJMNXXZEB",
+        "asset": "LCKC:GDXIEX2ASJJNSQ454PDOZICQZM6YSWXKH7VHFPJFSSTXY547BN6LD4KB",
+        "change": "created",
+        "limit": "9223372036854775807",
+        "flags": 1
+      }
+    ],
+    "indexer_must": "record a trustline creation (and its authorization flags) for this InvokeHostFunction operation from the ledger-entry change alone; there is no ChangeTrust operation and no contract event to key on"
+  },
+  "validation_evidence": [
+    {
+      "check": "rs-stellar-xdr strict decode and byte-exact re-encode",
+      "method": "ledgerwitness verify (stellar-xdr 30.0.0)",
+      "status": "verified"
+    },
+    {
+      "check": "ledger header hash recomputed from header bytes and matched to the recorded ledger hash",
+      "method": "ledgerwitness verify; ledger hash independently read from Horizon testnet /ledgers/{seq}",
+      "status": "verified"
+    },
+    {
+      "check": "scp_value.tx_set_hash and tx_set_result_hash recomputed from the artifact",
+      "method": "ledgerwitness verify",
+      "status": "verified"
+    },
+    {
+      "check": "every envelope hashes under the declared passphrase to a processed result",
+      "method": "ledgerwitness verify",
+      "status": "verified"
+    },
+    {
+      "check": "agreement with stellar-core --check-lcm goldens",
+      "method": "not applicable to network captures: core goldens are produced by core's own test suite under its test passphrase; see docs/spec/normalization.md",
+      "status": "not_applicable"
+    },
+    {
+      "check": "same ledger fetched from RPC getLedgers is equal under stellar-core's --check-lcm normalization once the LCM extension is ignored",
+      "method": "ledgerwitness verify (alternate_equivalence)",
+      "status": "verified",
+      "detail": "RPC bytes carry LedgerCloseMeta ext v0; the data-lake bytes carry ext v1 (soroban_fee_write1_kb). Per-operation change order and core_metrics/invoke_time_nsecs diagnostic values also differ between the two emitters."
+    }
+  ],
+  "known_regression_ids": [
+    "stellar/wallet-backend#731"
+  ],
+  "expected_outcome": "decode_roundtrip_exact",
+  "license_or_provenance_notes": "Public testnet ledger data. Keys used to submit the focus transaction were generated per run, funded by friendbot and discarded; no secret material is stored.",
+  "derived_artifacts": [
+    {
+      "xdr_type": "TransactionEnvelope",
+      "xdr_path": "focus-envelope.xdr",
+      "sha256": "5248263412b8fee42020eb701da9ceb1f9bd3795e28afb6f51aa66afeef6e994",
+      "derived_from": "focus_envelope"
+    }
+  ],
+  "alternate_artifacts": [
+    {
+      "xdr_path": "ledger.rpc.xdr",
+      "sha256": "d48b7610b5ec776ad0b6cad4a4a895b5c24f475f847358dfa49410e904e9c491",
+      "source_kind": "rpc_get_ledgers",
+      "source_url": "https://soroban-testnet.stellar.org getLedgers startLedger=5727139",
+      "relation": "equal_under_core_normalization_ignoring_ext"
+    }
+  ]
+}

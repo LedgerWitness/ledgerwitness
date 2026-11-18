@@ -1,0 +1,26 @@
+[package]
+name = "ledgerwitness"
+version = "0.1.0"
+description = "Manifest validation, provenance verification and canonical decoding for the ledger conformance corpus"
+edition.workspace = true
+license.workspace = true
+publish = false
+rust-version.workspace = true
+
+[[bin]]
+name = "ledgerwitness"
+path = "src/main.rs"
+
+[dependencies]
+ledgerwitness-replay = { path = "../replay" }
+stellar-xdr.workspace = true
+stellar-strkey.workspace = true
+ed25519-dalek.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+hex.workspace = true
+zstd.workspace = true
+anyhow.workspace = true
+clap.workspace = true
+jsonschema.workspace = true

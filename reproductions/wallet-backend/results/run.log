@@ -1,0 +1,37 @@
+== pre-fix-729 (2a0a84ea12523b6c92e278c0c84b443041240095)
+ok  	github.com/stellar/wallet-backend/internal/data	0.054s
+{
+  "ledger": 4437357,
+  "transactions": 12,
+  "state_changes": 17,
+  "rows_failing_encode": 1,
+  "signer_rows": [
+    {
+      "to_id": 19058303195680768,
+      "category": "SIGNER",
+      "reason": "ADD",
+      "signer": "PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS",
+      "encoded": false,
+      "error": "converting address to bytes: stellar address PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS has a 40-byte key payload; the account_id column stores only 32-byte account/contract keys"
+    }
+  ],
+  "first_encode_error": "converting address to bytes: stellar address PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS has a 40-byte key payload; the account_id column stores only 32-byte account/contract keys"
+}
+== post-fix-729 (2c873353c1f0f3c9b145e25a7d009023ad104a1c)
+ok  	github.com/stellar/wallet-backend/internal/data	0.049s
+{
+  "ledger": 4437357,
+  "transactions": 12,
+  "state_changes": 17,
+  "rows_failing_encode": 0,
+  "signer_rows": [
+    {
+      "to_id": 19058303195680768,
+      "category": "SIGNER",
+      "reason": "ADD",
+      "signer": "PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS",
+      "encoded": true
+    }
+  ]
+}
+exit 0

@@ -1,0 +1,13 @@
+{
+  "shape": "cap40-signed-payload-signer",
+  "network_passphrase": "Test SDF Network ; September 2015",
+  "rpc_url": "https://soroban-testnet.stellar.org",
+  "rpc_method": "getLedgers",
+  "ledger": 5727135,
+  "ledger_hash": "e242c894b433d1a2e83a9019d7a9297d61083fb33a8d1c6da9ccd02cdc02c444",
+  "ledger_close_time": "1794659319",
+  "tx_hash": "f3b8440c7d4b14e4bd342cd78264172f2a0bc2102bf32b1eb7ba917edc68f233",
+  "sdk": "@stellar/stellar-sdk@17.4.0",
+  "signer_key": "PDORVX3RNFPHPPJ5VCBIQVQ76ZB7OWXWYFWTAZCJS4KMSLO4PQZHKAAAAAOWYY3LEBZWSZ3OMVSCA4DBPFWG6YLEFQQDEOJAMJ4XIZLTEEAAAABA5Q",
+  "payload_hex": "6c636b207369676e6564207061796c6f61642c20323920627974657321"
+}

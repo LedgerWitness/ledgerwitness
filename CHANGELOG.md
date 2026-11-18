@@ -1,0 +1,51 @@
+# Changelog
+
+All notable changes to this project are documented here. The format follows
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
+[Semantic Versioning](https://semver.org/). The manifest schema and the probe
+spec are versioned separately (`schema_version`, `probe_spec`).
+
+## [Unreleased]
+
+### Added
+- Corpus manifest schema 0.1.0 and five core-emitted testnet entries
+  (CAP-0027, CAP-0038, CAP-0040, CAP-0067, CAP-0073; protocols 28 and 30).
+- `ledgerwitness`: verify, inspect, locate, galexie-extract, extract-envelope,
+  compare-lcm, conform, replay-check.
+- Offline validator attestation: the header's `StellarValue` signature is
+  verified against pinned testnet validator keys.
+- Port of stellar-core's LedgerCloseMeta normalization used by `--check-lcm`.
+- Conformance runners for Rust, Go and JavaScript; divergence matrix.
+- Replay comparison format 0.1.0 and three curated replay oracles.
+- Reproductions of js-stellar-sdk #1766, #1785, #1789 and wallet-backend #729.
+- Testnet capture generator.
+
+### Changed
+- The wallet-backend #729 checker requires the specific payload-length
+  rejection on the pre-fix side, not any error.
+- README rewritten for first-time readers: quick start with expected output,
+  result labels explained, plain-language summary of what verification proves.
+- Probe spec 0.2.0: runner reports record SHA-256 digests of the manifest,
+  ledger and focus envelope they read; `ledgerwitness conform` refuses reports produced
+  from other inputs. 0.1.0 reports are no longer accepted.
+- `ledgerwitness conform` exits 1 on any non-pass cell unless `--require-pass` or
+  `--report-only` is given; new `--schema` option.
+- Core-emitted entries fail verification when they cannot be attested by a
+  pinned validator or contain no transactions.
+- Manifests: CAP-0088 tagged on protocol-30 entries; p28 payload description
+  corrected; regression links narrowed; emitter-dependent events marked.
+
+### Added
+- `ledgerwitness check-ledger` checks a raw captured ledger without a manifest.
+- `make testnet-smoke`: live testnet capture checked against Horizon and the
+  validator signature, with a recorded run in `docs/evidence/testnet-run/`.
+- `docs/evidence/liquidity-pool-issuer-order.md`: one case from raw ledger to
+  SDK results.
+
+### Fixed
+- Runners report failed entries under their ID; Rust catches panics per entry;
+  Go reports muxed-destination decode errors; JS maps REVOKE_SPONSORSHIP.
+- Runner library labels are derived from the build.
+- Absent-only replay oracles are inconclusive instead of passing.
+- wallet-backend replay script no longer certifies stale reports.
+

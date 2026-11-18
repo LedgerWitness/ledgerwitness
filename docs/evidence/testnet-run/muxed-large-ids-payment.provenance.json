@@ -1,0 +1,18 @@
+{
+  "shape": "muxed-large-ids-payment",
+  "network_passphrase": "Test SDF Network ; September 2015",
+  "rpc_url": "https://soroban-testnet.stellar.org",
+  "rpc_method": "getLedgers",
+  "ledger": 5802896,
+  "ledger_hash": "4074650f808dcd0b879c4f280c31488e9be8e7ab97ce067c8d9908fd0ad5918f",
+  "ledger_close_time": "1795038120",
+  "tx_hash": "468d05b9f5a85a0a78aebe2733a12e09e4406da288ee1f5848b4abcf326f29c4",
+  "sdk": "@stellar/stellar-sdk@17.4.0",
+  "tx_source_muxed": "MCIULJ57H7JGFU2J5YD5WHUT7WCEQLRKTXTCORXHWLBUCQJU6VMLCABAAAAAAAAAAFQS2",
+  "op_source_muxed": "MCIULJ57H7JGFU2J5YD5WHUT7WCEQLRKTXTCORXHWLBUCQJU6VMLD7777777777775L7K",
+  "destination_muxed": "MCAIUYFRFJPPKW4YSI7MEZMX2ZURFWP5KCSKO75VDIMFGFEVUZTID7777777777776NNQ",
+  "muxed_ids": [
+    "9007199254740993",
+    "18446744073709551615"
+  ]
+}

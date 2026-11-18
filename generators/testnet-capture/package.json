@@ -1,0 +1,8 @@
+{
+  "name": "ledgerwitness-capture",
+  "private": true,
+  "type": "module",
+  "description": "Submits rare-shape transactions to testnet with throwaway keys and captures the core-emitted LedgerCloseMeta",
+  "scripts": { "capture:testnet": "node capture-testnet.mjs" },
+  "dependencies": { "@stellar/stellar-sdk": "17.4.0" }
+}

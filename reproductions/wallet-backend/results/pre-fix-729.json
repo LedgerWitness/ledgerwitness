@@ -1,0 +1,17 @@
+{
+  "ledger": 4437357,
+  "transactions": 12,
+  "state_changes": 17,
+  "rows_failing_encode": 1,
+  "signer_rows": [
+    {
+      "to_id": 19058303195680768,
+      "category": "SIGNER",
+      "reason": "ADD",
+      "signer": "PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS",
+      "encoded": false,
+      "error": "converting address to bytes: stellar address PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS has a 40-byte key payload; the account_id column stores only 32-byte account/contract keys"
+    }
+  ],
+  "first_encode_error": "converting address to bytes: stellar address PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS has a 40-byte key payload; the account_id column stores only 32-byte account/contract keys"
+}

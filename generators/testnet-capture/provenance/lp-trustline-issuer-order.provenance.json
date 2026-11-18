@@ -1,0 +1,15 @@
+{
+  "shape": "lp-trustline-issuer-order",
+  "network_passphrase": "Test SDF Network ; September 2015",
+  "rpc_url": "https://soroban-testnet.stellar.org",
+  "rpc_method": "getLedgers",
+  "ledger": 5727137,
+  "ledger_hash": "dca008269a5036712b5ea8a2b2f95f4b2f5ddd3faeb9979e71f1b57637379046",
+  "ledger_close_time": "1794659329",
+  "tx_hash": "cdd0923f15308385f32a124bfe6529ee28608b3912c8951752b9c6a6a7cb90df",
+  "sdk": "@stellar/stellar-sdk@17.4.0",
+  "asset_a_byte_order_first": "LCK:GDXIEX2ASJJNSQ454PDOZICQZM6YSWXKH7VHFPJFSSTXY547BN6LD4KB",
+  "asset_b_byte_order_second": "LCK:GD4U4D4EI5FDRDTFDW32BW2FBQ5KUO5OS7NCYLRRJQPRS3KTYZQY7PHB",
+  "strkey_text_order_disagrees": true,
+  "pool_id_hex": "242,28,116,104,250,9,43,179,58,48,225,118,214,87,197,32,38,198,81,172,217,173,130,238,233,193,180,145,24,173,11,30"
+}

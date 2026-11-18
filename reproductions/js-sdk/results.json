@@ -1,0 +1,802 @@
+{
+  "versions": {
+    "17.2.0": {
+      "1766/asset-compare": {
+        "outcome": "ok",
+        "value": 1
+      },
+      "1766/pool-in-byte-order": {
+        "outcome": "throws",
+        "error": "Assets are not in lexicographic order"
+      },
+      "1766/sorted-map-u32-keys": {
+        "outcome": "ok",
+        "value": [
+          "9",
+          "10"
+        ]
+      },
+      "1766/sorted-map-address-keys": {
+        "outcome": "ok",
+        "value": [
+          "C",
+          "G"
+        ]
+      },
+      "1766/sorted-map-bytes-keys": {
+        "outcome": "ok",
+        "value": [
+          "{\"bytes\":\"0a\"}",
+          "{\"bytes\":\"09\"}"
+        ]
+      },
+      "1766/sorted-map-mixed-type-keys": {
+        "outcome": "ok",
+        "value": [
+          "{\"symbol\":\"a\"}",
+          "{\"string\":\"b\"}"
+        ]
+      },
+      "1785/offer-id-unsafe-number": {
+        "outcome": "ok",
+        "value": "9007199254740992"
+      },
+      "1785/offer-id-empty-string": {
+        "outcome": "ok",
+        "value": "0"
+      },
+      "1785/offer-id-negative": {
+        "outcome": "ok",
+        "value": "-1"
+      },
+      "1785/muxed-id-hex-string": {
+        "outcome": "ok",
+        "value": {
+          "id": "0x10",
+          "id_from_address": "16"
+        }
+      },
+      "1789/map-key-collision": {
+        "outcome": "ok",
+        "value": {
+          "entries": 1,
+          "native": {
+            "1": 20
+          }
+        }
+      }
+    },
+    "17.2.1": {
+      "1766/asset-compare": {
+        "outcome": "ok",
+        "value": -1
+      },
+      "1766/pool-in-byte-order": {
+        "outcome": "ok",
+        "value": "4f2e9ff01ddaa201ecc07406a95a93b020bcccbadbf2429fe106d0bb3abe42f0"
+      },
+      "1766/sorted-map-u32-keys": {
+        "outcome": "ok",
+        "value": [
+          "9",
+          "10"
+        ]
+      },
+      "1766/sorted-map-address-keys": {
+        "outcome": "ok",
+        "value": [
+          "G",
+          "C"
+        ]
+      },
+      "1766/sorted-map-bytes-keys": {
+        "outcome": "ok",
+        "value": [
+          "{\"bytes\":\"09\"}",
+          "{\"bytes\":\"0a\"}"
+        ]
+      },
+      "1766/sorted-map-mixed-type-keys": {
+        "outcome": "ok",
+        "value": [
+          "{\"string\":\"b\"}",
+          "{\"symbol\":\"a\"}"
+        ]
+      },
+      "1785/offer-id-unsafe-number": {
+        "outcome": "ok",
+        "value": "9007199254740992"
+      },
+      "1785/offer-id-empty-string": {
+        "outcome": "ok",
+        "value": "0"
+      },
+      "1785/offer-id-negative": {
+        "outcome": "ok",
+        "value": "-1"
+      },
+      "1785/muxed-id-hex-string": {
+        "outcome": "ok",
+        "value": {
+          "id": "0x10",
+          "id_from_address": "16"
+        }
+      },
+      "1789/map-key-collision": {
+        "outcome": "ok",
+        "value": {
+          "entries": 1,
+          "native": {
+            "1": 20
+          }
+        }
+      }
+    },
+    "17.3.0": {
+      "1766/asset-compare": {
+        "outcome": "ok",
+        "value": -1
+      },
+      "1766/pool-in-byte-order": {
+        "outcome": "ok",
+        "value": "4f2e9ff01ddaa201ecc07406a95a93b020bcccbadbf2429fe106d0bb3abe42f0"
+      },
+      "1766/sorted-map-u32-keys": {
+        "outcome": "ok",
+        "value": [
+          "9",
+          "10"
+        ]
+      },
+      "1766/sorted-map-address-keys": {
+        "outcome": "ok",
+        "value": [
+          "G",
+          "C"
+        ]
+      },
+      "1766/sorted-map-bytes-keys": {
+        "outcome": "ok",
+        "value": [
+          "{\"bytes\":\"09\"}",
+          "{\"bytes\":\"0a\"}"
+        ]
+      },
+      "1766/sorted-map-mixed-type-keys": {
+        "outcome": "ok",
+        "value": [
+          "{\"string\":\"b\"}",
+          "{\"symbol\":\"a\"}"
+        ]
+      },
+      "1785/offer-id-unsafe-number": {
+        "outcome": "throws",
+        "error": "offerId must be a non-negative safe integer; pass a larger ID as a bigint or a decimal string"
+      },
+      "1785/offer-id-empty-string": {
+        "outcome": "throws",
+        "error": "offerId must be a string of decimal digits"
+      },
+      "1785/offer-id-negative": {
+        "outcome": "throws",
+        "error": "offerId must be a string of decimal digits"
+      },
+      "1785/muxed-id-hex-string": {
+        "outcome": "throws",
+        "error": "id is not a valid uint64 string: 0x10"
+      },
+      "1789/map-key-collision": {
+        "outcome": "throws",
+        "error": "scvMap has more than one key that converts to \"1\"; read the raw map entries instead"
+      }
+    },
+    "17.4.0": {
+      "1766/asset-compare": {
+        "outcome": "ok",
+        "value": -1
+      },
+      "1766/pool-in-byte-order": {
+        "outcome": "ok",
+        "value": "4f2e9ff01ddaa201ecc07406a95a93b020bcccbadbf2429fe106d0bb3abe42f0"
+      },
+      "1766/sorted-map-u32-keys": {
+        "outcome": "ok",
+        "value": [
+          "9",
+          "10"
+        ]
+      },
+      "1766/sorted-map-address-keys": {
+        "outcome": "ok",
+        "value": [
+          "G",
+          "C"
+        ]
+      },
+      "1766/sorted-map-bytes-keys": {
+        "outcome": "ok",
+        "value": [
+          "{\"bytes\":\"09\"}",
+          "{\"bytes\":\"0a\"}"
+        ]
+      },
+      "1766/sorted-map-mixed-type-keys": {
+        "outcome": "ok",
+        "value": [
+          "{\"string\":\"b\"}",
+          "{\"symbol\":\"a\"}"
+        ]
+      },
+      "1785/offer-id-unsafe-number": {
+        "outcome": "throws",
+        "error": "offerId must be a non-negative safe integer; pass a larger ID as a bigint or a decimal string"
+      },
+      "1785/offer-id-empty-string": {
+        "outcome": "throws",
+        "error": "offerId must be a string of decimal digits"
+      },
+      "1785/offer-id-negative": {
+        "outcome": "throws",
+        "error": "offerId must be a string of decimal digits"
+      },
+      "1785/muxed-id-hex-string": {
+        "outcome": "throws",
+        "error": "id is not a valid uint64 string: 0x10"
+      },
+      "1789/map-key-collision": {
+        "outcome": "throws",
+        "error": "scvMap has more than one key that converts to \"1\"; read the raw map entries instead"
+      }
+    }
+  },
+  "checks": [
+    {
+      "case": "1766/asset-compare",
+      "version": "17.2.0",
+      "phase": "pre-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": 1
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/pool-in-byte-order",
+      "version": "17.2.0",
+      "phase": "pre-fix",
+      "control": false,
+      "observed": {
+        "outcome": "throws",
+        "error": "Assets are not in lexicographic order"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/sorted-map-u32-keys",
+      "version": "17.2.0",
+      "phase": "pre-fix",
+      "control": true,
+      "observed": {
+        "outcome": "ok",
+        "value": [
+          "9",
+          "10"
+        ]
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/sorted-map-address-keys",
+      "version": "17.2.0",
+      "phase": "pre-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": [
+          "C",
+          "G"
+        ]
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/sorted-map-bytes-keys",
+      "version": "17.2.0",
+      "phase": "pre-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": [
+          "{\"bytes\":\"0a\"}",
+          "{\"bytes\":\"09\"}"
+        ]
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/sorted-map-mixed-type-keys",
+      "version": "17.2.0",
+      "phase": "pre-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": [
+          "{\"symbol\":\"a\"}",
+          "{\"string\":\"b\"}"
+        ]
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1785/offer-id-unsafe-number",
+      "version": "17.2.0",
+      "phase": "pre-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": "9007199254740992"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1785/offer-id-empty-string",
+      "version": "17.2.0",
+      "phase": "pre-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": "0"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1785/offer-id-negative",
+      "version": "17.2.0",
+      "phase": "pre-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": "-1"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1785/muxed-id-hex-string",
+      "version": "17.2.0",
+      "phase": "pre-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": {
+          "id": "0x10",
+          "id_from_address": "16"
+        }
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1789/map-key-collision",
+      "version": "17.2.0",
+      "phase": "pre-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": {
+          "entries": 1,
+          "native": {
+            "1": 20
+          }
+        }
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/asset-compare",
+      "version": "17.2.1",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": -1
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/pool-in-byte-order",
+      "version": "17.2.1",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": "4f2e9ff01ddaa201ecc07406a95a93b020bcccbadbf2429fe106d0bb3abe42f0"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/sorted-map-u32-keys",
+      "version": "17.2.1",
+      "phase": "post-fix",
+      "control": true,
+      "observed": {
+        "outcome": "ok",
+        "value": [
+          "9",
+          "10"
+        ]
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/sorted-map-address-keys",
+      "version": "17.2.1",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": [
+          "G",
+          "C"
+        ]
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/sorted-map-bytes-keys",
+      "version": "17.2.1",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": [
+          "{\"bytes\":\"09\"}",
+          "{\"bytes\":\"0a\"}"
+        ]
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/sorted-map-mixed-type-keys",
+      "version": "17.2.1",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": [
+          "{\"string\":\"b\"}",
+          "{\"symbol\":\"a\"}"
+        ]
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1785/offer-id-unsafe-number",
+      "version": "17.2.1",
+      "phase": "pre-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": "9007199254740992"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1785/offer-id-empty-string",
+      "version": "17.2.1",
+      "phase": "pre-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": "0"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1785/offer-id-negative",
+      "version": "17.2.1",
+      "phase": "pre-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": "-1"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1785/muxed-id-hex-string",
+      "version": "17.2.1",
+      "phase": "pre-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": {
+          "id": "0x10",
+          "id_from_address": "16"
+        }
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1789/map-key-collision",
+      "version": "17.2.1",
+      "phase": "pre-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": {
+          "entries": 1,
+          "native": {
+            "1": 20
+          }
+        }
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/asset-compare",
+      "version": "17.3.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": -1
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/pool-in-byte-order",
+      "version": "17.3.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": "4f2e9ff01ddaa201ecc07406a95a93b020bcccbadbf2429fe106d0bb3abe42f0"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/sorted-map-u32-keys",
+      "version": "17.3.0",
+      "phase": "post-fix",
+      "control": true,
+      "observed": {
+        "outcome": "ok",
+        "value": [
+          "9",
+          "10"
+        ]
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/sorted-map-address-keys",
+      "version": "17.3.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": [
+          "G",
+          "C"
+        ]
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/sorted-map-bytes-keys",
+      "version": "17.3.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": [
+          "{\"bytes\":\"09\"}",
+          "{\"bytes\":\"0a\"}"
+        ]
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/sorted-map-mixed-type-keys",
+      "version": "17.3.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": [
+          "{\"string\":\"b\"}",
+          "{\"symbol\":\"a\"}"
+        ]
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1785/offer-id-unsafe-number",
+      "version": "17.3.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "throws",
+        "error": "offerId must be a non-negative safe integer; pass a larger ID as a bigint or a decimal string"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1785/offer-id-empty-string",
+      "version": "17.3.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "throws",
+        "error": "offerId must be a string of decimal digits"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1785/offer-id-negative",
+      "version": "17.3.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "throws",
+        "error": "offerId must be a string of decimal digits"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1785/muxed-id-hex-string",
+      "version": "17.3.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "throws",
+        "error": "id is not a valid uint64 string: 0x10"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1789/map-key-collision",
+      "version": "17.3.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "throws",
+        "error": "scvMap has more than one key that converts to \"1\"; read the raw map entries instead"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/asset-compare",
+      "version": "17.4.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": -1
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/pool-in-byte-order",
+      "version": "17.4.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": "4f2e9ff01ddaa201ecc07406a95a93b020bcccbadbf2429fe106d0bb3abe42f0"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/sorted-map-u32-keys",
+      "version": "17.4.0",
+      "phase": "post-fix",
+      "control": true,
+      "observed": {
+        "outcome": "ok",
+        "value": [
+          "9",
+          "10"
+        ]
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/sorted-map-address-keys",
+      "version": "17.4.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": [
+          "G",
+          "C"
+        ]
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/sorted-map-bytes-keys",
+      "version": "17.4.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": [
+          "{\"bytes\":\"09\"}",
+          "{\"bytes\":\"0a\"}"
+        ]
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1766/sorted-map-mixed-type-keys",
+      "version": "17.4.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "ok",
+        "value": [
+          "{\"string\":\"b\"}",
+          "{\"symbol\":\"a\"}"
+        ]
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1785/offer-id-unsafe-number",
+      "version": "17.4.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "throws",
+        "error": "offerId must be a non-negative safe integer; pass a larger ID as a bigint or a decimal string"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1785/offer-id-empty-string",
+      "version": "17.4.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "throws",
+        "error": "offerId must be a string of decimal digits"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1785/offer-id-negative",
+      "version": "17.4.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "throws",
+        "error": "offerId must be a string of decimal digits"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1785/muxed-id-hex-string",
+      "version": "17.4.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "throws",
+        "error": "id is not a valid uint64 string: 0x10"
+      },
+      "matches_documented": true
+    },
+    {
+      "case": "1789/map-key-collision",
+      "version": "17.4.0",
+      "phase": "post-fix",
+      "control": false,
+      "observed": {
+        "outcome": "throws",
+        "error": "scvMap has more than one key that converts to \"1\"; read the raw map entries instead"
+      },
+      "matches_documented": true
+    }
+  ]
+}

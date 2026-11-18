@@ -1,0 +1,12 @@
+LedgerWitness
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+crates/ledgerwitness/src/normalize.rs ports the LedgerCloseMeta normalization in
+stellar-core's src/util/MetaUtils.cpp (normalizeMeta and
+zeroNonDeterministicDiagnostics). stellar-core is Copyright Stellar
+Development Foundation and contributors and is licensed under the Apache
+License, Version 2.0.
+
+The XDR artifacts under corpus/entries/ are public Stellar testnet ledger data,
+obtained from the public Galexie data lake (AWS Open Data,
+aws-public-blockchain) and from the public testnet RPC.

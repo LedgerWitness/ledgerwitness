@@ -1,0 +1,164 @@
+{
+  "schema_version": "0.1.0",
+  "id": "core.testnet.cap38.lp-trustline-issuer-order.p30",
+  "description": "ChangeTrust for two LCK assets and then for their liquidity pool share, where the issuers' G... strkeys sort in the opposite order to their key bytes. Core requires asset_a < asset_b by XDR bytes.",
+  "cap_ids": [
+    "CAP-0038",
+    "CAP-0088"
+  ],
+  "protocol_versions": [
+    30
+  ],
+  "shape_tags": [
+    "op:change_trust",
+    "asset:pool_share",
+    "order:strkey_vs_xdr_bytes",
+    "strkey:l",
+    "meta:liquidity_pool_created",
+    "header:stellar_value_signed_ms"
+  ],
+  "fixture_class": "core_emitted_valid",
+  "network_passphrase": "Test SDF Network ; September 2015",
+  "source_kind": "galexie_datalake",
+  "source_url_or_ledger": {
+    "url": "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/testnet/2025-12-18/FFA915FF--5696000-5759999/FFA89C5E--5727137.xdr.zst",
+    "ledger": 5727137,
+    "ledger_hash": "dca008269a5036712b5ea8a2b2f95f4b2f5ddd3faeb9979e71f1b57637379046",
+    "object_sha256": "eff1e78b529e673a66a43d0ceb15bdb0e29a8f6814dbcc229c2a4101691cdebe"
+  },
+  "core_version_and_commit": {
+    "value": "stellar-core 30.0.0 (0e49751aa9ddf892302cca02cea7f3f5d97df9f1)",
+    "basis": "captiveCoreVersion reported by the testnet RPC (getVersionInfo) at capture time; the data-lake emitter does not publish its core build, so this identifies the network's core release rather than the exact process that wrote the primary artifact"
+  },
+  "generator_version": "generators/testnet-capture/capture-testnet.mjs (@stellar/stellar-sdk 17.4.0)",
+  "deterministic_seed": null,
+  "xdr_type": "LedgerCloseMeta",
+  "xdr_path": "ledger.xdr",
+  "sha256": "52576225afcef85b382165d62d9944b5b09f01837fa5e92ffc3debfebf4c0b30",
+  "focus": {
+    "tx_hash": "cdd0923f15308385f32a124bfe6529ee28608b3912c8951752b9c6a6a7cb90df"
+  },
+  "expected_decoded_values": {
+    "xdr_json": [
+      {
+        "pointer": "/v2/ledger_header/header/ledger_seq",
+        "value": 5727137
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/0/v0/0/txset_comp_txs_maybe_discounted_fee/txs/7/tx/tx/operations/2/body/change_trust/line/pool_share/liquidity_pool_constant_product/asset_a/credit_alphanum4/issuer",
+        "value": "GDXIEX2ASJJNSQ454PDOZICQZM6YSWXKH7VHFPJFSSTXY547BN6LD4KB",
+        "why": "byte-order first issuer, which sorts second as text"
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/0/v0/0/txset_comp_txs_maybe_discounted_fee/txs/7/tx/tx/operations/2/body/change_trust/line/pool_share/liquidity_pool_constant_product/asset_b/credit_alphanum4/issuer",
+        "value": "GD4U4D4EI5FDRDTFDW32BW2FBQ5KUO5OS7NCYLRRJQPRS3KTYZQY7PHB"
+      },
+      {
+        "pointer": "/v2/tx_processing/6/tx_apply_processing/v4/operations/2/changes/0/created/data/trustline/asset/pool_share",
+        "value": "LDZBY5DI7IESXMZ2GDQXNVSXYUQCNRSRVTM23AXO5HA3JEIYVUFR5UCP",
+        "why": "pool ID f21c7468...0b1e as computed by the capture tool, in SEP-0023 L... form"
+      }
+    ],
+    "probes": {
+      "ledger_sequence": 5727137,
+      "protocol_version": 30,
+      "tx_count": 18,
+      "focus": {
+        "tx_hash": "cdd0923f15308385f32a124bfe6529ee28608b3912c8951752b9c6a6a7cb90df",
+        "successful": true,
+        "tx_source": "GCAK23MGEQQF3UFCNGIWPTJR3APJP2ELHD2DTOPDDLWWLGRQJMNXXZEB",
+        "tx_source_muxed_id": null,
+        "op_types": [
+          "CHANGE_TRUST",
+          "CHANGE_TRUST",
+          "CHANGE_TRUST"
+        ],
+        "op_sources": [
+          null,
+          null,
+          null
+        ],
+        "muxed_ids": [],
+        "meta_signer_keys": [],
+        "meta_created_trustlines": [
+          "GCAK23MGEQQF3UFCNGIWPTJR3APJP2ELHD2DTOPDDLWWLGRQJMNXXZEB|LCK:GD4U4D4EI5FDRDTFDW32BW2FBQ5KUO5OS7NCYLRRJQPRS3KTYZQY7PHB",
+          "GCAK23MGEQQF3UFCNGIWPTJR3APJP2ELHD2DTOPDDLWWLGRQJMNXXZEB|LCK:GDXIEX2ASJJNSQ454PDOZICQZM6YSWXKH7VHFPJFSSTXY547BN6LD4KB",
+          "GCAK23MGEQQF3UFCNGIWPTJR3APJP2ELHD2DTOPDDLWWLGRQJMNXXZEB|pool:f21c7468fa092bb33a30e176d657c52026c651acd9ad82eee9c1b49118ad0b1e"
+        ],
+        "envelope_pool_ids": [
+          "f21c7468fa092bb33a30e176d657c52026c651acd9ad82eee9c1b49118ad0b1e"
+        ],
+        "op_contract_event_counts": [
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "expected_state_changes_or_participants": {
+    "participants_from_meta": [
+      "GCAK23MGEQQF3UFCNGIWPTJR3APJP2ELHD2DTOPDDLWWLGRQJMNXXZEB"
+    ],
+    "trustlines_created": 3,
+    "liquidity_pools_created": [
+      "f21c7468fa092bb33a30e176d657c52026c651acd9ad82eee9c1b49118ad0b1e"
+    ],
+    "decoder_must": "accept the pair in XDR byte order and derive the pool ID f21c7468...0b1e; ordering issuers by strkey text rejects this valid pair"
+  },
+  "validation_evidence": [
+    {
+      "check": "rs-stellar-xdr strict decode and byte-exact re-encode",
+      "method": "ledgerwitness verify (stellar-xdr 30.0.0)",
+      "status": "verified"
+    },
+    {
+      "check": "ledger header hash recomputed from header bytes and matched to the recorded ledger hash",
+      "method": "ledgerwitness verify; ledger hash independently read from Horizon testnet /ledgers/{seq}",
+      "status": "verified"
+    },
+    {
+      "check": "scp_value.tx_set_hash and tx_set_result_hash recomputed from the artifact",
+      "method": "ledgerwitness verify",
+      "status": "verified"
+    },
+    {
+      "check": "every envelope hashes under the declared passphrase to a processed result",
+      "method": "ledgerwitness verify",
+      "status": "verified"
+    },
+    {
+      "check": "agreement with stellar-core --check-lcm goldens",
+      "method": "not applicable to network captures: core goldens are produced by core's own test suite under its test passphrase; see docs/spec/normalization.md",
+      "status": "not_applicable"
+    },
+    {
+      "check": "same ledger fetched from RPC getLedgers is equal under stellar-core's --check-lcm normalization once the LCM extension is ignored",
+      "method": "ledgerwitness verify (alternate_equivalence)",
+      "status": "verified",
+      "detail": "RPC bytes carry LedgerCloseMeta ext v0; the data-lake bytes carry ext v1 (soroban_fee_write1_kb). Per-operation change order and core_metrics/invoke_time_nsecs diagnostic values also differ between the two emitters."
+    }
+  ],
+  "known_regression_ids": [
+    "stellar/js-stellar-sdk#1766"
+  ],
+  "expected_outcome": "decode_roundtrip_exact",
+  "license_or_provenance_notes": "Public testnet ledger data. Keys used to submit the focus transaction were generated per run, funded by friendbot and discarded; no secret material is stored.",
+  "derived_artifacts": [
+    {
+      "xdr_type": "TransactionEnvelope",
+      "xdr_path": "focus-envelope.xdr",
+      "sha256": "fc7fc7a3843f046d97600d682bad18feb0b656ef027f87a33ae451a8e69041d7",
+      "derived_from": "focus_envelope"
+    }
+  ],
+  "alternate_artifacts": [
+    {
+      "xdr_path": "ledger.rpc.xdr",
+      "sha256": "854976200062e7fd1c05c394a160cd81af9083cca65b5f59653c60a6f5211b61",
+      "source_kind": "rpc_get_ledgers",
+      "source_url": "https://soroban-testnet.stellar.org getLedgers startLedger=5727137",
+      "relation": "equal_under_core_normalization_ignoring_ext"
+    }
+  ]
+}

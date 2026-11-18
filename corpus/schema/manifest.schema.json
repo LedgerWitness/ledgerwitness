@@ -1,0 +1,423 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ledgerwitness:schema:manifest-entry:0.1.0",
+  "title": "Corpus entry manifest",
+  "description": "One corpus entry: an XDR artifact, where it came from, how it was checked, and the values every decoder is expected to produce from it. 64-bit integers are decimal strings; binary values are lowercase hex; account and signer identities are SEP-0023 strkeys.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "description",
+    "cap_ids",
+    "protocol_versions",
+    "shape_tags",
+    "fixture_class",
+    "network_passphrase",
+    "source_kind",
+    "source_url_or_ledger",
+    "core_version_and_commit",
+    "generator_version",
+    "deterministic_seed",
+    "xdr_type",
+    "xdr_path",
+    "sha256",
+    "expected_decoded_values",
+    "expected_state_changes_or_participants",
+    "validation_evidence",
+    "known_regression_ids",
+    "expected_outcome",
+    "license_or_provenance_notes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "id": {
+      "description": "Stable identifier: <class>.<network>.<cap-or-topic>.<shape>.p<protocol>.",
+      "type": "string",
+      "pattern": "^[a-z0-9]+(\\.[a-z0-9-]+)+$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 20
+    },
+    "cap_ids": {
+      "description": "CAPs that introduced or changed the shape. Empty only for shapes that predate the CAP process; explain in description.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^CAP-[0-9]{4}$"
+      },
+      "uniqueItems": true
+    },
+    "protocol_versions": {
+      "description": "Ledger protocol versions the artifact was emitted under (for captures) or is valid under (for synthetic entries).",
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "shape_tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9_]+:[a-z0-9_.-]+$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "fixture_class": {
+      "description": "core_emitted_valid: emitted by stellar-core with verifiable provenance. synthetic_validated: constructed, admitted only with evidence that core can emit it. sdk_negative_only: invalid or non-canonical input for SDK validation tests; never counted as ledger coverage.",
+      "enum": [
+        "core_emitted_valid",
+        "synthetic_validated",
+        "sdk_negative_only"
+      ]
+    },
+    "network_passphrase": {
+      "description": "Passphrase of the network the artifact belongs to. Null only for sdk_negative_only entries that are not tied to a network.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_kind": {
+      "enum": [
+        "rpc_get_ledgers",
+        "galexie_datalake",
+        "local_core",
+        "core_test_golden",
+        "hand_crafted"
+      ]
+    },
+    "source_url_or_ledger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url"
+      ],
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "ledger": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "ledger_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "object_sha256": {
+          "description": "Hash of the object as fetched (for example the compressed data-lake file) before extraction.",
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "core_version_and_commit": {
+      "description": "stellar-core build that emitted the artifact, if known, and how that was established.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "basis"
+      ],
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "basis": {
+          "type": "string"
+        }
+      }
+    },
+    "generator_version": {
+      "type": "string"
+    },
+    "deterministic_seed": {
+      "description": "Seed for generators that are deterministic. Null when the shape is reproducible but the bytes are not (for example keys generated per run).",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "xdr_type": {
+      "description": "XDR type name as defined in stellar-xdr (for example LedgerCloseMeta, TransactionEnvelope, ScVal).",
+      "type": "string",
+      "pattern": "^[A-Z][A-Za-z0-9]+$"
+    },
+    "xdr_path": {
+      "description": "Path of the raw binary XDR artifact, relative to the entry directory.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]+$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "focus": {
+      "description": "Locates the shape inside a larger artifact.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tx_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "op_index": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "expected_decoded_values": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "xdr_json",
+        "probes"
+      ],
+      "properties": {
+        "xdr_json": {
+          "description": "Assertions on the SEP-0051 XDR-JSON form of the decoded artifact. Each pointer is an RFC 6901 JSON Pointer.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "pointer",
+              "value"
+            ],
+            "properties": {
+              "pointer": {
+                "type": "string",
+                "pattern": "^(/[^/]*)*$"
+              },
+              "value": {},
+              "why": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "probes": {
+          "description": "Language-neutral semantic values every conformance runner computes natively (see docs/spec/probes.md).",
+          "type": "object"
+        }
+      }
+    },
+    "expected_state_changes_or_participants": {
+      "description": "What an indexer must derive from the ledger meta for the focus transaction.",
+      "type": "object"
+    },
+    "validation_evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "check",
+          "method",
+          "status"
+        ],
+        "properties": {
+          "check": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "verified",
+              "pending",
+              "blocked",
+              "not_applicable"
+            ]
+          },
+          "detail": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "known_regression_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+/[a-z0-9._-]+#[0-9]+$"
+      },
+      "uniqueItems": true
+    },
+    "expected_outcome": {
+      "description": "What a correct decoder does with the artifact.",
+      "enum": [
+        "decode_roundtrip_exact",
+        "reject_on_decode",
+        "reject_on_validation"
+      ]
+    },
+    "license_or_provenance_notes": {
+      "type": "string"
+    },
+    "derived_artifacts": {
+      "description": "Smaller artifacts cut from the primary artifact, so a decoder that cannot read the whole primary artifact (for example an older SDK and a newer ledger header) can still be tested on the part it supports.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "xdr_type",
+          "xdr_path",
+          "sha256",
+          "derived_from"
+        ],
+        "properties": {
+          "xdr_type": {
+            "const": "TransactionEnvelope"
+          },
+          "xdr_path": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._-]+$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "derived_from": {
+            "const": "focus_envelope"
+          }
+        }
+      }
+    },
+    "alternate_artifacts": {
+      "description": "The same ledger obtained from other sources. Each must have the same header hash as the primary artifact and the declared relation to it.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "xdr_path",
+          "sha256",
+          "source_kind",
+          "source_url",
+          "relation"
+        ],
+        "properties": {
+          "xdr_path": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._-]+$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "source_kind": {
+            "enum": [
+              "rpc_get_ledgers",
+              "galexie_datalake",
+              "local_core"
+            ]
+          },
+          "source_url": {
+            "type": "string"
+          },
+          "relation": {
+            "enum": [
+              "byte_identical",
+              "equal_under_core_normalization",
+              "equal_under_core_normalization_ignoring_ext"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "description": "Valid fixtures must decode and round-trip; rejection expectations belong only to SDK-negative fixtures.",
+      "if": {
+        "properties": {
+          "fixture_class": {
+            "enum": ["core_emitted_valid", "synthetic_validated"]
+          }
+        },
+        "required": ["fixture_class"]
+      },
+      "then": {
+        "properties": {
+          "expected_outcome": { "const": "decode_roundtrip_exact" }
+        }
+      }
+    },
+    {
+      "description": "A core-emitted entry must name the ledger it came from and its hash, and cannot be hand-crafted.",
+      "if": {
+        "properties": {
+          "fixture_class": {
+            "const": "core_emitted_valid"
+          }
+        },
+        "required": [
+          "fixture_class"
+        ]
+      },
+      "then": {
+        "properties": {
+          "source_kind": {
+            "not": {
+              "const": "hand_crafted"
+            }
+          },
+          "source_url_or_ledger": {
+            "required": [
+              "url",
+              "ledger",
+              "ledger_hash"
+            ]
+          },
+          "network_passphrase": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "description": "A synthetic entry is admitted only with at least one verified piece of evidence that core can emit it.",
+      "if": {
+        "properties": {
+          "fixture_class": {
+            "const": "synthetic_validated"
+          }
+        },
+        "required": [
+          "fixture_class"
+        ]
+      },
+      "then": {
+        "properties": {
+          "validation_evidence": {
+            "contains": {
+              "properties": {
+                "status": {
+                  "const": "verified"
+                }
+              },
+              "required": [
+                "status"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}

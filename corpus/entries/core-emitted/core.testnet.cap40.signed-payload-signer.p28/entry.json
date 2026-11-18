@@ -1,0 +1,147 @@
+{
+  "schema_version": "0.1.0",
+  "id": "core.testnet.cap40.signed-payload-signer.p28",
+  "description": "SetOptions adding a CAP-0040 ed25519 signed-payload signer (P... strkey, 3-byte payload 0xdeadbe plus 1 byte of XDR padding). This is the testnet ledger cited in wallet-backend#729 as the one that halted ingestion.",
+  "cap_ids": [
+    "CAP-0040"
+  ],
+  "protocol_versions": [
+    28
+  ],
+  "shape_tags": [
+    "op:set_options",
+    "signer:ed25519_signed_payload",
+    "strkey:p",
+    "meta:account_signers",
+    "xdr:opaque_padding"
+  ],
+  "fixture_class": "core_emitted_valid",
+  "network_passphrase": "Test SDF Network ; September 2015",
+  "source_kind": "galexie_datalake",
+  "source_url_or_ledger": {
+    "url": "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/testnet/2025-12-18/FFBC9DFF--4416000-4479999/FFBC4A92--4437357.xdr.zst",
+    "ledger": 4437357,
+    "ledger_hash": "0984e28878f8b074c3710f52630f5b6bc5a369bf61a15e7364b6123edf1881b6",
+    "object_sha256": "24fc6077579e6058512e35401c728288898e6c4fd550b8f26e0a5079aae4001b"
+  },
+  "core_version_and_commit": {
+    "value": null,
+    "basis": "UNVERIFIED: ledger closed at protocol 28 before this capture; the core build of the emitter is not recorded in the data lake"
+  },
+  "generator_version": "none (historical capture from the public Galexie data lake)",
+  "deterministic_seed": null,
+  "xdr_type": "LedgerCloseMeta",
+  "xdr_path": "ledger.xdr",
+  "sha256": "582e694b96bf69f894763909a1b058c1a2523d5634f2e0947393cee9765f4e0e",
+  "focus": {
+    "tx_hash": "d9f78749cd01297cd5f22c7f2c798c9eec93d56f399e1c4cc2f8977ca52b9fed"
+  },
+  "expected_decoded_values": {
+    "xdr_json": [
+      {
+        "pointer": "/v2/ledger_header/header/ledger_seq",
+        "value": 4437357
+      },
+      {
+        "pointer": "/v2/ledger_header/header/ledger_version",
+        "value": 28
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/0/v0/0/txset_comp_txs_maybe_discounted_fee/txs/0/tx/tx/operations/0/body/set_options/signer/key",
+        "value": "PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS",
+        "why": "signer key as listed by Horizon for this operation"
+      },
+      {
+        "pointer": "/v2/tx_processing/0/tx_apply_processing/v4/operations/0/changes/1/updated/data/account/signers/0/key",
+        "value": "PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS",
+        "why": "the signer core actually stored, read from meta"
+      }
+    ],
+    "probes": {
+      "ledger_sequence": 4437357,
+      "protocol_version": 28,
+      "tx_count": 12,
+      "focus": {
+        "tx_hash": "d9f78749cd01297cd5f22c7f2c798c9eec93d56f399e1c4cc2f8977ca52b9fed",
+        "successful": true,
+        "tx_source": "GBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSBB7B",
+        "tx_source_muxed_id": null,
+        "op_types": [
+          "SET_OPTIONS"
+        ],
+        "op_sources": [
+          null
+        ],
+        "muxed_ids": [],
+        "meta_signer_keys": [
+          "PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS"
+        ],
+        "meta_created_trustlines": [],
+        "envelope_pool_ids": [],
+        "op_contract_event_counts": [
+          0
+        ]
+      }
+    }
+  },
+  "expected_state_changes_or_participants": {
+    "participants_from_meta": [
+      "GBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSBB7B"
+    ],
+    "signer_changes": [
+      {
+        "account": "GBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSBB7B",
+        "signer": "PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS",
+        "weight": 1,
+        "change": "added"
+      }
+    ],
+    "indexer_must": "persist the full P... signer key (version byte plus 32-byte key, 4-byte length and padded payload) without truncation and without halting ingestion"
+  },
+  "validation_evidence": [
+    {
+      "check": "rs-stellar-xdr strict decode and byte-exact re-encode",
+      "method": "ledgerwitness verify (stellar-xdr 30.0.0)",
+      "status": "verified"
+    },
+    {
+      "check": "ledger header hash recomputed from header bytes and matched to the recorded ledger hash",
+      "method": "ledgerwitness verify; ledger hash independently read from Horizon testnet /ledgers/{seq}",
+      "status": "verified"
+    },
+    {
+      "check": "scp_value.tx_set_hash and tx_set_result_hash recomputed from the artifact",
+      "method": "ledgerwitness verify",
+      "status": "verified"
+    },
+    {
+      "check": "every envelope hashes under the declared passphrase to a processed result",
+      "method": "ledgerwitness verify",
+      "status": "verified"
+    },
+    {
+      "check": "agreement with stellar-core --check-lcm goldens",
+      "method": "not applicable to network captures: core goldens are produced by core's own test suite under its test passphrase; see docs/spec/normalization.md",
+      "status": "not_applicable"
+    },
+    {
+      "check": "signer key matches the operation listed by Horizon testnet",
+      "method": "GET horizon-testnet /ledgers/4437357/operations",
+      "status": "verified"
+    }
+  ],
+  "known_regression_ids": [
+    "stellar/wallet-backend#729",
+    "stellar/wallet-backend#716"
+  ],
+  "expected_outcome": "decode_roundtrip_exact",
+  "license_or_provenance_notes": "Public testnet ledger data from the public Galexie data lake (AWS Open Data, aws-public-blockchain). The focus transaction was submitted by a third party.",
+  "derived_artifacts": [
+    {
+      "xdr_type": "TransactionEnvelope",
+      "xdr_path": "focus-envelope.xdr",
+      "sha256": "7bbbcb0681f9b7b8310547745fdfd59203f0c39f0684360aafa46de8ccdf90b7",
+      "derived_from": "focus_envelope"
+    }
+  ]
+}

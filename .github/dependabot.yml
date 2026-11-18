@@ -1,0 +1,18 @@
+version: 2
+# runners/javascript and reproductions/js-sdk are deliberately excluded: they
+# pin historical @stellar/stellar-sdk releases (pre-fix and post-fix) that the
+# reproductions and the divergence matrix depend on. Bump those by hand,
+# together with the matrix columns and expected outcomes.
+updates:
+  - package-ecosystem: cargo
+    directory: /
+    schedule: { interval: weekly }
+  - package-ecosystem: gomod
+    directory: /runners/go
+    schedule: { interval: weekly }
+  - package-ecosystem: npm
+    directory: /generators/testnet-capture
+    schedule: { interval: weekly }
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly }

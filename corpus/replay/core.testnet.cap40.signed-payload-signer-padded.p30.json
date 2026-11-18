@@ -1,0 +1,38 @@
+{
+  "schema_version": "0.1.0",
+  "binding": {
+    "entry_id": "core.testnet.cap40.signed-payload-signer-padded.p30",
+    "manifest_sha256": "da64b2c66dfde15ea3f8e5b1febfd9b5a03e7a5dfe8cac30222c676bf7337936",
+    "artifact_sha256": "377a74f432e80f5a434b96aec491dbc2e8276a48bf1e20ac9fe6ba2c599d87f2",
+    "ledger_sequence": 5727135,
+    "focus_tx_hash": "f3b8440c7d4b14e4bd342cd78264172f2a0bc2102bf32b1eb7ba917edc68f233"
+  },
+  "assertions": [
+    {
+      "kind": "set",
+      "path": "/participants",
+      "values": [
+        "GDORVX3RNFPHPPJ5VCBIQVQ76ZB7OWXWYFWTAZCJS4KMSLO4PQZHLAXF"
+      ],
+      "mode": "subset"
+    },
+    {
+      "kind": "rows",
+      "path": "/signer_changes",
+      "identity": [
+        "/account",
+        "/signer",
+        "/change"
+      ],
+      "values": [
+        {
+          "account": "GDORVX3RNFPHPPJ5VCBIQVQ76ZB7OWXWYFWTAZCJS4KMSLO4PQZHLAXF",
+          "signer": "PDORVX3RNFPHPPJ5VCBIQVQ76ZB7OWXWYFWTAZCJS4KMSLO4PQZHKAAAAAOWYY3LEBZWSZ3OMVSCA4DBPFWG6YLEFQQDEOJAMJ4XIZLTEEAAAABA5Q",
+          "weight": 1,
+          "change": "added"
+        }
+      ],
+      "mode": "exact"
+    }
+  ]
+}

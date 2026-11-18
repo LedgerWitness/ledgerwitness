@@ -1,0 +1,21 @@
+[workspace]
+resolver = "2"
+members = ["crates/ledgerwitness", "crates/replay", "runners/rust"]
+
+[workspace.package]
+edition = "2021"
+license = "Apache-2.0"
+rust-version = "1.87"
+
+[workspace.dependencies]
+stellar-xdr = { version = "=30.0.0", default-features = false, features = ["std", "serde", "serde_json", "base64", "hex", "type_enum"] }
+stellar-strkey = "=1.0.0"
+ed25519-dalek = { version = "2", default-features = false, features = ["std"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+sha2 = "0.10"
+hex = "0.4"
+zstd = "0.13"
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+jsonschema = { version = "0.61", default-features = false }

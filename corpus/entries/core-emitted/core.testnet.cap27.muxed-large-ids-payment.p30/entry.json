@@ -1,0 +1,198 @@
+{
+  "schema_version": "0.1.0",
+  "id": "core.testnet.cap27.muxed-large-ids-payment.p30",
+  "description": "Payment with a muxed transaction source (ID 2^53+1), a muxed operation source (ID 2^64-1) and a muxed destination (ID 2^64-1). None of these IDs is exactly representable as an IEEE-754 double. Since protocol 23 the payment also emits a CAP-0067 transfer event whose data map carries to_muxed_id as a u64. The transfer event exists only because the emitting node enables classic events (EMIT_CLASSIC_EVENTS); both captured copies of this ledger include it.",
+  "cap_ids": [
+    "CAP-0027",
+    "CAP-0067",
+    "CAP-0088"
+  ],
+  "protocol_versions": [
+    30
+  ],
+  "shape_tags": [
+    "op:payment",
+    "account:muxed_tx_source",
+    "account:muxed_op_source",
+    "account:muxed_destination",
+    "int:u64_above_2_53",
+    "int:u64_max",
+    "strkey:m",
+    "event:cap67_transfer_to_muxed_id",
+    "header:stellar_value_signed_ms",
+    "emitter:classic_events"
+  ],
+  "fixture_class": "core_emitted_valid",
+  "network_passphrase": "Test SDF Network ; September 2015",
+  "source_kind": "galexie_datalake",
+  "source_url_or_ledger": {
+    "url": "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/testnet/2025-12-18/FFA915FF--5696000-5759999/FFA89C5F--5727136.xdr.zst",
+    "ledger": 5727136,
+    "ledger_hash": "ba6eae28a9c38ac217da03f3b6f5ec7c9ac7a5a7b62c7b130a433d52cff476d4",
+    "object_sha256": "66f5ad7fd47a3166aeac83f4352f6b6ed16835f982a5a95fbc03cc7f490c141b"
+  },
+  "core_version_and_commit": {
+    "value": "stellar-core 30.0.0 (0e49751aa9ddf892302cca02cea7f3f5d97df9f1)",
+    "basis": "captiveCoreVersion reported by the testnet RPC (getVersionInfo) at capture time; the data-lake emitter does not publish its core build, so this identifies the network's core release rather than the exact process that wrote the primary artifact"
+  },
+  "generator_version": "generators/testnet-capture/capture-testnet.mjs (@stellar/stellar-sdk 17.4.0)",
+  "deterministic_seed": null,
+  "xdr_type": "LedgerCloseMeta",
+  "xdr_path": "ledger.xdr",
+  "sha256": "d07f5ae6d17933037f1a59a239da70db8c96081fe2f006c581ae084a831a7b1c",
+  "focus": {
+    "tx_hash": "3fae2260de670458306708eed43a67baf80b51f2ba69ab4fde9374938b3c3b1d"
+  },
+  "expected_decoded_values": {
+    "xdr_json": [
+      {
+        "pointer": "/v2/ledger_header/header/ledger_seq",
+        "value": 5727136
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/0/v0/0/txset_comp_txs_maybe_discounted_fee/txs/1/tx/tx/source_account",
+        "value": "MDORVX3RNFPHPPJ5VCBIQVQ76ZB7OWXWYFWTAZCJS4KMSLO4PQZHKABAAAAAAAAAAGGU6"
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/0/v0/0/txset_comp_txs_maybe_discounted_fee/txs/1/tx/tx/operations/0/source_account",
+        "value": "MDORVX3RNFPHPPJ5VCBIQVQ76ZB7OWXWYFWTAZCJS4KMSLO4PQZHL77777777777765ZO"
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/0/v0/0/txset_comp_txs_maybe_discounted_fee/txs/1/tx/tx/operations/0/body/payment/destination",
+        "value": "MCAK23MGEQQF3UFCNGIWPTJR3APJP2ELHD2DTOPDDLWWLGRQJMNXX7777777777775IQO"
+      },
+      {
+        "pointer": "/v2/tx_processing/2/tx_apply_processing/v4/operations/0/changes/3/updated/data/account/account_id",
+        "value": "GCAK23MGEQQF3UFCNGIWPTJR3APJP2ELHD2DTOPDDLWWLGRQJMNXXZEB",
+        "why": "meta records the base account; the muxed ID never reaches ledger state"
+      },
+      {
+        "pointer": "/v2/tx_processing/2/tx_apply_processing/v4/operations/0/events/0/body/v0/topics/0/symbol",
+        "value": "transfer",
+        "why": "CAP-0067 unified transfer event for a classic payment"
+      },
+      {
+        "pointer": "/v2/tx_processing/2/tx_apply_processing/v4/operations/0/events/0/body/v0/topics/2/address",
+        "value": "GCAK23MGEQQF3UFCNGIWPTJR3APJP2ELHD2DTOPDDLWWLGRQJMNXXZEB",
+        "why": "event topics carry the base account, not the M... address"
+      },
+      {
+        "pointer": "/v2/tx_processing/2/tx_apply_processing/v4/operations/0/events/0/body/v0/data/map/1/key/symbol",
+        "value": "to_muxed_id"
+      },
+      {
+        "pointer": "/v2/tx_processing/2/tx_apply_processing/v4/operations/0/events/0/body/v0/data/map/1/val/u64",
+        "value": "18446744073709551615",
+        "why": "muxed ID survives only in the event data"
+      }
+    ],
+    "probes": {
+      "ledger_sequence": 5727136,
+      "protocol_version": 30,
+      "tx_count": 19,
+      "focus": {
+        "tx_hash": "3fae2260de670458306708eed43a67baf80b51f2ba69ab4fde9374938b3c3b1d",
+        "successful": true,
+        "tx_source": "MDORVX3RNFPHPPJ5VCBIQVQ76ZB7OWXWYFWTAZCJS4KMSLO4PQZHKABAAAAAAAAAAGGU6",
+        "tx_source_muxed_id": "9007199254740993",
+        "op_types": [
+          "PAYMENT"
+        ],
+        "op_sources": [
+          "MDORVX3RNFPHPPJ5VCBIQVQ76ZB7OWXWYFWTAZCJS4KMSLO4PQZHL77777777777765ZO"
+        ],
+        "muxed_ids": [
+          "9007199254740993",
+          "18446744073709551615",
+          "18446744073709551615"
+        ],
+        "meta_signer_keys": [
+          "PDORVX3RNFPHPPJ5VCBIQVQ76ZB7OWXWYFWTAZCJS4KMSLO4PQZHKAAAAAOWYY3LEBZWSZ3OMVSCA4DBPFWG6YLEFQQDEOJAMJ4XIZLTEEAAAABA5Q"
+        ],
+        "meta_created_trustlines": [],
+        "envelope_pool_ids": [],
+        "op_contract_event_counts": [
+          1
+        ]
+      }
+    }
+  },
+  "expected_state_changes_or_participants": {
+    "participants_from_meta": [
+      "GCAK23MGEQQF3UFCNGIWPTJR3APJP2ELHD2DTOPDDLWWLGRQJMNXXZEB",
+      "GDORVX3RNFPHPPJ5VCBIQVQ76ZB7OWXWYFWTAZCJS4KMSLO4PQZHLAXF"
+    ],
+    "indexer_must": "keep each muxed ID as an unsigned 64-bit value; if muxed identities are stored, store the full M... form or the (G..., id) pair rather than truncating to 32 bytes; derive participants as base G... accounts so one account never becomes two database keys",
+    "events": [
+      {
+        "type": "transfer",
+        "from": "GDORVX3RNFPHPPJ5VCBIQVQ76ZB7OWXWYFWTAZCJS4KMSLO4PQZHLAXF",
+        "to": "GCAK23MGEQQF3UFCNGIWPTJR3APJP2ELHD2DTOPDDLWWLGRQJMNXXZEB",
+        "asset": "native",
+        "amount": "10000000",
+        "to_muxed_id": "18446744073709551615"
+      }
+    ],
+    "payment_balance_changes_stroops": {
+      "GDORVX3RNFPHPPJ5VCBIQVQ76ZB7OWXWYFWTAZCJS4KMSLO4PQZHLAXF": "-10000000",
+      "GCAK23MGEQQF3UFCNGIWPTJR3APJP2ELHD2DTOPDDLWWLGRQJMNXXZEB": "10000000"
+    },
+    "fee_charged_stroops": "100",
+    "note": "payment_balance_changes_stroops excludes the 100-stroop fee, which is recorded separately in fee_processing"
+  },
+  "validation_evidence": [
+    {
+      "check": "rs-stellar-xdr strict decode and byte-exact re-encode",
+      "method": "ledgerwitness verify (stellar-xdr 30.0.0)",
+      "status": "verified"
+    },
+    {
+      "check": "ledger header hash recomputed from header bytes and matched to the recorded ledger hash",
+      "method": "ledgerwitness verify; ledger hash independently read from Horizon testnet /ledgers/{seq}",
+      "status": "verified"
+    },
+    {
+      "check": "scp_value.tx_set_hash and tx_set_result_hash recomputed from the artifact",
+      "method": "ledgerwitness verify",
+      "status": "verified"
+    },
+    {
+      "check": "every envelope hashes under the declared passphrase to a processed result",
+      "method": "ledgerwitness verify",
+      "status": "verified"
+    },
+    {
+      "check": "agreement with stellar-core --check-lcm goldens",
+      "method": "not applicable to network captures: core goldens are produced by core's own test suite under its test passphrase; see docs/spec/normalization.md",
+      "status": "not_applicable"
+    },
+    {
+      "check": "same ledger fetched from RPC getLedgers is equal under stellar-core's --check-lcm normalization once the LCM extension is ignored",
+      "method": "ledgerwitness verify (alternate_equivalence)",
+      "status": "verified",
+      "detail": "RPC bytes carry LedgerCloseMeta ext v0; the data-lake bytes carry ext v1 (soroban_fee_write1_kb). Per-operation change order and core_metrics/invoke_time_nsecs diagnostic values also differ between the two emitters."
+    }
+  ],
+  "known_regression_ids": [
+    "stellar/js-stellar-sdk#1785"
+  ],
+  "expected_outcome": "decode_roundtrip_exact",
+  "license_or_provenance_notes": "Public testnet ledger data. Keys used to submit the focus transaction were generated per run, funded by friendbot and discarded; no secret material is stored.",
+  "derived_artifacts": [
+    {
+      "xdr_type": "TransactionEnvelope",
+      "xdr_path": "focus-envelope.xdr",
+      "sha256": "82b861351ea9a0a8d278a70a1ab6e5b9b3b5a19b2d4c43e1189a50883c5e9950",
+      "derived_from": "focus_envelope"
+    }
+  ],
+  "alternate_artifacts": [
+    {
+      "xdr_path": "ledger.rpc.xdr",
+      "sha256": "efe297cd2ebea9b6cac75431a5cd896d3c9a00a2c6471ae46d4052d82d43f44c",
+      "source_kind": "rpc_get_ledgers",
+      "source_url": "https://soroban-testnet.stellar.org getLedgers startLedger=5727136",
+      "relation": "equal_under_core_normalization_ignoring_ext"
+    }
+  ]
+}

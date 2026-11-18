@@ -1,0 +1,13 @@
+{
+  "name": "ledgerwitness-repro-js-sdk",
+  "private": true,
+  "type": "module",
+  "description": "Pre-fix / post-fix reproductions of js-stellar-sdk#1766, #1785 and #1789",
+  "scripts": { "repro": "node run.mjs" },
+  "dependencies": {
+    "sdk-17.2.0": "npm:@stellar/stellar-sdk@17.2.0",
+    "sdk-17.2.1": "npm:@stellar/stellar-sdk@17.2.1",
+    "sdk-17.3.0": "npm:@stellar/stellar-sdk@17.3.0",
+    "sdk-17.4.0": "npm:@stellar/stellar-sdk@17.4.0"
+  }
+}

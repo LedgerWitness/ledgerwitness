@@ -1,0 +1,11 @@
+{
+  "name": "ledgerwitness-runner-javascript",
+  "private": true,
+  "type": "module",
+  "description": "JavaScript conformance runner (probes from docs/spec/probes.md) for @stellar/stellar-sdk",
+  "scripts": { "run": "node runner.mjs ../../corpus/entries" },
+  "dependencies": {
+    "sdk-17.4.0": "npm:@stellar/stellar-sdk@17.4.0",
+    "sdk-17.2.0": "npm:@stellar/stellar-sdk@17.2.0"
+  }
+}

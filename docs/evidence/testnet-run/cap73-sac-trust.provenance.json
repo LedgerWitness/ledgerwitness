@@ -1,0 +1,14 @@
+{
+  "shape": "cap73-sac-trust",
+  "network_passphrase": "Test SDF Network ; September 2015",
+  "rpc_url": "https://soroban-testnet.stellar.org",
+  "rpc_method": "getLedgers",
+  "ledger": 5802899,
+  "ledger_hash": "01d3f4e689773edc61a08916841bb67b116e2d765af5e3f08ac3c13e426fd3e9",
+  "ledger_close_time": "1795038135",
+  "tx_hash": "de6a647586b6014c057a2c44b643783ac337db73f60afb274fcac1c15f9a60a6",
+  "sdk": "@stellar/stellar-sdk@17.4.0",
+  "asset": "LCKC:GC66SWVISWSVJYYBH3OBZK2X4UOSIUBK2UZIPWVIVYO6LFCEZTODJQV3",
+  "sac_contract_id": "CB3FVKQADIDURXL2K3N6WTZUR55C6BMRCTU6SGNBJGPNPBRXKFCRQA3E",
+  "trustor": "GCAIUYFRFJPPKW4YSI7MEZMX2ZURFWP5KCSKO75VDIMFGFEVUZTICUZT"
+}

@@ -1,0 +1,26 @@
+name: Propose a corpus shape
+description: A rare but valid ledger shape that readers mishandle
+labels: [corpus]
+body:
+  - type: textarea
+    id: shape
+    attributes:
+      label: Shape
+      description: Transaction, operation, ledger-entry or meta structure, and why it is rare or awkward.
+    validations: { required: true }
+  - type: input
+    id: cap
+    attributes:
+      label: CAP and protocol version
+      placeholder: CAP-0073, protocol 26
+    validations: { required: true }
+  - type: textarea
+    id: source
+    attributes:
+      label: Known occurrence
+      description: Network, ledger sequence and transaction hash if it already exists on testnet or pubnet; otherwise how it can be produced.
+  - type: textarea
+    id: impact
+    attributes:
+      label: Known failures
+      description: Upstream issues or pipelines that mishandled this shape. Do not describe undisclosed vulnerabilities here.
