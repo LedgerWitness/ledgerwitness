@@ -13,7 +13,7 @@ stellar-strkey = "=1.0.0"
 ed25519-dalek = { version = "2", default-features = false, features = ["std"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }
-sha2 = "0.10"
+sha2 = "0.11"
 hex = "0.4"
 zstd = "0.13"
 anyhow = "1"
