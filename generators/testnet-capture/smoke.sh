@@ -6,7 +6,14 @@
 #   2. for each capture, the ledger hash is fetched independently from Horizon;
 #   3. `ledgerwitness check-ledger` checks the capture against it: header hash,
 #      tx-set and result-set commitments, network binding, the validator
-#      signature on the header and presence of the submitted transaction.
+#      signature on the header and presence of the submitted transaction;
+#   4. sdk-check.mjs runs @stellar/stellar-sdk 17.4.0 and 17.2.0 over each
+#      capture and compares what they read with what core recorded in the
+#      ledger and with the submitted values. 17.2.0 must still reject the
+#      liquidity-pool transaction (js-stellar-sdk#1766).
+#
+# Needs: npm ci --prefix generators/testnet-capture
+#        npm ci --prefix runners/javascript
 #
 # This writes to testnet. It never touches mainnet.
 # Usage: generators/testnet-capture/smoke.sh [out-dir]
@@ -55,4 +62,8 @@ done
 count="$(ls "$out"/*.provenance.json | wc -l)"
 echo
 echo "$((count - failed))/$count fresh testnet captures passed check-ledger"
-[[ "$count" -eq 4 && "$failed" -eq 0 ]]
+
+sdk_ok=0
+node "$here/sdk-check.mjs" "$out" "$ledgerwitness" --json "$out/sdk-check.json" || sdk_ok=1
+
+[[ "$count" -eq 4 && "$failed" -eq 0 && "$sdk_ok" -eq 0 ]]
