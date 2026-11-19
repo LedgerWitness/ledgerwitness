@@ -26,7 +26,7 @@ Contents:
 10. Divergence matrix
 11. Historical reproductions
 12. Replay harness and adapters (partial implementation)
-13. Indexer linter (design)
+13. Indexer linter (STLR003 prototype; other rules design)
 14. Indexer-hardening guide (design)
 15. Security, resource bounds and threat model
 16. Testing and CI
@@ -91,7 +91,7 @@ flowchart LR
     CONF[ledgerwitness conform]
     REPRO[reproductions]
     REPLAY[replay harness<br/>design]
-    LINT[Go linter<br/>design]
+    LINT[Go linter<br/>STLR003 prototype]
   end
 
   TN --> RPC
@@ -143,8 +143,10 @@ crates/ledgerwitness/                     Rust: verifier, normalization, conform
 crates/replay/                  typed oracles, fixture binding and comparison; no process launcher
 runners/                        one conformance runner per SDK
   rust/  go/  javascript/
+linter/go/                      Go module: indexer linter (STLR003 prototype, seeded cases)
 generators/
-  testnet-capture/              submits rare shapes to testnet, captures their LCM
+  testnet-capture/              submits rare shapes to testnet, captures their LCM,
+                                checks two JS SDK releases on the captures
 reproductions/
   js-sdk/                       pre-fix / post-fix js-stellar-sdk reproductions
   wallet-backend/               replay of a corpus ledger through historical commits
@@ -171,13 +173,15 @@ network.
 
 The runners do not invoke verification. `ledgerwitness conform` verifies each entry
 before comparison and requires the complete current ledger/focus probe profile.
-CI also runs verification in its prerequisite corpus job. Runner reports do not
-contain artifact digests, so comparison still cannot detect a report copied
-from a different valid corpus revision. Keep the corpus unchanged while
-generating and comparing reports; verification is not an atomic snapshot.
+CI also runs verification in its prerequisite corpus job. Runner reports carry
+the SHA-256 of the manifest, ledger and focus envelope they read, and
+`ledgerwitness conform` refuses a report produced from other inputs (§10).
+Keep the corpus unchanged while generating and comparing reports;
+verification is not an atomic snapshot.
 
 Replay comparison now lives in `crates/replay/`; orchestration and `adapters/`
-remain planned (section 12), as do `linter/go/` and `docs/guide/`.
+remain planned (section 12), as does `docs/guide/`. `linter/go/` holds the
+STLR003 prototype (section 13.1).
 
 ## 4. The corpus: data model
 
@@ -911,7 +915,7 @@ range is normal when committed state can still be observed.
 - Output is a JSON report per entry plus a Markdown summary, with the exact
   command that reproduces each failing entry.
 
-## 13. Indexer linter (design)
+## 13. Indexer linter (STLR003 prototype; other rules design)
 
 A proposed Go analyzer suite on `golang.org/x/tools/go/analysis`, using type
 information, not text matching:
@@ -938,6 +942,60 @@ seeded examples and on an explicitly recorded wallet-backend commit, including
 the reason for each suppression and dependency/helper behavior. A clean run
 applies only to that revision and configured rule scope. The rule
 IDs are project IDs, not official Stellar rules.
+
+### 13.1 STLR003 prototype (implemented)
+
+`linter/go/` is a Go module with one analyzer, `stlr003`, and a
+`ledgerwitness-lint` command built on `multichecker`. `make linter` runs it
+against its seeded cases; CI runs it in its own job, because
+`golang.org/x/tools` needs Go 1.26.
+
+The analysis scope is explicit:
+
+- **Candidates:** functions and methods whose name contains "participant".
+- **Envelope input:** a field or method selected on an envelope-side XDR type
+  (`TransactionEnvelope`, `Operation`, `OperationBody`,
+  `InvokeHostFunctionOp`, the Soroban authorization types and their
+  transaction wrappers), or the `Envelope` field of `ingest.LedgerTransaction`.
+- **Meta input:** any value of a meta-side type (`TransactionMeta` and its
+  versions, `LedgerEntryChanges`, `LedgerEntryChange`, `ContractEvent`,
+  `ingest.Change`), or a meta field or method of `ingest.LedgerTransaction`
+  (`UnsafeMeta`, `FeeChanges`, `GetOperationChanges`, the event getters).
+- **Helper summaries:** both inputs propagate through calls to functions and
+  methods of the same package, to a fixed point. Calls into other packages
+  are not followed.
+- **Finding:** a candidate with envelope input and no meta input.
+- **Suppression:** `//lint:ignore STLR003 <reason>` in the doc comment.
+
+Types are matched by name in any `github.com/stellar/.../xdr` or
+`.../ingest` package, so both go-stellar-sdk and the older `stellar/go`
+import paths are covered.
+
+Known blind spots:
+
+- **False negatives.** A function that reads any meta is not reported, even
+  if one branch still attributes envelope-only participants. For example, a
+  failed transaction that names payment destinations is still attributed to
+  them if the function reads meta elsewhere. The rule cannot see whether the
+  meta it detects is actually used for the participants.
+- **Out of scope.** Participant builders whose names do not contain
+  "participant", and envelope reads behind calls into other packages, are
+  not analysed.
+- **False positives.** A function that legitimately reads only the envelope,
+  such as attributing a fee-bump source that always pays, is reported. Such
+  findings are suppressed with a written reason.
+
+Seeded cases (`linter/go/stlr003/testdata/src/a`) cover:
+
+- reported: an envelope-only payment destination; an authorization-tree walk
+  through a helper; a method;
+- not reported: meta read directly; meta read through two levels of helpers
+  (the shape of wallet-backend's `Participants` → `getSponsor` → `Changes`);
+  a non-candidate envelope reader; a candidate with neither input; a
+  suppressed candidate.
+
+A mutation check (disabling meta propagation through helpers) makes the
+seeded test fail on the helper case, so the test exercises the summaries.
 
 ## 14. Indexer-hardening guide (design)
 

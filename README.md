@@ -247,6 +247,7 @@ corpus/          the corpus: schema, entries, expected replay results
 crates/ledgerwitness/      the ledgerwitness command-line tool and library (Rust)
 crates/replay/   replay comparison library (Rust)
 runners/         SDK runners: rust/, go/, javascript/
+linter/go/       indexer linter prototype (rule STLR003) and its seeded cases
 generators/      testnet capture tool, live smoke test, capture provenance
 reproductions/   known bugs, before and after their fixes
 docs/            architecture, specifications, evidence, research, findings
