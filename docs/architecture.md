@@ -26,7 +26,7 @@ acceptance gates are in section 19; the delivery plan is in section 21.
 | Replay comparator | **Implemented:** typed oracles bound to their fixture | §12 |
 | Replay transports and database adapter | Design | §12.2–12.4 |
 | Go linter | **Prototype** of rule STLR003: flags wallet-backend before #753's fix, clean after it and on current Horizon and stellar-etl; STLR001 and STLR002 are designs | §13 |
-| Indexer-hardening guide | Design | §14 |
+| Indexer-hardening guide | **Draft started:** 8 source-linked field rules, the participants rule and a checklist | §14, `docs/guide/` |
 | Findings | Three observations triaged, none a defect; nothing filed yet | `docs/findings/` |
 | CI | **Implemented:** three offline jobs on every push and pull request | §16 |
 
@@ -76,7 +76,7 @@ Contents:
 11. Historical reproductions
 12. Replay harness and adapters (partial implementation)
 13. Indexer linter (STLR003 prototype; other rules design)
-14. Indexer-hardening guide (design)
+14. Indexer-hardening guide (draft started)
 15. Security, resource bounds and threat model
 16. Testing and CI
 17. Versioning and protocol upgrades
@@ -1126,7 +1126,7 @@ tree", wallet-backend#753); 0 at `9538b3ca`; 0 at `main` (`18db88f4`,
 fix replaced. The same fix's change to failed-transaction attribution is not
 detected, which is the documented false negative above.
 
-## 14. Indexer-hardening guide (design)
+## 14. Indexer-hardening guide (draft started)
 
 `docs/guide/indexer-hardening.md` will follow a fixed outline:
 
@@ -1144,6 +1144,13 @@ detected, which is the documented false negative above.
 Every table row will link to the corpus entries whose `shape_tags` exercise
 it, and a check will confirm the two agree. Publication needs review by a
 stellar-core or platform engineer.
+
+**Draft** (`docs/guide/indexer-hardening.md`): eight field rules, each checked
+against stellar-core's source at a pinned commit and linked to the corpus
+entry that exercises it, plus the participants-from-meta rule, the
+trustline and pool-share rules and the checklist. Rows not yet verified in
+source are listed separately so they are not read as rules. Measured limits,
+the CI cross-check and the review remain to do.
 
 ## 15. Security, resource bounds and threat model
 
