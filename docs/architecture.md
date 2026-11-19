@@ -997,6 +997,14 @@ Seeded cases (`linter/go/stlr003/testdata/src/a`) cover:
 A mutation check (disabling meta propagation through helpers) makes the
 seeded test fail on the helper case, so the test exercises the summaries.
 
+**Acceptance run on wallet-backend** (`make lint-wallet-backend`, recorded in
+`docs/evidence/linter-stlr003/`): 6 findings at `666a64d4`, the parent of
+`9538b3ca` ("derive Soroban participants from executed meta, not the auth
+tree", wallet-backend#753); 0 at `9538b3ca`; 0 at `main` (`18db88f4`,
+2026-11-18). All six are the envelope-only authorization-tree functions the
+fix replaced. The same fix's change to failed-transaction attribution is not
+detected, which is the documented false negative above.
+
 ## 14. Indexer-hardening guide (design)
 
 `docs/guide/indexer-hardening.md` will follow a fixed outline:
@@ -1136,7 +1144,8 @@ When a new protocol ships:
 - **The coverage registry is incomplete**, so no coverage percentage is
   claimed.
 - **Replay comparison is implemented; orchestration, transports, database
-  adapters, linter and guide remain designs.** Three oracle sidecars do not
+  adapters, linter rules STLR001 and STLR002, and the guide remain designs.**
+  STLR003 is a prototype (§13.1). Three oracle sidecars do not
   establish full-corpus replay coverage or persistence evidence.
 - **The transaction-producing generator is online.** Local offline generation
   under both passphrases is still missing (section 5.3).
@@ -1197,7 +1206,7 @@ been secured.
 | Language-neutral corpus, generator and CAP coverage | Five core-emitted testnet entries, JSON schema, recorded provenance, XDR assertions and testnet capture (§4–5) | An audited CAP/shape denominator; independently reviewed expectations; additional required cases; pinned core golden differential tests; reproducible isolated local-core generation under both passphrases |
 | SDK conformance in JS, Go and Rust | Three runners, 14 probes, byte-exact round trips, reports bound to their input digests, current/historical matrix, JS pre/post-fix reproductions (§9–11), and a live two-release JS check on fresh testnet captures (§5.2) | Build-bound runner reports, class-aware coverage for SDK-only inputs, current stable pins checked at release, and matrix-backed regressions for the specified SDK sightings |
 | Replay against an indexer | Typed comparator, fixture-bound sidecars and synthetic-observation tests (§12) | Mock-RPC compatibility profile, isolated unmodified target, durable database observation, adapter contract and end-to-end pre/post-fix #729, #731 and #716 checks |
-| Three ingestion-mistake checks | Rule designs and threat boundaries (§13) | Executable Go analyzers, positive and negative seeded examples, documented blind spots, and a pinned wallet-backend run with findings triaged |
+| Three ingestion-mistake checks | Rule designs (§13); STLR003 prototype with seeded positive and negative cases in CI, documented blind spots, and a pinned wallet-backend run: 6 triaged findings before #753's fix, clean on the fix and on `main` (§13.1) | STLR001 and STLR002 analyzers with seeded cases; STLR003 helper coverage across packages; runs on further indexers |
 | Indexer-hardening guide | Proposed outline and evidence requirements (§14) | Field-by-field source-backed guide, versioned limits, checklist, cross-check with manifest and review by a core or platform engineer |
 | SDF pipeline findings | Historical #729 in-process reproduction and stored reports (§11) | Real ingestion and committed-storage evidence, minimal reproductions, severity and CAP mapping, and a filed issue or appropriate private disclosure reference for each finding |
 | Release, CI and maintenance | Local commands, lockfiles, hosted CI passing on GitHub, an offline re-check of a recorded live run, and upgrade procedure (§16–17) | Tested offline and resource-bounded workflows, tagged release, named maintainers and an agreed post-launch maintenance commitment including the first protocol upgrade |

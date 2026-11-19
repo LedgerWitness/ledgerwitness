@@ -37,7 +37,7 @@ against.
 | **Verifier** | Checks that each entry is intact and came from the network it claims, offline. | **Implemented:** hashes, decode/re-encode, header commitments, network binding, validator signature, alternate-copy equivalence |
 | **SDK conformance runner** | <ul><li>Runs every entry through the JavaScript, Go and Rust SDKs in CI.</li><li>Reports where they disagree with the network or with each other.</li><li>Opens a sibling issue in each SDK that shares a defect another SDK fixed.</li><li>Reproduces js-stellar-sdk #1766, #1785 and #1789 on their pre-fix releases.</li></ul> | **Implemented:**<ul><li>3 runners and 14 probes</li><li>comparison matrix bound to the exact input files</li><li>the three JS SDK issues reproduced before and after their fixes</li><li>two JS SDK releases checked live on fresh testnet transactions</li></ul>**Planned:** more shapes and releases, sibling-issue workflow |
 | **Replay harness** | <ul><li>Feeds the corpus to a real indexer through an input it already reads (mock RPC `getLedgers` first, then the Galexie data-lake layout), using a documented adapter interface.</li><li>Reports each shape the indexer stores wrongly or drops, with bounded memory.</li><li>Its reference adapter for wallet-backend reproduces #729, #731 and #716 before their fixes and passes after.</li></ul> | **Partial:**<ul><li>comparison of stored results against expected changes</li><li>#729 reproduced on wallet-backend's own indexer at the pre-fix and fix commits, in process</li></ul>**Planned:** adapter interface, mock RPC, database-backed replay, #731 and #716 |
-| **Go indexer linter** | Flags three mistakes in indexer source:<ul><li>trusting fields stellar-core does not validate;</li><li>recursing over authorization trees or nested ScVals without depth or size caps;</li><li>taking participants from the envelope instead of the meta.</li></ul>Flags seeded violations and runs clean on current wallet-backend. | **Planned** (design in [architecture §13](docs/architecture.md)) |
+| **Go indexer linter** | Flags three mistakes in indexer source:<ul><li>trusting fields stellar-core does not validate;</li><li>recursing over authorization trees or nested ScVals without depth or size caps;</li><li>taking participants from the envelope instead of the meta.</li></ul>Flags seeded violations and runs clean on current wallet-backend. | **Prototype of the third rule (STLR003):** seeded cases in CI; on wallet-backend it flags the 6 envelope-only functions of the pre-#753 code and runs clean on the fix and on current `main` ([evidence](docs/evidence/linter-stlr003/README.md)). **Planned:** the other two rules |
 | **Indexer-hardening guide** | <ul><li>Which transaction fields core validates, field by field.</li><li>Recommended caps, participants from meta, muxed and signed-payload handling (SEP-0023).</li><li>A checklist matching the linter rules.</li></ul>Its tables are checked against the corpus manifests and reviewed by a core or platform engineer before publication. | **Planned** (design in [architecture §14](docs/architecture.md)) |
 | **Findings** | The corpus run against at least one SDF pipeline (wallet-backend or stellar-etl), each failure triaged (severity, CAP, minimal entry) and reported to its maintainers. | Two observations triaged, neither a defect; nothing filed yet |
 | **Release and maintenance** | Tests and CI for every tool, a tagged release, and maintenance through the first protocol upgrade after delivery. | **Implemented:** CI runs every offline check on each push and pull request. **Planned:** tagged release, upgrade procedure in practice |
@@ -53,9 +53,12 @@ than finishing any one deliverable:
 3. **Known bugs reproduced.** Upstream bugs reproduced before and after
    their fixes.
 4. **Live check.** One command that repeats all of it on testnet.
+5. **Linter rule.** One of the three linter rules, checked on wallet-backend
+   before and after the fix for that mistake.
 
-The linter, the guide, database-backed replay and offline generation are
-designed in [docs/architecture.md](docs/architecture.md) but not built.
+The other two linter rules, the guide, database-backed replay and offline
+generation are designed in [docs/architecture.md](docs/architecture.md) but
+not built.
 
 ## See it work on testnet
 
@@ -260,6 +263,7 @@ docs/            architecture, specifications, evidence, research, findings
 | [docs/architecture.md](docs/architecture.md) | Full technical design: trust model, implemented and planned components, requirements traceability |
 | [docs/evidence/liquidity-pool-issuer-order.md](docs/evidence/liquidity-pool-issuer-order.md) | One case from raw ledger to SDK results, with a live testnet reproduction |
 | [docs/evidence/testnet-run/](docs/evidence/testnet-run/README.md) | The recorded live testnet run: raw ledgers, provenance, logs and SDK results |
+| [docs/evidence/linter-stlr003/](docs/evidence/linter-stlr003/README.md) | Linter rule STLR003 on wallet-backend before and after its participants fix |
 | [corpus/README.md](corpus/README.md) | Corpus format for consumers |
 | [docs/spec/probes.md](docs/spec/probes.md) | The 14 values every SDK runner computes, and the report format |
 | [docs/spec/normalization.md](docs/spec/normalization.md) | When two copies of a ledger count as the same |

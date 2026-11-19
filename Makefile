@@ -10,7 +10,7 @@ REQUIRE_PASS := --require-pass stellar-xdr \
                 --require-pass github.com/stellar/go-stellar-sdk \
                 --require-pass "@stellar/stellar-sdk 17.4.0"
 
-.PHONY: all verify test runners conform repro-js linter repro-wallet-backend capture testnet-smoke testnet-evidence clean
+.PHONY: all verify test runners conform repro-js linter lint-wallet-backend repro-wallet-backend capture testnet-smoke testnet-evidence clean
 
 all: verify test conform repro-js
 
@@ -40,6 +40,11 @@ repro-js:
 # Indexer linter prototype (rule STLR003) against its seeded cases.
 linter:
 	cd linter/go && $(GO) vet ./... && test -z "$$(gofmt -l .)" && $(GO) test ./...
+
+# STLR003 on wallet-backend before and after its Soroban-participants fix and
+# at the clone's HEAD: make lint-wallet-backend WALLET_BACKEND=../wallet-backend
+lint-wallet-backend:
+	linter/go/run-wallet-backend.sh $(WALLET_BACKEND)
 
 # Needs a clone of stellar/wallet-backend: make repro-wallet-backend WALLET_BACKEND=../wallet-backend
 repro-wallet-backend:

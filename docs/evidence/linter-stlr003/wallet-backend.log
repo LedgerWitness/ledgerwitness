@@ -1,0 +1,10 @@
+== 666a64d4 (2026-09-25)
+internal/indexer/processors/contract_operations.go:53:6: STLR003: participantsFromInvocationAndSubInvocations derives participants from the transaction envelope with no ledger-meta input; take them from the changes core applied
+internal/indexer/processors/contract_operations.go:109:6: STLR003: participantsForAuthEntries derives participants from the transaction envelope with no ledger-meta input; take them from the changes core applied
+internal/indexer/processors/contract_operations.go:151:6: STLR003: participantsForSorobanOp derives participants from the transaction envelope with no ledger-meta input; take them from the changes core applied
+internal/indexer/processors/contract_operations.go:252:39: STLR003: Participants derives participants from the transaction envelope with no ledger-meta input; take them from the changes core applied
+internal/indexer/processors/contract_operations.go:296:39: STLR003: Participants derives participants from the transaction envelope with no ledger-meta input; take them from the changes core applied
+internal/indexer/processors/contract_operations.go:340:37: STLR003: Participants derives participants from the transaction envelope with no ledger-meta input; take them from the changes core applied
+== 9538b3ca (2026-09-28)
+== 18db88f4 (2026-11-18)
+STLR003 findings: 6 before the fix, 0 at the fix, 0 at 18db88f4

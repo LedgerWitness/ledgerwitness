@@ -45,6 +45,10 @@ spec are versioned separately (`schema_version`, `probe_spec`).
 - `generators/testnet-capture/sdk-check.mjs`: runs JS SDK 17.4.0 and
   17.2.0 over fresh testnet captures and compares what they read with what
   core recorded and with the submitted values; `make testnet-smoke` runs it.
+- `linter/go/`: prototype of linter rule STLR003 (participants from the
+  envelope with no meta input) on go/analysis, with seeded cases run in CI.
+  `make lint-wallet-backend` runs it on wallet-backend: 6 findings before the
+  #753 Soroban-participants fix, none at the fix or on `main`.
 - `make testnet-evidence`: offline re-check of the recorded live run, also
   run in CI. The recorded run now keeps the raw ledgers (testnet ledgers
   5804257–5804261).
