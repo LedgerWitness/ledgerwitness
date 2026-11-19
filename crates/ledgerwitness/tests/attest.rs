@@ -69,12 +69,19 @@ fn changed_millisecond_close_time_is_rejected() {
 
 #[test]
 fn network_without_pinned_validators_is_not_applicable() {
-    let a = attest(
-        &header(P28),
-        "Public Global Stellar Network ; September 2015",
-    )
-    .unwrap();
+    let a = attest(&header(P28), "Standalone Network ; February 2017").unwrap();
     assert!(matches!(a, Attestation::NotApplicable(_)));
+}
+
+// The signed payload starts with the network ID, so mainnet pins cannot
+// attest a testnet header.
+#[test]
+fn testnet_header_does_not_attest_as_mainnet() {
+    assert!(attest(
+        &header(P28),
+        "Public Global Stellar Network ; September 2015"
+    )
+    .is_err());
 }
 
 #[test]

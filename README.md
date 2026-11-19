@@ -233,8 +233,9 @@ What the results show:
   under the declared network passphrase.
 - **A known validator signed the transaction set.** The validator's signature
   over the transaction-set hash and close time is checked offline against
-  SDF's published testnet validator keys. Entries that cannot be checked this
-  way are rejected.
+  pinned validator keys: SDF's testnet validators, and 30 mainnet validators
+  whose sources are kept in [docs/evidence/mainnet-validators/](docs/evidence/mainnet-validators/README.md).
+  Entries that cannot be checked this way are rejected.
 - **Copies agree.** Where a second copy of the ledger exists, the two copies
   are equivalent.
 

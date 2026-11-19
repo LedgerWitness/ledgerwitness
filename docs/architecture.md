@@ -563,7 +563,10 @@ arm) with the key of the validator that proposed the value
 (`HerderImpl::verifyStellarValueSignature`). `ledgerwitness` checks that signature
 offline against validator keys pinned per network in `crates/ledgerwitness/src/attest.rs`
 (testnet: `sdftest1`–`sdftest3`, from stellar-core's
-`docs/stellar-core_testnet.cfg`). Every current entry is attested this way.
+`docs/stellar-core_testnet.cfg`; mainnet: 30 validators from SDF's quickstart
+pubnet configuration and the stellar.toml of Range, MoneyGram and YLDS, with
+copies in `docs/evidence/mainnet-validators/`). Every current entry is
+attested this way, and 40 sampled mainnet ledgers pass the same check.
 
 What this does and does not prove:
 
@@ -1282,8 +1285,10 @@ When a new protocol ships:
   an artifact and its recorded hash can change header fields the validator
   signature does not cover. An anchor kept outside the manifests
   (history-archive checkpoints) is planned.
-- **Testnet only.** Validators are pinned for testnet alone, so core-emitted
-  entries cannot yet come from mainnet.
+- **No mainnet entries yet.** Mainnet validators are pinned and 40 sampled
+  mainnet ledgers pass `check-ledger`, but every corpus entry is still a
+  testnet ledger. The pinned set must be updated when the mainnet validator
+  set changes.
 - **Class-aware negative conformance is absent.** `ledgerwitness conform` cannot score
   `sdk_negative_only` entries yet. Report binding is implemented (§10); it
   identifies inputs but does not prove a runner ran honestly.

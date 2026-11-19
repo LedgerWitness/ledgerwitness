@@ -63,6 +63,9 @@ spec are versioned separately (`schema_version`, `probe_spec`).
   (`run-716-soroban.sh`) on the new ExtendFootprintTTL entry: undecodable
   before #693, stored as the base account from #693, no longer produced from
   #753.
+- Mainnet validator pins: 30 keys from SDF's quickstart pubnet configuration
+  and the stellar.toml of Range, MoneyGram and YLDS, with copies of every
+  source; 40 sampled mainnet ledgers pass `check-ledger`.
 - `make testnet-evidence`: offline re-check of the recorded live run, also
   run in CI. The recorded run now keeps the raw ledgers (testnet ledgers
   5804257–5804261).

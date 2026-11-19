@@ -1,0 +1,32 @@
+VERSION="2.0.2"
+ 
+NETWORK_PASSPHRASE="Public Global Stellar Network; September 2015"
+ 
+[DOCUMENTATION]
+ORG_NAME="MoneyGram"
+ORG_URL="https://www.moneygram.com"
+ 
+ 
+[[VALIDATORS]]
+ALIAS="moneygram_v1"
+DISPLAY_NAME="MoneyGram Validator 1"
+HOST="v1-stellar.moneygram.com:11625"
+HOME_DOMAIN="moneygram.com"
+PUBLIC_KEY="GAVEOQE4O53I7OLY43HIUVKLLMALHSCNPVBKXB46FBDVRTDXRBIPHTFP"
+HISTORY="https://stellar-history.moneygram.com/v1"
+ 
+[[VALIDATORS]]
+ALIAS="moneygram_v2"
+DISPLAY_NAME="MoneyGram Validator 2"
+HOST="v2-stellar.moneygram.com:11625"
+HOME_DOMAIN="moneygram.com"
+PUBLIC_KEY="GBPBEOYMDXXBP2IG7LDM64YMLVTU3G567HWOKMMDOOCFFDFKAFVRDYM7"
+HISTORY="https://stellar-history.moneygram.com/v2"
+
+[[VALIDATORS]]
+ALIAS="moneygram_v3"
+DISPLAY_NAME="MoneyGram Validator 3"
+HOST="v3-stellar.moneygram.com:11625"
+HOME_DOMAIN="moneygram.com"
+PUBLIC_KEY="GAW3OEQRVXR3XFVLTUPZMLDQHKUSXECDCJYCR3MEAATC2QJ2ELLPXORD"
+HISTORY="https://stellar-history.moneygram.com/v3"

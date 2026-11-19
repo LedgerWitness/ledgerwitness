@@ -43,7 +43,7 @@ Go changes: `gofmt -l` must print nothing and `go vet ./...` must pass in
 4. Record the ledger hash from a source other than the artifact (for example
    Horizon `/ledgers/{seq}`). Core-emitted entries must pass
    `validator_signature`, so they need a network whose validators are pinned
-   in `crates/ledgerwitness/src/attest.rs` (today: testnet). Check a fresh capture first
+   in `crates/ledgerwitness/src/attest.rs` (today: testnet and mainnet). Check a fresh capture first
    with `ledgerwitness check-ledger <ledger.xdr> --tx-hash … --ledger-hash …`.
 5. Add the CAP to `docs/research/coverage-registry.md` if it is new.
 6. `ledgerwitness verify` must pass, and `make conform` must still pass for current SDKs.

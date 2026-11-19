@@ -1,0 +1,60 @@
+# YLDS stellar.toml
+VERSION = "2.5.0"
+
+# General Information
+ACCOUNTS = ["GAC7MOPTQLQUM3KC24AW4GHS3RLF72LPEZO54AH7EZ6TSMGRB5SOAVH3",
+"GDSQ7BEI6NCDHDOPABHTFDDOXCUVN4Z5MGYYMBVYW3G5CNHQMQM2RPE5",
+"GB3BMQGHJDJ3H2HJATFSXMHMZVXXJT5QCOQDGO3JHH6EISLY3J44CMZK",
+"GBRMVYACW2T5MVFKZPAJF6PE5KLLRMLYPSPTRJ4SHAIDRSVXYMQNGWB4"]
+
+NETWORK_PASSPHRASE = "Public Global Stellar Network ; September 2015"
+
+# Organization Documentation
+[DOCUMENTATION]
+ORG_NAME = "Figure Certificate Company"
+ORG_URL = "https://www.ylds.com"
+ORG_LOGO = "https://cdn.figure.com/frontend-markets/apps/ylds-marketing/ylds-circle-icon.svg"
+ORG_PHYSICAL_ADDRESS = "650 California Street, Suite 2700, San Francisco, CA 94108"
+ORG_OFFICIAL_EMAIL = "support@ylds.com"
+ORG_SUPPORT_EMAIL = "support@ylds.com"
+
+# Point of Contact
+[[PRINCIPALS]]
+name = "YLDS Support"
+email = "support@ylds.com"
+
+# Currency Documentation
+[[CURRENCIES]]
+code = "YLDS"
+issuer = "GAC7MOPTQLQUM3KC24AW4GHS3RLF72LPEZO54AH7EZ6TSMGRB5SOAVH3"
+name = "YLDS"
+desc = "YLDS is the first SEC-registered, yield-bearing stablecoin combining the liquidity of traditional stablecoins, the safety of a security, and the earning power of a money market fund."
+display_decimals = 6
+conditions = "Issued by Figure Certificate Company. YLDS transfers, redemptions, and yield eligibility are subject to Figure's offering documents, applicable law, and compliance requirements, including KYC/AML checks where required. YLDS is a USD-anchored asset and may be subject to restrictions on transfer, redemption, or interest eligibility."
+is_asset_anchored = true
+anchor_asset_type = "fiat"
+anchor_asset = "USD"
+redemption_instructions = "To redeem YLDS for USD, log in to your YLDS portal at https://ylds.com. Send YLDS to the redemption address unique to your account to complete redemption."
+attestation_of_reserve = "https://ylds.com"
+image = "https://cdn.figure.com/frontend-markets/apps/ylds-marketing/ylds-circle-icon.svg"
+
+[[VALIDATORS]]
+ALIAS="ylds-central"
+DISPLAY_NAME="YLDS Central"
+HOST="stellar-central.ylds.com:11625"
+PUBLIC_KEY="GDSQ7BEI6NCDHDOPABHTFDDOXCUVN4Z5MGYYMBVYW3G5CNHQMQM2RPE5"
+HISTORY="http://stellar-history.ylds.com/validator-us-central1-0/"
+
+[[VALIDATORS]]
+ALIAS="ylds-east"
+DISPLAY_NAME="YLDS East"
+HOST="stellar-east.ylds.com:11625"
+PUBLIC_KEY="GB3BMQGHJDJ3H2HJATFSXMHMZVXXJT5QCOQDGO3JHH6EISLY3J44CMZK"
+HISTORY="http://stellar-history.ylds.com/validator-us-east1-0/"
+
+[[VALIDATORS]]
+ALIAS="ylds-west"
+DISPLAY_NAME="YLDS West"
+HOST="stellar-west.ylds.com:11625"
+PUBLIC_KEY="GBRMVYACW2T5MVFKZPAJF6PE5KLLRMLYPSPTRJ4SHAIDRSVXYMQNGWB4"
+HISTORY="http://stellar-history.ylds.com/validator-us-west1-0/"

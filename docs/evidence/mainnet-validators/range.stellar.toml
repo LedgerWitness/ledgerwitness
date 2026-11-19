@@ -1,0 +1,38 @@
+VERSION="2.0.0"
+
+NETWORK_PASSPHRASE="Public Global Stellar Network ; September 2015"
+
+[DOCUMENTATION]
+ORG_NAME="Range"
+ORG_DBA="Range"
+ORG_URL="https://range.org"
+ORG_LOGO="https://stellar.validator.range.org/logo.png"
+ORG_DESCRIPTION="Range is building the most comprehensive real-time treasury monitoring, risk and compliance infrastructure for asset issuers, custodians, fintechs, and enterprise treasury teams."
+ORG_OFFICIAL_EMAIL="info@range.org"
+ORG_SUPPORT_EMAIL="security@range.org"
+ORG_GITHUB="rangesecurity"
+ORG_TWITTER="range_org"
+
+[[VALIDATORS]]
+ALIAS="range1"
+DISPLAY_NAME="Range 1"
+HOST="core-1.stellar.range.org:11625"
+PUBLIC_KEY="GA3NWOLWTIFBYUNDXNE3E7TZSYNQQCKLHZQZFV7KSK7XPDU2ESVGISKT"
+HISTORY="https://history-1.stellar.range.org/"
+HOME_DOMAIN="stellar.validator.range.org"
+
+[[VALIDATORS]]
+ALIAS="range2"
+DISPLAY_NAME="Range 2"
+HOST="core-2.stellar.range.org:11625"
+PUBLIC_KEY="GA5MQHKWKZF24MWTDXVJE6UYI5QVBYFIVUP24RWYAXQIT5AIMZ6TMUXC"
+HISTORY="https://history-2.stellar.range.org/"
+HOME_DOMAIN="stellar.validator.range.org"
+
+[[VALIDATORS]]
+ALIAS="range3"
+DISPLAY_NAME="Range 3"
+HOST="core-3.stellar.range.org:11625"
+PUBLIC_KEY="GCSXADVBPPKIDUW6FDJZR25IX4ZA7B7YH63U2AZK7LVHSMLFGCKDBTBI"
+HISTORY="https://history-3.stellar.range.org/"
+HOME_DOMAIN="stellar.validator.range.org"
