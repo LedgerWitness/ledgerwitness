@@ -38,3 +38,26 @@ not findings; they are described in `docs/research/source-audit.md`.
   the arm. Classified as an unsupported protocol, not a defect. Current
   releases decode these ledgers.
 - **Severity:** none.
+
+## OBS-003: SDF indexers attribute failed operations differently
+
+- **Observed with:** a manual review while running linter rule STLR003 on
+  stellar/stellar-horizon `01ba44a` and stellar/wallet-backend `18db88f4`
+  (`docs/evidence/linter-stlr003/`).
+- **What differs:** for an operation in a *failed* transaction,
+  wallet-backend records only the source and fee-bump source as
+  participants (since `9538b3ca`, which calls envelope-named accounts on
+  failed transactions "unverified submitter input"). Horizon records every
+  account the operation body names (`operationsParticipants` in
+  `internal/ingest/processors/operations_processor.go` has no success check),
+  so a failed payment appears in the destination's operation history.
+- **Triage:** not a defect. Horizon ingests failed transactions and shows them
+  only when a client asks with `include_failed=true`, whose default is
+  `false`; its 30.0.0 changelog describes `include_failed` history built from
+  operation bodies. The two indexers made different, documented choices.
+- **Indexer impact:** a client that requests failed operations from Horizon
+  can show accounts that a third party named in a failed transaction, at the
+  cost of a base fee. This goes into the hardening guide's participants
+  section. STLR003 cannot detect the pattern: the function also reads meta.
+- **Severity:** informational.
+- **Next step:** none upstream.
