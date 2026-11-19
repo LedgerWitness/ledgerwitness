@@ -966,6 +966,10 @@ The analysis scope is explicit:
   are not followed.
 - **Finding:** a candidate with envelope input and no meta input.
 - **Suppression:** `//lint:ignore STLR003 <reason>` in the doc comment.
+- **Type errors:** the rule still runs on a package with unrelated type
+  errors, such as a cgo dependency that cannot be built where the linter
+  runs. Expressions without type information count as neither input, so
+  this can miss a finding but cannot create one.
 
 Types are matched by name in any `github.com/stellar/.../xdr` or
 `.../ingest` package, so both go-stellar-sdk and the older `stellar/go`

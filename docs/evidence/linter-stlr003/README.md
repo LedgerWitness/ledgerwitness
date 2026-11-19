@@ -51,6 +51,25 @@ that same-package call and counts it as meta input. The classic-operation
 `TransactionOperationWrapper.Participants` reads the envelope and reaches
 meta through `getSponsor` → `Changes`, so it is not reported either.
 
+## Other Stellar Go codebases
+
+The same rule on current SDF code, test files excluded:
+
+| Repository | Commit | Participant-named functions | STLR003 findings |
+|---|---|---|---|
+| stellar/stellar-horizon | `01ba44a` (2026-11-13) | 17 | 0 |
+| stellar/stellar-etl | `7e3fc9a` (2026-11-17) | 3 | 0 |
+| stellar/go-stellar-sdk | `4cee025` (2026-11-19) | 0 | not applicable |
+
+stellar-etl was analysed with `CGO_ENABLED=0`, because its cgo dependency
+`go-stellar-xdr-json` cannot be linked by Go 1.27 on this machine. That leaves
+one unresolved call (`xdrjson.Decode` in `contract_events.go`), unrelated to
+participants; the rule runs despite it.
+
+The stellar-etl and Horizon participant builders reach the meta through a
+helper (`Participants` → `getSponsor` → `GetOperationChanges`), so they are
+not reported. In stellar-etl that method has no caller outside tests.
+
 ## What this run does not show
 
 - **A known false negative.** The same commit also stopped attributing
@@ -58,9 +77,10 @@ meta through `getSponsor` → `Changes`, so it is not reported either.
   `GetOperationParticipants`). That function reads meta on its other path, so
   the rule cannot see the problem: it detects functions with no meta input
   at all, not branches that ignore the meta they read.
-- **Only one codebase.** A clean run applies to these commits and this rule
-  scope only. It is not evidence that wallet-backend has no other
-  participant problems.
+- **Clean means clean for this rule only.** A clean run applies to these
+  commits and this rule scope. It is not evidence that a codebase has no
+  other participant problems; in particular, the failed-transaction pattern
+  above is outside what the rule can see.
 - **One rule of three.** STLR001 and STLR002 are designs.
 
 ## Reproduce
