@@ -10,7 +10,56 @@ yet built).
 SDK versions below describe the pinned development baseline, not a claim
 about the latest upstream releases. Historical observations are recorded
 evidence; they are not a fresh network capture. Implementation gaps and
-acceptance gates are in section 19.
+acceptance gates are in section 19; the delivery plan is in section 21.
+
+## At a glance
+
+| Component | Status | Evidence |
+|---|---|---|
+| Corpus and manifest schema | **Implemented:** 6 core-emitted testnet entries, 7 CAPs, protocols 28 and 30 | `corpus/`, §4 |
+| Verifier | **Implemented:** hashes, exact re-encode, header and transaction-set commitments, network binding, validator signature, alternate-copy equivalence | §6–8 |
+| Testnet generator and live SDK check | **Implemented** (online): five shapes, checked against Horizon and two SDK releases | §5.2, `docs/evidence/testnet-run/` |
+| Offline generator under both passphrases | Design | §5.3 |
+| SDK conformance runner | **Implemented:** Rust, Go and JavaScript; 14 probes; reports bound to their inputs | §9–10 |
+| Known SDK bugs | **Reproduced:** js-stellar-sdk #1766, #1785, #1789 (40/40 checks) | §11.1 |
+| Known indexer bugs | **Reproduced in process:** wallet-backend #729, #731, and #716 on two of its three paths | §11.2 |
+| Replay comparator | **Implemented:** typed oracles bound to their fixture | §12 |
+| Replay transports and database adapter | Design | §12.2–12.4 |
+| Go linter | **Prototype** of rule STLR003: flags wallet-backend before #753's fix, clean after it and on current Horizon and stellar-etl; STLR001 and STLR002 are designs | §13 |
+| Indexer-hardening guide | Design | §14 |
+| Findings | Three observations triaged, none a defect; nothing filed yet | `docs/findings/` |
+| CI | **Implemented:** three offline jobs on every push and pull request | §16 |
+
+## The stack in plain English
+
+LedgerWitness is a set of real ledgers plus the tools that use them.
+
+1. **The corpus** is a folder of real Stellar ledgers, each one picked because
+   it contains a rare but valid shape (a signed-payload signer, a muxed
+   account, a trustline created by a contract). Each ledger is stored as the
+   exact bytes the network produced, next to a JSON file that says where it
+   came from, which protocol change (CAP) introduced the shape, and what a
+   correct reader must find in it.
+2. **The verifier** (Rust, on the official `rs-stellar-xdr` library) checks,
+   without any network access, that every ledger is intact, belongs to the
+   network it claims, and carries a valid signature from one of that network's
+   validators.
+3. **The SDK runners** are one small program per language (Rust, Go,
+   JavaScript). Each reads every ledger with its SDK and writes down what it
+   saw. A comparison step lines these up against the expected values and
+   against each other, and prints a table of where an SDK disagrees with the
+   network.
+4. **The reproductions and replay** run real indexer code (wallet-backend)
+   on corpus ledgers at the commit before and after a known fix, to show the
+   corpus catches the bug and the fix removes it.
+5. **The linter** (Go) reads indexer source code and flags known ingestion
+   mistakes, such as taking a transaction's participants from what the
+   submitter claimed rather than from what the network recorded.
+6. **The guide** (planned) explains, field by field, what stellar-core
+   checks and what an indexer must check itself.
+
+Everything except capturing new ledgers runs offline, on a laptop or in CI,
+in a few minutes.
 
 Contents:
 
@@ -34,6 +83,8 @@ Contents:
 18. Known limitations
 19. Architecture review decisions and acceptance gates
 20. Requirements traceability
+21. Delivery plan
+22. Infrastructure, decentralisation, privacy and maintenance
 
 ---
 
@@ -90,7 +141,8 @@ flowchart LR
     RUN[runners: rust, go, javascript]
     CONF[ledgerwitness conform]
     REPRO[reproductions]
-    REPLAY[replay harness<br/>design]
+    REPLAY[replay comparator<br/>implemented; transports design]
+    WB[wallet-backend reproductions<br/>issues 729, 731, 716]
     LINT[Go linter<br/>STLR003 prototype]
   end
 
@@ -104,6 +156,7 @@ flowchart LR
   ENTRIES --> LCK
   ENTRIES --> RUN --> CONF --> MATRIX[divergence matrix]
   ENTRIES --> REPRO
+  ENTRIES --> WB
   ENTRIES -.-> REPLAY -.-> FINDINGS[findings]
   LINT -.-> FINDINGS
 ```
@@ -350,7 +403,13 @@ offline-generator requirement; that work remains in section 5.3.
      assets whose issuers are chosen by rejection sampling so that their G…
      strkeys sort opposite to their key bytes;
    - deployment of a Stellar Asset Contract followed by `trust(address)`
-     (CAP-0073), prepared through RPC simulation.
+     (CAP-0073), prepared through RPC simulation;
+   - `ExtendFootprintTTL` on that contract with a muxed operation source.
+     stellar-core accepts a muxed source on this operation (it rejects one
+     only on InvokeHostFunction), but js-stellar-sdk 17.4.0's builder refuses
+     to build it (js-stellar-sdk#1906), so the tool sets the source in the
+     XDR after building. The requested extension is computed from the
+     contract's live TTL so that the operation changes state.
 3. Waits for each transaction, then fetches the ledger with **raw JSON-RPC**
    `getLedgers` (`xdrFormat: base64`), not the SDK's parsed response, so the
    stored bytes are exactly what the server returned.
@@ -387,7 +446,7 @@ submitted. Each release has a documented expected behaviour. 17.2.0 must
 still reject the pool trustline (js-stellar-sdk#1766) and fail on the
 protocol-30 header, and must read everything else correctly.
 
-The script exits non-zero unless all four captures pass both stages.
+The script exits non-zero unless all five captures pass both stages.
 Horizon can trail RPC by a few ledgers, so the script retries for up to a
 minute per ledger.
 
@@ -552,7 +611,7 @@ flowchart TB
   but that manifest checksum is not network authentication. These fields are
   trusted to the emitter. Alternate copies corroborate them under the
   normalization in section 8; two endpoints need not be independent operators.
-  Four of the five current entries have an alternate copy.
+  Five of the six current entries have an alternate copy.
 - **Expected values** require the admission review described in section 4.4;
   the verifier cannot establish their independence automatically.
 - **Core build:** recorded with its basis, or as unknown when the emitter
@@ -736,7 +795,7 @@ or post-fix behaviour. Cases the upstream description suggested but that did
 not reproduce are kept as labelled controls and not counted. The output is a
 table; `--json PATH` writes a report (`make repro-js` uses `results.json`).
 
-### 11.2 wallet-backend (implemented for #729)
+### 11.2 wallet-backend (#729, #731 and #716, in process)
 
 ```mermaid
 sequenceDiagram
@@ -1121,9 +1180,12 @@ filed or published without that review step.
   cases for stale bindings, commit gates, empty expectations, missing/wrong/
   duplicate rows, ordered sequences, strict versions and bounded diagnostics;
   CLI exits and curated sidecar bindings are checked.
-- `reproductions/wallet-backend/check-results.test.mjs`: stored replay
-  evidence passes; damaged reports fail. `run.sh` invokes the same checker
-  on fresh reports after both historical checkouts finish.
+- `reproductions/wallet-backend/check-results*.test.mjs` (#729, #731, #716
+  signed-payload and #716 Soroban source): stored replay evidence passes;
+  damaged, swapped or wrong-ledger reports fail. Each `run*.sh` invokes the
+  same checker on fresh reports.
+- `linter/go/stlr003`: seeded positive and negative cases through
+  `analysistest`, including a package with an unrelated type error.
 - Runner output against the corpus is itself a test, enforced through
   `--require-pass`.
 
@@ -1134,7 +1196,9 @@ filed or published without that review step.
    - `cargo clippy -D warnings`;
    - `cargo test --workspace`;
    - `ledgerwitness verify corpus/entries`.
-2. `conformance` job:
+2. `linter` job: `make linter` (vet, gofmt and the STLR003 seeded cases),
+   on Go 1.26 or later because `golang.org/x/tools` requires it.
+3. `conformance` job:
    - Go vet and gofmt;
    - `make conform` (Rust, Go and JS 17.4.0 must pass; JS 17.2.0 is reported
      only);
@@ -1143,13 +1207,13 @@ filed or published without that review step.
      offline);
    - wallet replay report checker tests against stored evidence;
    - uploads the matrix as an artifact.
-3. The wallet-backend replay is not in pull-request CI. It builds two
+4. The wallet-backend replay is not in pull-request CI. It builds two
    historical wallet-backend checkouts (several minutes, several GB of
    memory in earlier development runs). A scheduled full-replay job is a
    possible extension; none is configured. Report-checker CI does not replace it.
 
-Both CI jobs explicitly install Rust 1.94.1; the conformance job also installs
-Node 22 and Go from `runners/go/go.mod`. The workspace includes Rust tests
+The corpus and conformance jobs install Rust 1.94.1; the conformance job also
+installs Node 22 and Go from `runners/go/go.mod`. The workspace includes Rust tests
 for validator attestation and Node report-checker tests; use the test runner's
 output for the current count.
 Hosted CI passed on the first push to GitHub. On 2026-11-18 the full
@@ -1167,8 +1231,10 @@ replay. A green current corpus is not evidence those planned components work.
 **Entry points**
 
 - `make verify`, `make test`, `make conform`, `make repro-js`,
-  `make testnet-evidence`, `make repro-wallet-backend WALLET_BACKEND=…`,
-  `make capture`, `make testnet-smoke` (live, testnet only).
+  `make testnet-evidence`, `make linter`.
+- Need a clone of wallet-backend: `make repro-wallet-backend WALLET_BACKEND=…`,
+  `make lint-wallet-backend WALLET_BACKEND=…`.
+- Live, testnet only: `make capture`, `make testnet-smoke`.
 
 ## 17. Versioning and protocol upgrades
 
@@ -1265,11 +1331,11 @@ been secured.
 | Required outcome | PoC evidence | Evidence still needed for delivery |
 |---|---|---|
 | Language-neutral corpus, generator and CAP coverage | Six core-emitted testnet entries, JSON schema, recorded provenance, XDR assertions and testnet capture (§4–5) | An audited CAP/shape denominator; independently reviewed expectations; additional required cases; pinned core golden differential tests; reproducible isolated local-core generation under both passphrases |
-| SDK conformance in JS, Go and Rust | Three runners, 14 probes, byte-exact round trips, reports bound to their input digests, current/historical matrix, JS pre/post-fix reproductions (§9–11), and a live two-release JS check on fresh testnet captures (§5.2) | Build-bound runner reports, class-aware coverage for SDK-only inputs, current stable pins checked at release, and matrix-backed regressions for the specified SDK sightings |
-| Replay against an indexer | Typed comparator, fixture-bound sidecars and synthetic-observation tests (§12) | Mock-RPC compatibility profile, isolated unmodified target, durable database observation, adapter contract and end-to-end pre/post-fix #729, #731 and #716 checks |
+| SDK conformance in JS, Go and Rust | Three runners, 14 probes, byte-exact round trips, reports bound to their input digests, current/historical matrix, JS pre/post-fix reproductions (§9–11), a live two-release JS check on fresh testnet captures (§5.2), and js-stellar-sdk#1906 confirmed on the network with go-stellar-sdk and py-stellar-base checked for the same defect (none shares it) | Build-bound runner reports, class-aware coverage for SDK-only inputs, current stable pins checked at release, and matrix-backed regressions for the specified SDK sightings |
+| Replay against an indexer | Typed comparator, fixture-bound sidecars and synthetic-observation tests (§12); wallet-backend #729, #731 and #716 (two of three producers) reproduced in process before and after their fixes, on that commit's own indexer (§11.2) | Mock-RPC compatibility profile, isolated unmodified target, durable database observation, adapter contract and end-to-end pre/post-fix #729, #731 and #716 checks |
 | Three ingestion-mistake checks | Rule designs (§13); STLR003 prototype with seeded positive and negative cases in CI, documented blind spots, and a pinned wallet-backend run: 6 triaged findings before #753's fix, clean on the fix and on `main` (§13.1) | STLR001 and STLR002 analyzers with seeded cases; STLR003 helper coverage across packages; runs on further indexers |
 | Indexer-hardening guide | Proposed outline and evidence requirements (§14) | Field-by-field source-backed guide, versioned limits, checklist, cross-check with manifest and review by a core or platform engineer |
-| SDF pipeline findings | Historical #729 in-process reproduction and stored reports (§11) | Real ingestion and committed-storage evidence, minimal reproductions, severity and CAP mapping, and a filed issue or appropriate private disclosure reference for each finding |
+| SDF pipeline findings | In-process reproductions of #729, #731 and #716 (§11.2); STLR003 runs on wallet-backend, Horizon and stellar-etl (§13.1); OBS-003 on failed-operation attribution, triaged as a documented design difference | Real ingestion and committed-storage evidence, minimal reproductions, severity and CAP mapping, and a filed issue or appropriate private disclosure reference for each finding |
 | Release, CI and maintenance | Local commands, lockfiles, hosted CI passing on GitHub, an offline re-check of a recorded live run, and upgrade procedure (§16–17) | Tested offline and resource-bounded workflows, tagged release, named maintainers and an agreed post-launch maintenance commitment including the first protocol upgrade |
 
 ### 20.1 Reproducible evidence
@@ -1324,3 +1390,41 @@ with that CAP has been tested.
 The strongest next evidence is a reproducible, database-backed reference
 replay, not a broader claim based on synthetic observations. Report binding
 is now implemented (§10).
+
+## 21. Delivery plan
+
+The plan has three milestones. Each closes on checks a reviewer can run from a
+clean checkout, and each builds on what the proof of concept already does.
+
+| Milestone | Scope | Closes when |
+|---|---|---|
+| **1. Corpus and generator** | Audited CAP and shape inventory from a pinned `stellar-protocol` revision; local stellar-core generation under the testnet and mainnet passphrases with networking disabled; the missing shapes of §18 (fee-bump with a muxed fee source, `TransactionV0`, nested authorization, maximum-length vectors, colliding map keys, offer IDs above 2^53, a SEP-41 muxed address); mainnet history entries with pinned mainnet validators and a history-archive anchor for ledger hashes; the normalization port checked against core's `--check-lcm` goldens | `make verify` passes on the agreed inventory; the generator reproduces its entries offline under both passphrases; the coverage registry lists every inventory item with its entry or a stated exclusion |
+| **2. Conformance and replay** | Runners for the agreed SDKs in CI, including a Python runner; class-aware scoring for SDK-only vectors; a mock RPC `getLedgers` transport, then the data-lake layout; a wallet-backend adapter on its own database (PostgreSQL with TimescaleDB) and the adapter contract of §12.4; #729, #731 and all three #716 producers end to end; a findings report with triage | `make conform` passes the agreed matrix; the replay reproduces each named wallet-backend issue on its pre-fix commit and passes on the fixed one through real ingestion and storage; every finding has a minimal entry, severity, CAP and a reference to its upstream report |
+| **3. Linter, guide and release** | STLR001 and STLR002 with seeded cases; STLR003 across packages; the hardening guide with its field table generated from the manifests; sibling issues for defects shared by several SDKs; a tagged release and the protocol-upgrade procedure of §17 rehearsed | the linter flags its seeded violations and runs clean on current wallet-backend; the guide's table agrees with the manifests in CI and has been reviewed by a core or platform engineer; the release installs from a clean machine |
+
+Order of work inside milestones 1 and 2 follows §19: offline generation first,
+then the mock RPC profile and the replay contract, then adapter breadth.
+
+## 22. Infrastructure, decentralisation, privacy and maintenance
+
+- **Infrastructure.** Nothing needs to be hosted. The corpus is plain files in
+  this repository; the tools run on a developer machine or in CI. The only
+  network endpoints, used only when capturing new ledgers, are listed in the
+  README: the public data lake, testnet RPC, Horizon testnet and friendbot.
+- **Decentralisation.** Anyone can mirror the corpus, and its integrity does
+  not depend on who serves it: every file is pinned by SHA-256, and the
+  verifier checks each ledger against network commitments and validator keys
+  offline, without trusting a server. Entries can be regenerated
+  independently from public history or, with milestone 1, from a local
+  stellar-core.
+- **Privacy and user tracking.** None. The tools collect no usage data and
+  contact no service while verifying or comparing. The capture tool keeps
+  throwaway keys in memory only; the corpus holds public ledger data.
+- **Maintenance.** Two maintainers share releases and upgrades. For each
+  protocol upgrade, §17 lists the steps: raise the SDK pins, re-run the
+  corpus as a regression check, add the new CAPs to the coverage registry and
+  capture their shapes once testnet supports them. A shape that an SDK does
+  not support yet is recorded as an expected result for that SDK, so no SDK's
+  CI turns red on a shape it has not implemented.
+- **Licence and openness.** Apache-2.0; development, CI results and findings
+  are public, and security-relevant findings follow `SECURITY.md`.
