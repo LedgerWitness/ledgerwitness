@@ -19,8 +19,10 @@ import {
   MuxedAccount,
   Networks,
   Operation,
+  SorobanDataBuilder,
   StrKey,
   TransactionBuilder,
+  decodeAddressToMuxedAccount,
   getLiquidityPoolId,
   nativeToScVal,
   rpc,
@@ -43,6 +45,11 @@ const server = new rpc.Server(RPC_URL);
 // Muxed IDs chosen to sit outside the range a JavaScript number holds exactly.
 const MUX_ID_ABOVE_2_53 = "9007199254740993"; // 2^53 + 1
 const MUX_ID_MAX_U64 = "18446744073709551615"; // 2^64 - 1
+
+// Shape 5 extends the contract instance this many ledgers past its current
+// TTL, so that the operation changes state rather than succeeding as a no-op.
+const EXTEND_TTL_MARGIN = 10_000;
+const SIZE_FEE_MARGIN = 10_000n; // stroops
 
 function strkeyOrderDiffersFromByteOrder(a, b) {
   const byText = a.publicKey() < b.publicKey() ? -1 : 1;
@@ -215,15 +222,17 @@ console.log("holder", holder.publicKey(), "sender", sender.publicKey());
 
 // 4. CAP-0073: a trustline created by the Stellar Asset Contract `trust`
 //    function rather than by ChangeTrust.
+const sacAsset = new Asset("LCKC", issuerA.publicKey());
+const sacContractId = sacAsset.contractId(PASSPHRASE);
 {
-  const asset = new Asset("LCKC", issuerA.publicKey());
+  const asset = sacAsset;
   const deploy = await sorobanTx(
     sender,
     Operation.createStellarAssetContract({ asset }),
     [sender],
   );
   await submit(deploy, "deploy-sac");
-  const contractId = asset.contractId(PASSPHRASE);
+  const contractId = sacContractId;
   const trust = await sorobanTx(
     holder,
     new Contract(contractId).call("trust", nativeToScVal(holder.publicKey(), { type: "address" })),
@@ -233,5 +242,40 @@ console.log("holder", holder.publicKey(), "sender", sender.publicKey());
     asset: `${asset.getCode()}:${asset.getIssuer()}`,
     sac_contract_id: contractId,
     trustor: holder.publicKey(),
+  });
+}
+
+// 5. ExtendFootprintTTL on the asset contract above, with a muxed operation
+//    source. stellar-core rejects a muxed source only when the transaction's
+//    operation is InvokeHostFunction (TransactionFrame::validateSorobanMemo,
+//    from protocol 25), but js-stellar-sdk's TransactionBuilder refuses it on
+//    every Soroban operation (js-stellar-sdk#1906). The builder therefore runs
+//    with the base account, and the muxed source is set in the XDR afterwards.
+{
+  const instance = new Contract(sacContractId).getFootprint();
+  const [{ liveUntilLedgerSeq }] = (await server.getLedgerEntries(instance)).entries;
+  const extendTo = liveUntilLedgerSeq - (await server.getLatestLedger()).sequence + EXTEND_TTL_MARGIN;
+  const account = await server.getAccount(holder.publicKey());
+  const opSource = new MuxedAccount(account, MUX_ID_ABOVE_2_53).accountId();
+  const built = new TransactionBuilder(account, { fee: BASE_FEE, networkPassphrase: PASSPHRASE })
+    .addOperation(Operation.extendFootprintTtl({ extendTo }))
+    .setSorobanData(new SorobanDataBuilder().setReadOnly([instance]).build())
+    .setTimeout(120)
+    .build();
+  const env = (await server.prepareTransaction(built)).toEnvelope();
+  env.v1.tx.operations[0].sourceAccount = decodeAddressToMuxedAccount(opSource);
+  // The operation source makes the envelope larger than the simulated one, and
+  // the transaction-size part of the resource fee grows with it.
+  env.v1.tx.ext.sorobanData.resourceFee += SIZE_FEE_MARGIN;
+  env.v1.tx.fee += Number(SIZE_FEE_MARGIN);
+  const tx = TransactionBuilder.fromXDR(env, PASSPHRASE);
+  tx.sign(holder);
+  await captureLedger("soroban-muxed-extend-ttl", await submit(tx, "extend-ttl-muxed"), {
+    sac_contract_id: sacContractId,
+    op_source_muxed: opSource,
+    op_source_base: holder.publicKey(),
+    muxed_ids: [MUX_ID_ABOVE_2_53],
+    extend_to: extendTo,
+    instance_live_until_before: liveUntilLedgerSeq,
   });
 }

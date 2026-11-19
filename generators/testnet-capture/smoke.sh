@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Live testnet check of the proof of concept, end to end:
-#   1. capture-testnet.mjs submits the four rare shapes to testnet with
+#   1. capture-testnet.mjs submits the five rare shapes to testnet with
 #      throwaway friendbot-funded keys (never written to disk) and saves each
 #      resulting LedgerCloseMeta exactly as RPC getLedgers returned it;
 #   2. for each capture, the ledger hash is fetched independently from Horizon;
@@ -66,4 +66,4 @@ echo "$((count - failed))/$count fresh testnet captures passed check-ledger"
 sdk_ok=0
 node "$here/sdk-check.mjs" "$out" "$ledgerwitness" --json "$out/sdk-check.json" || sdk_ok=1
 
-[[ "$count" -eq 4 && "$failed" -eq 0 && "$sdk_ok" -eq 0 ]]
+[[ "$count" -eq 5 && "$failed" -eq 0 && "$sdk_ok" -eq 0 ]]

@@ -70,7 +70,7 @@ make testnet-smoke
 
 This command:
 
-1. submits the four rare shapes to Stellar testnet, using throwaway accounts
+1. submits five rare shapes to Stellar testnet, using throwaway accounts
    funded by friendbot;
 2. captures each resulting ledger exactly as the network served it;
 3. checks every capture against the ledger hash Horizon reports, the validator

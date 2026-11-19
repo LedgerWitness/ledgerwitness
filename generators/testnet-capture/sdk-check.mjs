@@ -183,6 +183,36 @@ const SHAPES = {
     ];
   },
 
+  "soroban-muxed-extend-ttl": (core, prov) => {
+    const op = core.tx.operations[0];
+    const extended = core
+      .opChanges(0)
+      .filter((c) => c.updated?.data?.ttl)
+      .map((c) => c.updated.data.ttl.live_until_ledger_seq);
+    return [
+      {
+        value: "operation source (M…)",
+        core: op.source_account,
+        submitted: prov.op_source_muxed,
+        read: (sdk, tx) => tx.operations[0].source,
+      },
+      {
+        value: "operation source muxed ID",
+        core: op.source_account ? muxedIdOf(op.source_account) : null,
+        submitted: prov.muxed_ids[0],
+        read: (sdk, tx) => sdk.MuxedAccount.fromAddress(tx.operations[0].source, "0").id(),
+      },
+      {
+        value: "operation type",
+        core: Object.keys(op.body)[0],
+        read: (sdk, tx) => tx.operations[0].type.replace(/([A-Z])/g, "_$1").toLowerCase(),
+      },
+      // What core did, recorded for the report; no SDK reads these.
+      // The contract instance is the one entry in the footprint.
+      { value: "TTL entries core extended", core: String(extended.length), submitted: "1" },
+    ];
+  },
+
   "cap73-sac-trust": (core, prov) => {
     const call = core.tx.operations[0].body.invoke_host_function.host_function.invoke_contract;
     const trustline = created(core.opChanges(0), "trustline")[0];
