@@ -82,7 +82,7 @@ testnet-evidence:
 	node generators/testnet-capture/sdk-check.mjs $(EVIDENCE) target/debug/ledgerwitness
 
 # Cross-SDK sweep of public data-lake ledgers: every transaction through the
-# Rust, Go and JS runners, compared with each other (no expected values).
+# Rust, Go, JS and Python runners, compared with each other (no expected values).
 # Downloads the ledgers; the comparison itself is offline.
 #   make sweep SWEEP_LEDGERS="65566583 65566590" [SWEEP_NETWORK=pubnet]
 SWEEP_NETWORK ?= pubnet
@@ -94,7 +94,8 @@ sweep: | $(OUT)
 	target/release/ledgerwitness-runner-rust $(abspath $(SWEEP_DIR)/set) > $(SWEEP_DIR)/rust.json
 	cd runners/go && $(GO) run . $(abspath $(SWEEP_DIR)/set) > $(abspath $(SWEEP_DIR))/go.json
 	cd runners/javascript && node runner.mjs $(abspath $(SWEEP_DIR)/set) --sdk 17.4.0 > $(abspath $(SWEEP_DIR))/js.json
-	node generators/datalake-sweep/compare.mjs $(SWEEP_DIR)/rust.json $(SWEEP_DIR)/go.json $(SWEEP_DIR)/js.json --json $(SWEEP_DIR)/compare.json
+	PYTHONPATH=runners/python/.deps python3 runners/python/runner.py $(SWEEP_DIR)/set > $(SWEEP_DIR)/python.json
+	node generators/datalake-sweep/compare.mjs $(SWEEP_DIR)/rust.json $(SWEEP_DIR)/go.json $(SWEEP_DIR)/js.json $(SWEEP_DIR)/python.json --json $(SWEEP_DIR)/compare.json
 
 clean:
 	rm -rf target results

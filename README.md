@@ -23,11 +23,11 @@ live testnet run work offline.
 | What | Result | Rerun |
 |---|---|---|
 | Corpus | 7 real ledgers (6 testnet, 1 mainnet) covering 8 CAPs, each verified offline against its ledger hash, header commitments and a validator signature | `make verify` |
-| SDK conformance | Rust, Go and JS 17.4.0 decode, re-encode byte for byte and produce every expected value on all 7, including a mainnet fee-bump; JS 17.2.0 rejects a valid pool trustline | `make conform` |
+| SDK conformance | Rust, Go, JS 17.4.0 and Python (py-stellar-base 17.0.1) decode, re-encode byte for byte and produce every expected value on all 7, including a mainnet fee-bump; JS 17.2.0 rejects a valid pool trustline | `make conform` |
 | Known SDK bugs | js-stellar-sdk #1766, #1785 and #1789: 40/40 checks match before and after each fix | `make repro-js` |
 | Known indexer bugs | wallet-backend #729, #731 and #716 (two of its three paths) reproduced on the commits before and after each fix | `make repro-wallet-backend` |
 | Linter | Rule STLR003 flags the 6 envelope-only participant functions in wallet-backend before #753's fix, and runs clean after it and on current Horizon and stellar-etl | `make lint-wallet-backend` |
-| Mainnet sweep | 5,758 mainnet transactions from 20 ledgers (protocols 20 to 29): Rust, Go and JS agree on every probe, with no decode, re-encoding or API failure; the ledgers are checked against SDF's history archive and validator signatures | `make sweep` |
+| Mainnet sweep | 5,758 mainnet transactions from 20 ledgers (protocols 20 to 29): Rust, Go, JS and Python agree on every probe, with no decode, re-encoding or API failure; the ledgers are checked against SDF's history archive and validator signatures | `make sweep` |
 | Live testnet | Five rare shapes submitted and checked; core accepts a Soroban transaction that JS 17.4.0's builder refuses to build (js-stellar-sdk#1906) | `make testnet-smoke` |
 
 Status of every component, and the delivery plan for the rest:
@@ -117,17 +117,19 @@ follows that case from the raw ledger to the result.
 ## Quick start (offline)
 
 Requirements: Rust (the version in `rust-toolchain.toml` installs
-automatically), Go 1.26 or later, Node.js 22, and `make`. Installing
+automatically), Go 1.26 or later, Node.js 22, Python 3.10 or later, and
+`make`. Installing
 dependencies uses the network; the commands themselves run against the local
 corpus and do not contact a Stellar network.
 
 ```sh
 npm ci --prefix runners/javascript
 npm ci --prefix reproductions/js-sdk
+python3 -m pip install --target runners/python/.deps -r runners/python/requirements.txt
 
 make verify      # check every corpus entry       -> "7 entries, 7 passed, 0 failed"
 make test        # unit, tamper and CLI tests
-make conform     # run the three SDKs and compare -> prints the table below
+make conform     # run the four SDKs and compare  -> prints the table below
 make repro-js    # JS SDK bugs before/after fixes -> "40/40 ... match the documented behaviour"
 make testnet-evidence  # recorded live testnet run, re-checked offline
 make linter      # linter rule STLR003 on its seeded cases
@@ -142,15 +144,15 @@ build.
 Recorded with the pinned versions in this repository. A newer build needs a
 new run.
 
-| Corpus entry | Rust (stellar-xdr 30.0.0) | Go (go-stellar-sdk v0.9.0) | JS 17.4.0 | JS 17.2.0 |
-|---|---|---|---|---|
-| Payment between muxed accounts, IDs 2^53+1 and 2^64−1 | pass | pass | pass | ledger unsupported |
-| Liquidity-pool trustline, issuers sort differently as text and bytes | pass | pass | pass | **rejects valid input** |
-| Signed-payload signer with a padded payload | pass | pass | pass | ledger unsupported |
-| Signed-payload signer, the ledger from wallet-backend#729 | pass | pass | pass | pass |
-| Trustline created by the asset contract's `trust` function | pass | pass | pass | ledger unsupported |
-| `ExtendFootprintTTL` with a muxed operation source (JS 17.4.0's builder refuses to build it) | pass | pass | pass | ledger unsupported |
-| Mainnet fee-bump with an inner fee of 0, wrapping a payment whose operation source differs from the transaction source | pass | pass | pass | pass |
+| Corpus entry | Rust (stellar-xdr 30.0.0) | Go (go-stellar-sdk v0.9.0) | JS 17.4.0 | Python (py-stellar-base 17.0.1) | JS 17.2.0 |
+|---|---|---|---|---|---|
+| Payment between muxed accounts, IDs 2^53+1 and 2^64−1 | pass | pass | pass | pass | ledger unsupported |
+| Liquidity-pool trustline, issuers sort differently as text and bytes | pass | pass | pass | pass | **rejects valid input** |
+| Signed-payload signer with a padded payload | pass | pass | pass | pass | ledger unsupported |
+| Signed-payload signer, the ledger from wallet-backend#729 | pass | pass | pass | pass | pass |
+| Trustline created by the asset contract's `trust` function | pass | pass | pass | pass | ledger unsupported |
+| `ExtendFootprintTTL` with a muxed operation source (JS 17.4.0's builder refuses to build it) | pass | pass | pass | pass | ledger unsupported |
+| Mainnet fee-bump with an inner fee of 0, wrapping a payment whose operation source differs from the transaction source | pass | pass | pass | pass | pass |
 
 What the labels mean:
 
@@ -298,7 +300,7 @@ How `ledgerwitness conform` exits:
 corpus/          the corpus: schema, entries, expected replay results
 crates/ledgerwitness/      the ledgerwitness command-line tool and library (Rust)
 crates/replay/   replay comparison library (Rust)
-runners/         SDK runners: rust/, go/, javascript/
+runners/         SDK runners: rust/, go/, javascript/, python/
 linter/go/       indexer linter prototype (rule STLR003) and its seeded cases
 generators/      testnet capture tool, live smoke test, capture provenance
 reproductions/   known bugs, before and after their fixes

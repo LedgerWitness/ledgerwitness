@@ -1,7 +1,7 @@
-# Evidence: three SDKs on 5,758 mainnet transactions
+# Evidence: four SDKs on 5,758 mainnet transactions
 
 `make sweep` puts every transaction of a set of public data-lake ledgers
-through the Rust, Go and JavaScript runners and compares them with each other
+through the Rust, Go, JavaScript and Python runners and compares them with each other
 (`generators/datalake-sweep/`). This run covered 20 mainnet ledgers from
 protocol 20 to 29.
 
@@ -11,11 +11,11 @@ protocol 20 to 29.
 |---|---|
 | Ledgers | 20, from 50500000 (protocol 20) to 65566590 (protocol 29) |
 | Transactions | 5,758 (distinct hashes), 13,850 operations of 19 types |
-| Runners | stellar-xdr 30.0.0, go-stellar-sdk v0.9.0, @stellar/stellar-sdk 17.4.0 |
+| Runners | stellar-xdr 30.0.0, go-stellar-sdk v0.9.0, @stellar/stellar-sdk 17.4.0, py-stellar-base 17.0.1 |
 | Divergences between runners | **0** |
 | Decode failures, re-encoding differences, API errors | **0** |
 
-Every transaction decoded in all three SDKs, both as part of its ledger and
+Every transaction decoded in all four SDKs, both as part of its ledger and
 as a standalone envelope, re-encoded to the same bytes, and produced the same
 value for each of the 14 probes (`docs/spec/probes.md`). Summary:
 `compare.json`.
@@ -65,7 +65,7 @@ the comparison exits 1.
 
 ## Limits
 
-- **Agreement is not correctness.** The sweep has no expected values: three
+- **Agreement is not correctness.** The sweep has no expected values: four
   SDKs can agree and all be wrong. Correctness is what the curated corpus
   entries check against independent values.
 - **Shapes it barely reaches.** Muxed IDs occur in 5 transactions and

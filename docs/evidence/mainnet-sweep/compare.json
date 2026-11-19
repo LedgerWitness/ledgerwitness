@@ -3,7 +3,8 @@
     "runners": [
       "stellar-xdr 30.0.0, stellar-strkey 1.0.0",
       "github.com/stellar/go-stellar-sdk v0.9.0",
-      "@stellar/stellar-sdk 17.4.0"
+      "@stellar/stellar-sdk 17.4.0",
+      "py-stellar-base 17.0.1"
     ],
     "transactions": 5758,
     "ledgers": 20,

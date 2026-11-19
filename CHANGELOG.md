@@ -74,6 +74,8 @@ spec are versioned separately (`schema_version`, `probe_spec`).
 - Mainnet sweep: 5,758 transactions from 20 mainnet ledgers (protocols 20
   to 29) through Rust, Go and JS with no difference; ledgers checked against
   SDF's history archive (`archive-hash.mjs`) and validator signatures.
+- Python runner (py-stellar-base 17.0.1): passes all seven corpus entries
+  and agrees with Rust, Go and JS on all 5,758 sweep transactions.
 - `make testnet-evidence`: offline re-check of the recorded live run, also
   run in CI. The recorded run now keeps the raw ledgers (testnet ledgers
   5804257–5804261).

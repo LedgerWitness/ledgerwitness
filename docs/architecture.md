@@ -20,7 +20,7 @@ acceptance gates are in section 19; the delivery plan is in section 21.
 | Verifier | **Implemented:** hashes, exact re-encode, header and transaction-set commitments, network binding, validator signature, alternate-copy equivalence | §6–8 |
 | Testnet generator and live SDK check | **Implemented** (online): five shapes, checked against Horizon and two SDK releases | §5.2, `docs/evidence/testnet-run/` |
 | Offline generator under both passphrases | Design | §5.3 |
-| SDK conformance runner | **Implemented:** Rust, Go and JavaScript; 14 probes; reports bound to their inputs; a cross-SDK sweep found no difference on 5,758 mainnet transactions | §9–10, `docs/evidence/mainnet-sweep/` |
+| SDK conformance runner | **Implemented:** Rust, Go, JavaScript and Python; 14 probes; reports bound to their inputs; a cross-SDK sweep found no difference on 5,758 mainnet transactions | §9–10, `docs/evidence/mainnet-sweep/` |
 | Known SDK bugs | **Reproduced:** js-stellar-sdk #1766, #1785, #1789 (40/40 checks) | §11.1 |
 | Known indexer bugs | **Reproduced in process:** wallet-backend #729, #731, and #716 on two of its three paths | §11.2 |
 | Replay comparator | **Implemented:** typed oracles bound to their fixture | §12 |
@@ -728,6 +728,7 @@ constant names.
 |---|---|---|
 | `runners/rust` | stellar-xdr 30.0.0, stellar-strkey 1.0.0 | `LedgerCloseMeta::from_xdr` with limits; `TransactionEnvelope::hash`; `Strkey` Display for G/M/P/T/X; SHA-256 of `LiquidityPoolParameters` for pool IDs |
 | `runners/go` | go-stellar-sdk v0.9.0 | `xdr.SafeUnmarshal`; `LedgerCloseMeta.LedgerSequence/CountTransactions/TransactionHash/TxApplyProcessing/TransactionResultPair`; `network.HashTransactionInEnvelope`; `MuxedAccount.GetAddress/GetId`; `SignerKey.GetAddress`; `xdr.NewPoolId` (rejects mis-ordered pairs) |
+| `runners/python` | py-stellar-base (`stellar-sdk` on PyPI) 17.0.1 | `xdr.LedgerCloseMeta.from_xdr_bytes`; `TransactionBuilder.from_xdr` and parsed operations; `MuxedAccount.account_muxed_id`; `SignerKey.encoded_signer_key`; `LiquidityPoolAsset.liquidity_pool_id`. Decoded ledgers are cached by SHA-256 for sweep sets |
 | `runners/javascript` | @stellar/stellar-sdk, any version installed under an `sdk-<version>` npm alias | `xdr.LedgerCloseMeta.fromXDR`; `TransactionBuilder.fromXDR` and parsed `operations` (the layer applications use); `MuxedAccount.fromAddress`; `SignerKey.encodeSignerKey`; `getLiquidityPoolId` |
 
 The JavaScript runner goes through the SDK's public transaction API on

@@ -5,6 +5,7 @@
 - Rust: the version in `rust-toolchain.toml` (installed automatically by rustup)
 - Go: 1.26 or later (`linter/go/go.mod`; the runner in `runners/go` needs 1.25)
 - Node.js: 22
+- Python: 3.10 or later (`runners/python/requirements.txt`)
 - `make`
 
 ```sh
