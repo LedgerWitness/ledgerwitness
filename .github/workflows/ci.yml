@@ -49,9 +49,13 @@ jobs:
     needs: corpus
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # Install the components rust-toolchain.toml lists here, as the corpus job
+      # does; otherwise cargo installs them mid-build and can collide with the
+      # runner image's own cargo-fmt.
       - uses: dtolnay/rust-toolchain@df2a88e9fe4098bad09cb42c3dec7187f15861fc # master
         with:
           toolchain: 1.94.1
+          components: rustfmt, clippy
       - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
         with:
           go-version-file: runners/go/go.mod
