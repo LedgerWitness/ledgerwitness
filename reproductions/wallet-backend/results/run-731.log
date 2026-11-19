@@ -1,0 +1,25 @@
+== pre-fix-731-original-pin (764a4f5b)
+go-stellar-sdk v0.7.3
+    ledgerwitness_trustline_test.go:74: decoding ledger: decoding LedgerCloseMetaV2: decoding LedgerHeaderHistoryEntry: decoding LedgerHeader: decoding StellarValue: decoding StellarValueExt: decoding StellarValueType: '3' is not a valid StellarValueType enum value
+FAIL
+FAIL	github.com/stellar/wallet-backend/internal/indexer	0.028s
+FAIL
+no report: the harness did not complete
+== post-fix-731-original-pin (c152783c)
+go-stellar-sdk v0.7.3
+    ledgerwitness_trustline_test.go:74: decoding ledger: decoding LedgerCloseMetaV2: decoding LedgerHeaderHistoryEntry: decoding LedgerHeader: decoding StellarValue: decoding StellarValueExt: decoding StellarValueType: '3' is not a valid StellarValueType enum value
+FAIL
+FAIL	github.com/stellar/wallet-backend/internal/indexer	0.031s
+FAIL
+no report: the harness did not complete
+== pre-fix-731 (764a4f5b)
+go-stellar-sdk v0.9.0
+ok  	github.com/stellar/wallet-backend/internal/indexer	0.050s
+created in meta: 1, TRUSTLINE state changes: 0, created without TRUSTLINE/ADD: 1
+== post-fix-731 (c152783c)
+go-stellar-sdk v0.9.0
+ok  	github.com/stellar/wallet-backend/internal/indexer	0.040s
+created in meta: 1, TRUSTLINE state changes: 1, created without TRUSTLINE/ADD: 0
+
+
+wallet-backend #731: trustline GCAK23MGEQQF3UFCNGIWPTJR3APJP2ELHD2DTOPDDLWWLGRQJMNXXZEB|LCKC:GDXIEX2ASJJNSQ454PDOZICQZM6YSWXKH7VHFPJFSSTXY547BN6LD4KB created by core; no TRUSTLINE state change before the fix, TRUSTLINE/ADD after it

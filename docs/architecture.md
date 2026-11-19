@@ -771,6 +771,26 @@ sequenceDiagram
   ingestion, are not executed. wallet-backend's migrations require
   TimescaleDB, which was not available.
 
+**#731** (`run-731.sh`, separate harness `harness-731/`, no shim). The harness
+runs the commit's own `indexer.ProcessLedger` on the CAP-0073 entry (testnet
+ledger 5727139) and lists, side by side, every trustline the meta shows core
+created and every TRUSTLINE state change the indexer produced.
+
+- **Commits:** `764a4f5b` (first parent of PR #734) and `c152783c` (its merge).
+- **SDK raise.** Both pin go-stellar-sdk v0.7.3, which cannot decode the
+  protocol-30 header; that original-pin failure is recorded. Each commit then
+  runs with go-stellar-sdk v0.9.0 (the Go runner's version), the same change
+  at both, so the remaining difference is wallet-backend's own code.
+- **Recorded result:** before the fix, core's SAC-created trustline has no
+  TRUSTLINE state change; after it, a `TRUSTLINE/ADD` whose token is the asset
+  contract the transaction called.
+- **Assertions.** `check-results-731.mjs` takes the expected trustline from the
+  manifest and requires: the meta shows it created once by the focus
+  transaction, no TRUSTLINE change for the trustor before the fix, a
+  TRUSTLINE/ADD after it, and nothing left unrecorded after it. Its tests
+  reject a pre-fix report that already records the trustline, a post-fix
+  report without it, and a report of another ledger.
+
 ## 12. Replay harness and adapters (partial implementation)
 
 ### 12.1 Purpose
@@ -1142,9 +1162,10 @@ When a new protocol ships:
 - **`--check-lcm` goldens are not imported yet.** Network captures cannot be
   checked against them directly, because they are different ledgers.
 - **The wallet-backend replay stops before the database write.**
-- **#731 and #716 are not demonstrated by the required reference replay.**
-  Some pre-fix commits pin a Go SDK that cannot decode protocol-30 ledgers;
-  #753 also remains unreplayed.
+- **#716 is not demonstrated by the required reference replay, and #731 only
+  with a raised SDK.** The #731 commits pin a Go SDK that cannot decode
+  protocol-30 ledgers, so the reproduction raises it identically at both
+  commits (§11.2); #753 remains unreplayed.
 - **The coverage registry is incomplete**, so no coverage percentage is
   claimed.
 - **Replay comparison is implemented; orchestration, transports, database

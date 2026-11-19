@@ -130,11 +130,19 @@ throwing", closed 2026-10-16. UNVERIFIED beyond the title and state.
   tool in `generators/testnet-capture/`). Core created the trustline (`limit = i64::MAX`,
   `flags = 1`) inside an InvokeHostFunction operation that emitted no contract
   event.
-- **Replay:** not run yet. Both commits pin go-stellar-sdk v0.7.3, which
-  predates the protocol-30 `STELLAR_VALUE_SIGNED_MS` header arm, so they
-  cannot decode this protocol-30 ledger. Options: capture a CAP-73 `trust` call
-  from a protocol 26–28 ledger in the data lake, or bump the SDK identically at
-  both commits and record that change.
+- **Replay** (VERIFIED BY EXECUTION, `reproductions/wallet-backend/run-731.sh`):
+  each commit's own `indexer.ProcessLedger` on testnet ledger 5727139.
+  - With the pinned go-stellar-sdk v0.7.3, both commits fail to decode the
+    ledger ("'3' is not a valid StellarValueType enum value"): v0.7.3 predates
+    the protocol-30 `STELLAR_VALUE_SIGNED_MS` header arm.
+  - With go-stellar-sdk raised to v0.9.0 at both commits (the same change,
+    so the only difference is wallet-backend's code): at `764a4f5b` core's
+    trustline `GCAK23MG…|LCKC:GDXIEX2A…` has no TRUSTLINE state change among
+    the ledger's 39; at `c152783c` it gets a `TRUSTLINE/ADD` whose token is
+    the asset contract the transaction called (`CA4EKC4N…`).
+  - `check-results-731.mjs` takes the expected trustline from the corpus
+    manifest, not from wallet-backend. Output in
+    `reproductions/wallet-backend/results/`. No database write is involved.
 
 ### #716: AddressBytea truncates muxed and signed-payload addresses
 

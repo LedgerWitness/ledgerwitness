@@ -49,6 +49,9 @@ spec are versioned separately (`schema_version`, `probe_spec`).
   envelope with no meta input) on go/analysis, with seeded cases run in CI.
   `make lint-wallet-backend` runs it on wallet-backend: 6 findings before the
   #753 Soroban-participants fix, none at the fix or on `main`.
+- wallet-backend #731 reproduction (`run-731.sh`): on the CAP-0073 testnet
+  ledger, no trustline state change before the #734 fix and `TRUSTLINE/ADD`
+  after it, with go-stellar-sdk raised identically at both commits.
 - `make testnet-evidence`: offline re-check of the recorded live run, also
   run in CI. The recorded run now keeps the raw ledgers (testnet ledgers
   5804257–5804261).

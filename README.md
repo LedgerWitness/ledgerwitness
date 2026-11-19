@@ -36,7 +36,7 @@ against.
 | **Corpus and generator** | <ul><li>One entry per rare shape, tagged with the CAP and protocol that introduced it, with expected decoded values and a per-CAP coverage registry.</li><li>Only ledgers stellar-core actually emitted: from testnet or mainnet history, or generated offline by a pinned local stellar-core under both network passphrases. Hand-made entries are labelled synthetic.</li><li>The shapes that have already broken SDKs: issuer ordering, muxed accounts, IDs that decode to a different value than they encode, vectors at maximum length, nested authorization, map keys that collide after conversion.</li><li>Agreement with stellar-core's `--check-lcm` goldens.</li></ul> | **Implemented:**<ul><li>5 real testnet entries covering 6 CAPs (0027, 0038, 0040, 0067, 0073, 0088), protocols 28 and 30</li><li>live testnet generator and data-lake extraction</li><li>port of core's `--check-lcm` comparison</li></ul>**Planned:** offline local-core generator for both passphrases, mainnet entries, the remaining shapes, golden import, complete CAP registry |
 | **Verifier** | Checks that each entry is intact and came from the network it claims, offline. | **Implemented:** hashes, decode/re-encode, header commitments, network binding, validator signature, alternate-copy equivalence |
 | **SDK conformance runner** | <ul><li>Runs every entry through the JavaScript, Go and Rust SDKs in CI.</li><li>Reports where they disagree with the network or with each other.</li><li>Opens a sibling issue in each SDK that shares a defect another SDK fixed.</li><li>Reproduces js-stellar-sdk #1766, #1785 and #1789 on their pre-fix releases.</li></ul> | **Implemented:**<ul><li>3 runners and 14 probes</li><li>comparison matrix bound to the exact input files</li><li>the three JS SDK issues reproduced before and after their fixes</li><li>two JS SDK releases checked live on fresh testnet transactions</li></ul>**Planned:** more shapes and releases, sibling-issue workflow |
-| **Replay harness** | <ul><li>Feeds the corpus to a real indexer through an input it already reads (mock RPC `getLedgers` first, then the Galexie data-lake layout), using a documented adapter interface.</li><li>Reports each shape the indexer stores wrongly or drops, with bounded memory.</li><li>Its reference adapter for wallet-backend reproduces #729, #731 and #716 before their fixes and passes after.</li></ul> | **Partial:**<ul><li>comparison of stored results against expected changes</li><li>#729 reproduced on wallet-backend's own indexer at the pre-fix and fix commits, in process</li></ul>**Planned:** adapter interface, mock RPC, database-backed replay, #731 and #716 |
+| **Replay harness** | <ul><li>Feeds the corpus to a real indexer through an input it already reads (mock RPC `getLedgers` first, then the Galexie data-lake layout), using a documented adapter interface.</li><li>Reports each shape the indexer stores wrongly or drops, with bounded memory.</li><li>Its reference adapter for wallet-backend reproduces #729, #731 and #716 before their fixes and passes after.</li></ul> | **Partial:**<ul><li>comparison of stored results against expected changes</li><li>#729 and #731 reproduced on wallet-backend's own indexer at the pre-fix and fix commits, in process (#731 with go-stellar-sdk raised identically at both)</li></ul>**Planned:** adapter interface, mock RPC, database-backed replay, #716 |
 | **Go indexer linter** | Flags three mistakes in indexer source:<ul><li>trusting fields stellar-core does not validate;</li><li>recursing over authorization trees or nested ScVals without depth or size caps;</li><li>taking participants from the envelope instead of the meta.</li></ul>Flags seeded violations and runs clean on current wallet-backend. | **Prototype of the third rule (STLR003):** seeded cases in CI; on wallet-backend it flags the 6 envelope-only functions of the pre-#753 code and runs clean on the fix and on current `main` ([evidence](docs/evidence/linter-stlr003/README.md)). **Planned:** the other two rules |
 | **Indexer-hardening guide** | <ul><li>Which transaction fields core validates, field by field.</li><li>Recommended caps, participants from meta, muxed and signed-payload handling (SEP-0023).</li><li>A checklist matching the linter rules.</li></ul>Its tables are checked against the corpus manifests and reviewed by a core or platform engineer before publication. | **Planned** (design in [architecture §14](docs/architecture.md)) |
 | **Findings** | The corpus run against at least one SDF pipeline (wallet-backend or stellar-etl), each failure triaged (severity, CAP, minimal entry) and reported to its maintainers. | Two observations triaged, neither a defect; nothing filed yet |
@@ -153,6 +153,12 @@ What the results show:
   - This was not a database write; see [architecture §11.2](docs/architecture.md).
   - The signer row's transaction ID matches the one Horizon reports
     independently.
+- **wallet-backend#731 reproduces in process.** On the real CAP-0073 testnet
+  ledger, core creates a trustline through the asset contract's `trust`
+  function. Before the fix, wallet-backend records no trustline change for
+  it; after the fix, it records `TRUSTLINE/ADD`.
+  - Both commits pin a Go SDK too old for protocol-30 ledgers, so the SDK is
+    raised identically at both; the original-pin failure is recorded too.
 - **Two sources serve the same ledger differently.** The public data lake and
   RPC `getLedgers` return different bytes for the same ledger: an extension
   field, the order of some changes, and timing values. The two copies agree
@@ -230,7 +236,7 @@ cargo run -q -p ledgerwitness -- extract-envelope ledger.xdr <tx-hash> --out foc
 # Compare an indexer's observed changes with an expected-result file
 cargo run -q -p ledgerwitness -- replay-check --entry <entry-dir>/entry.json --oracle <oracle.json> --observed <observation.json>
 
-# Replay wallet-backend #729 (needs a clone of stellar/wallet-backend)
+# Replay wallet-backend #729 and #731 (needs a clone of stellar/wallet-backend)
 make repro-wallet-backend WALLET_BACKEND=../wallet-backend
 ```
 
