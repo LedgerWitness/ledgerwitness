@@ -15,7 +15,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }
 sha2 = "0.10"
 hex = "0.4"
-zstd = "0.13"
+zstd = "0.14"
 anyhow = "1"
 clap = { version = "4", features = ["derive"] }
 jsonschema = { version = "0.61", default-features = false }
