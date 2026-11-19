@@ -808,8 +808,22 @@ the interfaces rather than the type names.
   Its tests reject a pre-fix report whose signer survives, a pre-fix report
   that shows the guard instead of the truncation, a fixed report that loses
   or alters the signer, and a report of another ledger.
-- **Not covered:** #716's other two producers (muxed Soroban operation
-  sources, SEP-41 muxed addresses) need ledgers the corpus does not have yet.
+
+**#716, muxed Soroban operation source** (`run-716-soroban.sh`, harness
+`harness-716-soroban/`). The harness runs the commit's own indexer on the
+ExtendFootprintTTL entry (testnet ledger 5818357) and puts every operation
+participant of the operation's base account through `AddressBytea`'s own
+`Value()` and `Scan()`. `ProcessLedger` changed its return values across these
+commits, so the harness calls it through reflection.
+
+- **Commits:** `79ea2acd`, `6e5a5910` (#693) and `bb0b162b` (#753), with
+  go-stellar-sdk raised to v0.9.0 identically at all three (the original
+  v0.7.3 pin cannot decode protocol 30; that failure is recorded).
+- **Recorded result:** the muxed source is stored as an undecodable 33-byte
+  value; then stored as its base account (the muxed ID dropped); then no
+  longer produced as a participant.
+- **Not covered:** #716's SEP-41 muxed-address producer needs a ledger the
+  corpus does not have yet.
 
 ## 12. Replay harness and adapters (partial implementation)
 
@@ -1182,10 +1196,10 @@ When a new protocol ships:
 - **`--check-lcm` goldens are not imported yet.** Network captures cannot be
   checked against them directly, because they are different ledgers.
 - **The wallet-backend replay stops before the database write.**
-- **#716 is demonstrated for one of its three producers, and #731 only with a
-  raised SDK.** The #716 replay covers the signed-payload signer; the muxed
-  Soroban source and the SEP-41 muxed address need corpus shapes not captured
-  yet. The #731 commits pin a Go SDK that cannot decode protocol-30 ledgers, so
+- **#716 is demonstrated for two of its three producers, and #731 only with a
+  raised SDK.** The #716 replays cover the signed-payload signer and the muxed
+  Soroban operation source; the SEP-41 muxed address needs a corpus shape not
+  captured yet. The #731 commits pin a Go SDK that cannot decode protocol-30 ledgers, so
   that reproduction raises it identically at both commits (§11.2); #753
   remains unreplayed.
 - **The coverage registry is incomplete**, so no coverage percentage is

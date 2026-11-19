@@ -198,9 +198,26 @@ throwing", closed 2026-10-16. UNVERIFIED beyond the title and state.
   - `2c873353` (#729): 41 bytes stored; the key reads back unchanged.
   - `check-results-716.mjs` takes the signer from the corpus manifest. No
     database is involved; the column type performs the conversion itself.
-- **Producers 1 and 2: not reproduced.** The corpus has no Soroban operation
-  with a muxed source and no SEP-41 event carrying a muxed address. Both need
-  new captures before they can be replayed.
+- **Replay, producer 1** (VERIFIED BY EXECUTION,
+  `reproductions/wallet-backend/run-716-soroban.sh`): each commit's own
+  indexer on `core.testnet.cap27.soroban-muxed-extend-ttl.p30` (testnet
+  ledger 5818357, an ExtendFootprintTTL whose source is `MDG3LXPK…GDXQ`), then
+  `AddressBytea`'s own `Value()` and `Scan()` for every operation participant
+  of that account. The ledger is protocol 30, so go-stellar-sdk is raised from
+  v0.7.3 to v0.9.0 identically at all three commits; the original-pin decode
+  failure is recorded.
+  - `79ea2acd`: the muxed source is a participant, stored as 33 bytes without
+    error, and reads back as `MDG3LXPK…RTYX`, which does not decode ("invalid
+    payload length 32, expected 40").
+  - `6e5a5910` (#693): still a participant, but `AddressBytea.Value()` now
+    stores a muxed address as its base account, so it reads back as
+    `GDG3LXPK…QBRI` (the muxed ID is dropped by design).
+  - `bb0b162b` (#753): the indexer no longer produces the muxed participant;
+    only the base account is stored.
+  - So #693 already stops the corruption at the storage layer for this
+    producer; #753 moves the normalisation to the indexer.
+- **Producer 2: not reproduced.** The corpus has no SEP-41 event carrying a
+  muxed address yet.
 
 ### #753: Soroban operation source reduced to its base account
 

@@ -1,0 +1,22 @@
+== pre-fix-716-soroban-original-pin (79ea2acd1dc65a07166133cc04b12e76db314db0)
+go-stellar-sdk v0.7.3
+    ledgerwitness_participants_test.go:74: decoding ledger: decoding LedgerCloseMetaV2: decoding LedgerHeaderHistoryEntry: decoding LedgerHeader: decoding StellarValue: decoding StellarValueExt: decoding StellarValueType: '3' is not a valid StellarValueType enum value
+FAIL
+FAIL	github.com/stellar/wallet-backend/internal/indexer	0.117s
+FAIL
+no report: the harness did not complete
+== pre-fix-716-soroban (79ea2acd1dc65a07166133cc04b12e76db314db0)
+go-stellar-sdk v0.9.0
+ok  	github.com/stellar/wallet-backend/internal/indexer	0.106s
+GDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQBRI: stored 33 bytes, read back GDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQBRI (exact)
+MDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQABAAAAAAAAAAGDXQ: stored 33 bytes, read back MDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDRTYX (undecodable: invalid payload length 32, expected 40)
+== guard-716-soroban (6e5a59101158dc2996295450190142366062cd05)
+go-stellar-sdk v0.9.0
+ok  	github.com/stellar/wallet-backend/internal/indexer	0.118s
+GDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQBRI: stored 33 bytes, read back GDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQBRI (exact)
+MDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQABAAAAAAAAAAGDXQ: stored 33 bytes, read back GDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQBRI
+== fixed-716-soroban (bb0b162b)
+go-stellar-sdk v0.9.0
+ok  	github.com/stellar/wallet-backend/internal/indexer	0.073s
+GDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQBRI: stored 33 bytes, read back GDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQBRI (exact)
+wallet-backend #716 (muxed Soroban operation source): MDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQABAAAAAAAAAAGDXQ is stored as MDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDRTYX (undecodable) before #693, stored as GDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQBRI from #693, and no longer produced after #753

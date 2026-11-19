@@ -59,6 +59,10 @@ spec are versioned separately (`schema_version`, `probe_spec`).
   ExtendFootprintTTL with a muxed operation source on testnet ledger
   5818357, which core accepts and js-stellar-sdk 17.4.0's builder refuses
   (js-stellar-sdk#1906). Rust, Go and JS 17.4.0 pass it.
+- wallet-backend #716 reproduction for its muxed Soroban operation source
+  (`run-716-soroban.sh`) on the new ExtendFootprintTTL entry: undecodable
+  before #693, stored as the base account from #693, no longer produced from
+  #753.
 - `make testnet-evidence`: offline re-check of the recorded live run, also
   run in CI. The recorded run now keeps the raw ledgers (testnet ledgers
   5804257–5804261).

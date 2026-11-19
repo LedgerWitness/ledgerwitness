@@ -70,7 +70,7 @@ jobs:
       - name: Recorded live testnet run, re-checked offline
         run: make testnet-evidence
       - name: Wallet replay report assertions (stored evidence only)
-        run: node --test reproductions/wallet-backend/check-results.test.mjs reproductions/wallet-backend/check-results-731.test.mjs reproductions/wallet-backend/check-results-716.test.mjs
+        run: node --test reproductions/wallet-backend/check-results.test.mjs reproductions/wallet-backend/check-results-731.test.mjs reproductions/wallet-backend/check-results-716.test.mjs reproductions/wallet-backend/check-results-716-soroban.test.mjs
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:

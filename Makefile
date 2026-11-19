@@ -19,7 +19,7 @@ verify: | $(OUT)
 
 test:
 	cargo test -q --workspace --locked
-	node --test reproductions/wallet-backend/check-results.test.mjs reproductions/wallet-backend/check-results-731.test.mjs reproductions/wallet-backend/check-results-716.test.mjs
+	node --test reproductions/wallet-backend/check-results.test.mjs reproductions/wallet-backend/check-results-731.test.mjs reproductions/wallet-backend/check-results-716.test.mjs reproductions/wallet-backend/check-results-716-soroban.test.mjs
 
 $(OUT):
 	mkdir -p $(OUT)
@@ -52,6 +52,7 @@ repro-wallet-backend:
 	reproductions/wallet-backend/run.sh $(WALLET_BACKEND)
 	reproductions/wallet-backend/run-731.sh $(WALLET_BACKEND)
 	reproductions/wallet-backend/run-716.sh $(WALLET_BACKEND)
+	reproductions/wallet-backend/run-716-soroban.sh $(WALLET_BACKEND)
 
 # Submits transactions to testnet with throwaway friendbot-funded keys.
 capture:

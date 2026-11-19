@@ -1,0 +1,20 @@
+{
+  "ledger": 5818357,
+  "account": "GDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQBRI",
+  "operation_participants": [
+    {
+      "operation_id": 24989653031522305,
+      "participant": "GDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQBRI",
+      "stored_bytes": 33,
+      "read_back": "GDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQBRI",
+      "exact": true
+    },
+    {
+      "operation_id": 24989653031522305,
+      "participant": "MDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQABAAAAAAAAAAGDXQ",
+      "stored_bytes": 33,
+      "read_back": "GDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQBRI",
+      "exact": false
+    }
+  ]
+}
