@@ -158,6 +158,22 @@ throwing", closed 2026-10-16. UNVERIFIED beyond the title and state.
   pre-fix commit) that guard is present, so the observable pre-fix failure for
   producer 3 is an encode error, not silent truncation. Silent truncation can
   only be observed before `6e5a5910`.
+- **Replay, producer 3** (VERIFIED BY EXECUTION,
+  `reproductions/wallet-backend/run-716.sh`): each commit's own
+  `indexer.ProcessLedger` on testnet ledger 4437357, then the signer column's
+  own `Value()` and `Scan()`, as an insert and a read would. All three commits
+  run with their pinned go-stellar-sdk v0.7.3.
+  - `79ea2acd` (first parent of #693): the write succeeds silently and stores
+    33 bytes; the key reads back as `PBCK2RYY…NSBYVM`, which does not decode
+    ("invalid signed payload length 32, expected at least 36"). This is the
+    truncation #716 describes.
+  - `6e5a5910` (#693): the write is refused ("has a 40-byte key payload").
+  - `2c873353` (#729): 41 bytes stored; the key reads back unchanged.
+  - `check-results-716.mjs` takes the signer from the corpus manifest. No
+    database is involved; the column type performs the conversion itself.
+- **Producers 1 and 2: not reproduced.** The corpus has no Soroban operation
+  with a muxed source and no SEP-41 event carrying a muxed address. Both need
+  new captures before they can be replayed.
 
 ### #753: Soroban operation source reduced to its base account
 

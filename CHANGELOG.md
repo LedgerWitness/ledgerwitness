@@ -52,6 +52,9 @@ spec are versioned separately (`schema_version`, `probe_spec`).
 - wallet-backend #731 reproduction (`run-731.sh`): on the CAP-0073 testnet
   ledger, no trustline state change before the #734 fix and `TRUSTLINE/ADD`
   after it, with go-stellar-sdk raised identically at both commits.
+- wallet-backend #716 reproduction for its signed-payload producer
+  (`run-716.sh`): silent truncation to an undecodable address before #693, a
+  refused write at #693, an exact round trip from #729.
 - `make testnet-evidence`: offline re-check of the recorded live run, also
   run in CI. The recorded run now keeps the raw ledgers (testnet ledgers
   5804257–5804261).

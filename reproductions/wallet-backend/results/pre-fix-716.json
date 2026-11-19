@@ -1,0 +1,16 @@
+{
+  "ledger": 4437357,
+  "transactions": 12,
+  "state_changes": 17,
+  "signer_round_trips": [
+    {
+      "signer": "PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS",
+      "column_type": "NullAddressBytea",
+      "stored_hex": "7844ad47185a30e91c245e8b0582b191e27d99fb40f9ff48ca0d7e1264ec879b20",
+      "stored_bytes": 33,
+      "read_back": "PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSBYVM",
+      "read_back_decode_error": "invalid signed payload length 32, expected at least 36",
+      "exact": false
+    }
+  ]
+}

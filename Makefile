@@ -19,7 +19,7 @@ verify: | $(OUT)
 
 test:
 	cargo test -q --workspace --locked
-	node --test reproductions/wallet-backend/check-results.test.mjs reproductions/wallet-backend/check-results-731.test.mjs
+	node --test reproductions/wallet-backend/check-results.test.mjs reproductions/wallet-backend/check-results-731.test.mjs reproductions/wallet-backend/check-results-716.test.mjs
 
 $(OUT):
 	mkdir -p $(OUT)
@@ -46,10 +46,12 @@ linter:
 lint-wallet-backend:
 	linter/go/run-wallet-backend.sh $(WALLET_BACKEND)
 
-# Needs a clone of stellar/wallet-backend: make repro-wallet-backend WALLET_BACKEND=../wallet-backend
+# #729, #731 and #716. Needs a clone of stellar/wallet-backend:
+# make repro-wallet-backend WALLET_BACKEND=../wallet-backend
 repro-wallet-backend:
 	reproductions/wallet-backend/run.sh $(WALLET_BACKEND)
 	reproductions/wallet-backend/run-731.sh $(WALLET_BACKEND)
+	reproductions/wallet-backend/run-716.sh $(WALLET_BACKEND)
 
 # Submits transactions to testnet with throwaway friendbot-funded keys.
 capture:

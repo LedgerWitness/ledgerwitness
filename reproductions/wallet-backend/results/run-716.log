@@ -1,0 +1,10 @@
+== pre-fix-716 (79ea2acd1dc65a07166133cc04b12e76db314db0)
+ok  	github.com/stellar/wallet-backend/internal/indexer	0.044s
+NullAddressBytea: stored 33 bytes, read back PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSBYVM (undecodable: invalid signed payload length 32, expected at least 36)
+== guard-716 (6e5a59101158dc2996295450190142366062cd05)
+ok  	github.com/stellar/wallet-backend/internal/indexer	0.045s
+NullAddressBytea: write refused: stellar address PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS has a 40-byte key payload; the account_id column stores only 32-byte account/contract keys
+== fixed-716 (2c873353c1f0f3c9b145e25a7d009023ad104a1c)
+ok  	github.com/stellar/wallet-backend/internal/indexer	0.048s
+NullSignerKeyBytea: stored 41 bytes, read back PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS (exact)
+wallet-backend #716 (signed-payload producer): PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS is stored as PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSBYVM (undecodable) before #693, refused at #693, and stored exactly from #729

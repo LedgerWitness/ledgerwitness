@@ -1,0 +1,14 @@
+{
+  "ledger": 4437357,
+  "transactions": 12,
+  "state_changes": 17,
+  "signer_round_trips": [
+    {
+      "signer": "PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS",
+      "column_type": "NullAddressBytea",
+      "write_error": "stellar address PBCK2RYYLIYOSHBEL2FQLAVRSHRH3GP3ID476SGKBV7BEZHMQ6NSAAAAAAB55LN6AANMS has a 40-byte key payload; the account_id column stores only 32-byte account/contract keys",
+      "stored_bytes": 0,
+      "exact": false
+    }
+  ]
+}
