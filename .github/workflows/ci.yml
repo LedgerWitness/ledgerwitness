@@ -31,6 +31,18 @@ jobs:
       - name: Verify every corpus entry
         run: cargo run -q --locked -p ledgerwitness -- verify corpus/entries
 
+  linter:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
+        with:
+          go-version-file: linter/go/go.mod
+          cache-dependency-path: linter/go/go.sum
+      - name: Indexer linter prototype (STLR003 seeded cases)
+        run: make linter
+
   conformance:
     runs-on: ubuntu-24.04
     timeout-minutes: 20

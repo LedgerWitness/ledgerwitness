@@ -10,6 +10,9 @@ updates:
   - package-ecosystem: gomod
     directory: /runners/go
     schedule: { interval: weekly }
+  - package-ecosystem: gomod
+    directory: /linter/go
+    schedule: { interval: weekly }
   - package-ecosystem: npm
     directory: /generators/testnet-capture
     schedule: { interval: weekly }
