@@ -76,6 +76,8 @@ spec are versioned separately (`schema_version`, `probe_spec`).
   SDF's history archive (`archive-hash.mjs`) and validator signatures.
 - Python runner (py-stellar-base 17.0.1): passes all seven corpus entries
   and agrees with Rust, Go and JS on all 5,758 sweep transactions.
+- `make strkey`: 144 SEP-23 strkeys through Rust, Go, two JS releases and
+  Python; one Go result is a known upstream issue (go-stellar-sdk#6042).
 - `make testnet-evidence`: offline re-check of the recorded live run, also
   run in CI. The recorded run now keeps the raw ledgers (testnet ledgers
   5804257–5804261).

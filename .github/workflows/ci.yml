@@ -73,6 +73,8 @@ jobs:
         run: make conform
       - name: js-stellar-sdk pre/post-fix reproductions
         run: make repro-js
+      - name: SEP-23 strkey decoders (Rust, Go, JS, Python)
+        run: make strkey
       - name: Recorded live testnet run, re-checked offline
         run: make testnet-evidence
       - name: Wallet replay report assertions (stored evidence only)

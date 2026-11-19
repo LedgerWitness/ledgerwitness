@@ -57,6 +57,29 @@ the data lake (`ledger-checks.txt`):
   that no current stellar.toml declares (its account's home domain is
   whalestack.com), so it is not attested; see architecture §18.
 
+## `to_muxed_id` is usually not a number
+
+CAP-67 transfer events carry a `to_muxed_id` field. For a destination that is
+not muxed, stellar-core fills it from the transaction's memo
+(`EventManager.cpp`, see `docs/guide/indexer-hardening.md`). Counted over the
+transfer events of six of the sweep ledgers:
+
+| Ledger | memo text (`string`) | memo hash (`bytes`) | muxed ID (`u64`) |
+|---|---|---|---|
+| 64000000 | 97 | 1 | 0 |
+| 64500000 | 11 | 0 | 0 |
+| 65000000 | 503 | 0 | 0 |
+| 65300000 | 113 | 0 | 0 |
+| 65566583 | 19 | 0 | 1 |
+| 65566590 | 67 | 1 | 1 |
+| **Total** | **810** | **2** | **2** |
+
+All 812 non-numeric values come from classic operations. A reader that
+expects a 64-bit number in this field fails on almost every event that has
+it. wallet-backend, go-stellar-sdk's token-transfer processor and stellar-etl
+accept text and bytes; Horizon parses the field only for Soroban
+transactions, which cannot carry a memo from protocol 25.
+
 ## The comparison can fail
 
 A planted wrong value in one runner's report, and one removed result, are

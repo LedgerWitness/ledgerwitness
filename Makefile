@@ -11,7 +11,7 @@ REQUIRE_PASS := --require-pass stellar-xdr \
                 --require-pass "@stellar/stellar-sdk 17.4.0" \
                 --require-pass py-stellar-base
 
-.PHONY: all verify test runners conform repro-js linter lint-wallet-backend repro-wallet-backend capture testnet-smoke testnet-evidence sweep clean
+.PHONY: all verify test runners conform repro-js linter lint-wallet-backend repro-wallet-backend capture testnet-smoke testnet-evidence sweep strkey clean
 
 all: verify test conform repro-js
 
@@ -38,6 +38,10 @@ conform: runners
 
 repro-js:
 	cd reproductions/js-sdk && node run.mjs --json results.json
+
+# SEP-23 strkey vectors (published and rule-derived) through five decoders.
+strkey:
+	GO=$(GO) reproductions/strkey/run.sh
 
 # Indexer linter prototype (rule STLR003) against its seeded cases.
 linter:

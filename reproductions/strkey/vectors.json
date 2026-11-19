@@ -1,0 +1,866 @@
+[
+ {
+  "expect": "valid",
+  "desc": "Valid non-multiplexed account",
+  "strkey": "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "valid",
+  "desc": "Valid multiplexed account",
+  "strkey": "MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUQ",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "valid",
+  "desc": "Valid multiplexed account",
+  "strkey": "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "valid",
+  "desc": "Valid multiplexed account in which unsigned id exceeds maximum signed 64-bit",
+  "strkey": "MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAJLK",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "valid",
+  "desc": "Valid multiplexed account in which unsigned id exceeds maximum signed 64-bit",
+  "strkey": "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "valid",
+  "desc": "Valid signed payload with an ed25519 public key and a 32-byte payload.",
+  "strkey": "PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAQACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6IBZGM",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "valid",
+  "desc": "Valid signed payload with an ed25519 public key and a 32-byte payload.",
+  "strkey": "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "valid",
+  "desc": "Valid signed payload with an ed25519 public key and a 29-byte payload which",
+  "strkey": "PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAOQCAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUAAAAFGBU",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "valid",
+  "desc": "Valid signed payload with an ed25519 public key and a 29-byte payload which",
+  "strkey": "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "valid",
+  "desc": "Valid contract",
+  "strkey": "CA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUWDA",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "valid",
+  "desc": "Valid liquidity pool address",
+  "strkey": "LA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUPJN",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "valid",
+  "desc": "Valid claimable balance address",
+  "strkey": "BAAD6DBUX6J22DMZOHIEZTEQ64CVCHEDRKWZONFEUL5Q26QD7R76RGR4TU",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "valid",
+  "desc": "Valid muxed contract address",
+  "strkey": "WA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAAWWC",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "valid",
+  "desc": "Valid muxed contract address",
+  "strkey": "CA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUWDA",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "valid",
+  "desc": "Valid muxed contract address in which unsigned id exceeds maximum signed",
+  "strkey": "WA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAACWJY",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "valid",
+  "desc": "Valid muxed contract address in which unsigned id exceeds maximum signed",
+  "strkey": "CA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUWDA",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "The unused trailing bit must be zero in the encoding of the last three bytes",
+  "strkey": "MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUR",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "Invalid length (congruent to 1 mod 8)",
+  "strkey": "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZA",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "Invalid length (base-32 decoding should yield 35 bytes, not 36)",
+  "strkey": "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUACUSI",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "Invalid algorithm (low 3 bits of version byte are 7)",
+  "strkey": "G47QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVP2I",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "Invalid length (congruent to 6 mod 8)",
+  "strkey": "MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAJLKA",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "Invalid length (base-32 decoding should yield 43 bytes, not 44)",
+  "strkey": "MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVAAAAAAAAAAAAAAV75I",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "Invalid algorithm (low 3 bits of version byte are 7)",
+  "strkey": "M47QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUQ",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "Invalid checksum",
+  "strkey": "MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUO",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "Length prefix specifies length that is shorter than payload in signed",
+  "strkey": "PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAQACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6IAAAAAAAAPM",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "Length prefix specifies length that is longer than payload in signed payload",
+  "strkey": "PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAOQCAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4Z2PQ",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "No zero padding in signed payload",
+  "strkey": "PA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAOQCAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DXFH6",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "The unused trailing 2-bits must be zero in the encoding of the last symbol.",
+  "strkey": "BAAD6DBUX6J22DMZOHIEZTEQ64CVCHEDRKWZONFEUL5Q26QD7R76RGR4TV",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "Invalid claimable balance type (first byte of binary key is not 0)",
+  "strkey": "BAAT6DBUX6J22DMZOHIEZTEQ64CVCHEDRKWZONFEUL5Q26QD7R76RGXACA",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "The unused trailing bit must be zero in the encoding of the last three bytes",
+  "strkey": "WA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAAWWD",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "Invalid length (congruent to 6 mod 8) of a muxed contract",
+  "strkey": "WA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAAWWCA",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "Invalid length (base-32 decoding should yield 43 bytes, not 44) of a muxed",
+  "strkey": "WA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAAAIOUI",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "Invalid algorithm (low 3 bits of version byte are 7) of a muxed contract",
+  "strkey": "W47QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAADXHW",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "Invalid checksum of a muxed contract",
+  "strkey": "WA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAAAWWA",
+  "source": "SEP-23 test vector (stellar/stellar-protocol@f2d364902615, ecosystem/sep-0023.md)"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 1-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAA2WAAAAC7GT",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 1-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAA2WAAAAC7GS",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 2-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAABKXKYAAAA4V",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 2-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAABKXKYAAAA4U",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 3-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAB2XK5LADKKD",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 3-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAB2XK5LADKKC",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 4-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAACKXK5LVOA4F",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 4-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAACKXK5LVOA4E",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 5-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAC2XK5LVOVQAAAA5RG7",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 5-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAC2XK5LVOVQAAAA5RGQ",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 6-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAADKXK5LVOV2WAAAYUW7",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 6-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAADKXK5LVOV2WAAAYUWQ",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 7-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAD2XK5LVOV2XKYAMID7",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 7-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAD2XK5LVOV2XKYAMIDQ",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 8-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAEKXK5LVOV2XK5LW6N7",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 8-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAEKXK5LVOV2XK5LW6NQ",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 9-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAE2XK5LVOV2XK5LVMAAAAHFCL",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 9-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAE2XK5LVOV2XK5LVMAAAAHFCI",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 10-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAFKXK5LVOV2XK5LVOVQAABNSD",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 10-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAFKXK5LVOV2XK5LVOVQAABNSA",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 11-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAF2XK5LVOV2XK5LVOV2WAGKCT",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 11-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAF2XK5LVOV2XK5LVOV2WAGKCQ",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 12-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAGKXK5LVOV2XK5LVOV2XK2D3L",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 12-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAGKXK5LVOV2XK5LVOV2XK2D3I",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 17-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAI2XK5LVOV2XK5LVOV2XK5LVOV2XKYAAAAB7H7",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 17-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAI2XK5LVOV2XK5LVOV2XK5LVOV2XKYAAAAB7HY",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 18-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAJKXK5LVOV2XK5LVOV2XK5LVOV2XK5LAAAETPH",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 18-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAJKXK5LVOV2XK5LVOV2XK5LVOV2XK5LAAAETPA",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 19-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAJ2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVMADXKH",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 19-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAJ2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVMADXKA",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 20-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAKKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOVTVJP",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 20-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAKKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOVTVJI",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 21-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAK2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2WAAAACFOL",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 21-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAK2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2WAAAACFOK",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 22-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAALKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XKYAAA5WN",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 22-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAALKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XKYAAA5WM",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 23-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAL2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LAAF6F",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 23-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAL2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LAAF6E",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 24-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAMKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVNCSH",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 24-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAMKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVNCSG",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 25-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAM2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOVQAAAAIBPP",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 25-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAM2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOVQAAAAIBPA",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 26-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAANKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2WAAAEYJP",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 26-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAANKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2WAAAEYJA",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 27-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAN2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XKYAIQR7",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 27-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAN2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XKYAIQRQ",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 28-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAOKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LGXK7",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 28-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAOKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LGXKQ",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 29-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAO2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVMAAAAFGIP",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 29-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAO2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVMAAAAFGIM",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 30-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAPKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOVQAAEORD",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 30-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAPKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOVQAAEORA",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 31-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAP2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2WAGWYT",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 31-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAP2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2WAGWYQ",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 32-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAQKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XKY4TL",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 32-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAQKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XKY4TI",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 37-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAS2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XKYAAAAGLAP",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 37-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAS2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XKYAAAAGLAI",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 38-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAATKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LAAAASFP",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 38-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAATKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LAAAASFI",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 39-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAT2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVMAG23H",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 39-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAT2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVMAG23A",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 40-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAUKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOVYVZP",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 40-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAUKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOVYVZI",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 41-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAU2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2WAAAAB7OJ",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 41-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAU2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2WAAAAB7OI",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 42-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAVKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XKYAABL4L",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 42-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAVKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XKYAABL4K",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 43-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LADYNB",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 43-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LADYNA",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 44-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAWKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVPNNR",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 44-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAWKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVPNNQ",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 45-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAW2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOVQAAAATDDP",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 45-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAW2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOVQAAAATDDA",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 46-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAXKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2WAAAPBOP",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 46-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAXKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2WAAAPBOA",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 47-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAX2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XKYATAQP",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 47-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAX2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XKYATAQA",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 48-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAYKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5L5D5P",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 48-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAYKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5L5D5A",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 49-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAY2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVMAAAAHDQX",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 49-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAY2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVMAAAAHDQU",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 50-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAZKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOVQAAFLJD",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 50-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAZKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOVQAAFLJA",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 51-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAZ2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2WAGTA3",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 51-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAZ2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2WAGTAY",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 52-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAA2KXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK6FTX",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 52-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAA2KXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK6FTU",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 57-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAA42XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XKYAAAAG5FP",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 57-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAA42XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XKYAAAAG5FI",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 58-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAA5KXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LAAANGMX",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 58-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAA5KXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LAAANGMQ",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 59-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAA52XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVMAOPKX",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 59-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAA52XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVMAOPKQ",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 60-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAA6KXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOVVOMX",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 60-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAA6KXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOVVOMQ",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 61-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAA62XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2WAAAAACZN",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 61-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAA62XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2WAAAAACZM",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 62-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAA7KXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XKYAAC6VF",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 62-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAA7KXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XKYAAC6VE",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 63-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAA72XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LACFOX",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 63-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAA72XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LACFOW",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 64-byte payload and non-zero unused trailing bits (SEP-23: unused bits must be zero)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAABAKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOX2F",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: the canonical P with a 64-byte payload",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAABAKXK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOX2E",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "lowercase G (re-encodes as uppercase, so fails SEP-23's round-trip rule)",
+  "strkey": "gaaacaqdaqcqmbyibefawdanbyhraeiscmkbkfqxdamrugy4dupb7jzx",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "lowercase P",
+  "strkey": "paaacaqdaqcqmbyibefawdanbyhraeiscmkbkfqxdamrugy4dupb6aaaaabqcaqdadjzi",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "G with base-32 '=' padding (SEP-23: no padding)",
+  "strkey": "GAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB7JZX====",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "invalid",
+  "desc": "P with a 65-byte payload (over the XDR opaque<64> limit)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAABA2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOV2XK5LVOVQAAAAYMBA",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "unspecified",
+  "desc": "P with an empty payload (core rejects it as a signer; SEP-23 does not say)",
+  "strkey": "PAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB6AAAAAAESYQ",
+  "source": "derived from a SEP-23 rule by craft.py"
+ },
+ {
+  "expect": "valid",
+  "desc": "control: canonical G",
+  "strkey": "GAAACAQDAQCQMBYIBEFAWDANBYHRAEISCMKBKFQXDAMRUGY4DUPB7JZX",
+  "source": "derived from a SEP-23 rule by craft.py"
+ }
+]

@@ -1,0 +1,8 @@
+[
+  {
+    "sdk": "go v0.9.0",
+    "strkey": "BAAT6DBUX6J22DMZOHIEZTEQ64CVCHEDRKWZONFEUL5Q26QD7R76RGXACA",
+    "issue": "stellar/go-stellar-sdk#6042, #6046",
+    "note": "strkey.Decode and IsValidClaimableBalance accept a claimable balance with a non-zero type byte; xdr.ClaimableBalanceId.DecodeFromStrkey rejects it"
+  }
+]

@@ -870,6 +870,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "ledgerwitness-strkey-check"
+version = "0.0.0"
+dependencies = [
+ "serde_json",
+ "stellar-strkey",
+]
+
+[[package]]
 name = "libc"
 version = "0.2.191"
 source = "registry+https://github.com/rust-lang/crates.io-index"
