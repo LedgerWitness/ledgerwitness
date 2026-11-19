@@ -9,7 +9,7 @@ This document records what the corpus treats as "the same ledger" and why.
 
 ## What was observed
 
-The four protocol-30 testnet ledgers in `corpus/entries/core-emitted/` were each
+The protocol-30 testnet ledgers in `corpus/entries/core-emitted/` were each
 fetched twice: from the public Galexie data lake (`aws-public-blockchain`,
 `v1.1/stellar/ledgers/testnet/`) and from the testnet RPC `getLedgers` method.
 `ledgerwitness compare-lcm` on each pair reports:
@@ -20,8 +20,10 @@ fetched twice: from the public Galexie data lake (`aws-public-blockchain`,
 | 5727136 | no | no | yes |
 | 5727137 | no | no | yes |
 | 5727139 | no | no | yes |
+| 5818357 | no | no | yes |
 
-Breaking the differences down:
+Breaking the differences down (counts are for the first four ledgers;
+5818357, added later, differs in the same three ways):
 
 1. **LedgerCloseMeta extension.** The data-lake copies carry `ext` v1
    (`soroban_fee_write1_kb = 1028`); the RPC copies carry `ext` v0. This is the

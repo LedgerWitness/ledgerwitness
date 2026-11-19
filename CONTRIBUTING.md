@@ -3,7 +3,7 @@
 ## Setup
 
 - Rust: the version in `rust-toolchain.toml` (installed automatically by rustup)
-- Go: 1.25 or later (`runners/go/go.mod`)
+- Go: 1.26 or later (`linter/go/go.mod`; the runner in `runners/go` needs 1.25)
 - Node.js: 22
 - `make`
 
@@ -25,8 +25,8 @@ cargo run -q --locked -p ledgerwitness -- verify corpus/entries
 make conform            # when runners, probes or the corpus change
 ```
 
-Go changes: `gofmt -l runners/go` must print nothing and `go vet ./...` must
-pass. Keep changes focused; one concern per pull request.
+Go changes: `gofmt -l` must print nothing and `go vet ./...` must pass in
+`runners/go` and `linter/go`; `make linter` runs the linter's seeded cases. Keep changes focused; one concern per pull request.
 
 ## Adding a corpus entry
 
