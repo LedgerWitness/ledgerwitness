@@ -16,7 +16,7 @@ acceptance gates are in section 19; the delivery plan is in section 21.
 
 | Component | Status | Evidence |
 |---|---|---|
-| Corpus and manifest schema | **Implemented:** 6 core-emitted testnet entries, 7 CAPs, protocols 28 and 30 | `corpus/`, §4 |
+| Corpus and manifest schema | **Implemented:** 7 core-emitted entries (6 testnet, 1 mainnet), 8 CAPs, protocols 28 to 30 | `corpus/`, §4 |
 | Verifier | **Implemented:** hashes, exact re-encode, header and transaction-set commitments, network binding, validator signature, alternate-copy equivalence | §6–8 |
 | Testnet generator and live SDK check | **Implemented** (online): five shapes, checked against Horizon and two SDK releases | §5.2, `docs/evidence/testnet-run/` |
 | Offline generator under both passphrases | Design | §5.3 |
@@ -348,6 +348,7 @@ proof: they share the XDR specification and may share assumptions or defects.
 | `core.testnet.cap38.lp-trustline-issuer-order.p30` | CAP-0038 | 30 | data lake | RPC |
 | `core.testnet.cap73.sac-trust-trustline.p30` | CAP-0073 | 30 | data lake | RPC |
 | `core.testnet.cap27.soroban-muxed-extend-ttl.p30` | CAP-0027, CAP-0046 (CAP-0046-12) | 30 | data lake | RPC |
+| `core.pubnet.cap15.fee-bump-zero-inner-fee.p29` | CAP-0015 | 29 | mainnet data lake, ledger 65566583 | — (no public mainnet RPC) |
 
 Total size on disk is about 3 MB. The coverage denominator (which CAPs
 introduced indexer-visible shapes) is tracked in `docs/research/coverage-registry.md`.
@@ -1285,15 +1286,15 @@ When a new protocol ships:
   an artifact and its recorded hash can change header fields the validator
   signature does not cover. An anchor kept outside the manifests
   (history-archive checkpoints) is planned.
-- **No mainnet entries yet.** Mainnet validators are pinned and 40 sampled
-  mainnet ledgers pass `check-ledger`, but every corpus entry is still a
-  testnet ledger. The pinned set must be updated when the mainnet validator
-  set changes.
+- **One mainnet entry.** Mainnet validators are pinned, 40 sampled mainnet
+  ledgers pass `check-ledger`, and the corpus has one mainnet entry (a
+  fee-bump), which has no second copy because SDF runs no public mainnet RPC.
+  The pinned set must be updated when the mainnet validator set changes.
 - **Class-aware negative conformance is absent.** `ledgerwitness conform` cannot score
   `sdk_negative_only` entries yet. Report binding is implemented (§10); it
   identifies inputs but does not prove a runner ran honestly.
-- **Corpus shapes still missing:** fee-bump (including a muxed fee source),
-  `TransactionV0`, nested authorization, vectors at maximum length, map keys
+- **Corpus shapes still missing:** a fee-bump with a muxed fee source (a
+  fee-bump with a plain fee source is covered), `TransactionV0`, nested authorization, vectors at maximum length, map keys
   that collide after native conversion, and offer IDs above 2^53.
 - **Replay oracles assert participants as subsets**, so they cannot detect an
   indexer recording extra participants; exact sets need an agreed participant
@@ -1335,7 +1336,7 @@ been secured.
 
 | Required outcome | PoC evidence | Evidence still needed for delivery |
 |---|---|---|
-| Language-neutral corpus, generator and CAP coverage | Six core-emitted testnet entries, JSON schema, recorded provenance, XDR assertions and testnet capture (§4–5) | An audited CAP/shape denominator; independently reviewed expectations; additional required cases; pinned core golden differential tests; reproducible isolated local-core generation under both passphrases |
+| Language-neutral corpus, generator and CAP coverage | Seven core-emitted entries (six testnet, one mainnet), JSON schema, recorded provenance, XDR assertions and testnet capture (§4–5) | An audited CAP/shape denominator; independently reviewed expectations; additional required cases; pinned core golden differential tests; reproducible isolated local-core generation under both passphrases |
 | SDK conformance in JS, Go and Rust | Three runners, 14 probes, byte-exact round trips, reports bound to their input digests, current/historical matrix, JS pre/post-fix reproductions (§9–11), a live two-release JS check on fresh testnet captures (§5.2), and js-stellar-sdk#1906 confirmed on the network with go-stellar-sdk and py-stellar-base checked for the same defect (none shares it) | Build-bound runner reports, class-aware coverage for SDK-only inputs, current stable pins checked at release, and matrix-backed regressions for the specified SDK sightings |
 | Replay against an indexer | Typed comparator, fixture-bound sidecars and synthetic-observation tests (§12); wallet-backend #729, #731 and #716 (two of three producers) reproduced in process before and after their fixes, on that commit's own indexer (§11.2) | Mock-RPC compatibility profile, isolated unmodified target, durable database observation, adapter contract and end-to-end pre/post-fix #729, #731 and #716 checks |
 | Three ingestion-mistake checks | Rule designs (§13); STLR003 prototype with seeded positive and negative cases in CI, documented blind spots, and a pinned wallet-backend run: 6 triaged findings before #753's fix, clean on the fix and on `main` (§13.1) | STLR001 and STLR002 analyzers with seeded cases; STLR003 helper coverage across packages; runs on further indexers |

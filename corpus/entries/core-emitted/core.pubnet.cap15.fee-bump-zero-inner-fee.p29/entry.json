@@ -1,0 +1,168 @@
+{
+  "schema_version": "0.1.0",
+  "id": "core.pubnet.cap15.fee-bump-zero-inner-fee.p29",
+  "description": "Mainnet fee-bump transaction (CAP-0015) whose inner transaction declares a fee of 0, wrapping a USDC payment whose operation source differs from the inner transaction source. The fee source pays the whole fee (200 stroops charged of a 2,000,000 bid). The ledger records the outer hash in tx_processing and the inner hash inside the fee-bump result.",
+  "cap_ids": [
+    "CAP-0015"
+  ],
+  "protocol_versions": [
+    29
+  ],
+  "shape_tags": [
+    "envelope:fee_bump",
+    "fee:inner_zero",
+    "result:fee_bump_inner_success",
+    "op:payment",
+    "account:op_source_differs_from_tx_source",
+    "asset:credit_alphanum4",
+    "event:cap67_transfer",
+    "emitter:classic_events",
+    "network:pubnet"
+  ],
+  "fixture_class": "core_emitted_valid",
+  "network_passphrase": "Public Global Stellar Network ; September 2015",
+  "source_kind": "galexie_datalake",
+  "source_url_or_ledger": {
+    "url": "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/pubnet/FC17FFFF--65536000-65599999/FC178888--65566583.xdr.zst",
+    "ledger": 65566583,
+    "ledger_hash": "5df94f0de1b0b75f87aefdc0a6b671bcf31404d3c090c4059f37a4cc6408cd42",
+    "object_sha256": "1fb6a2c7c415034c6ab5dc60818e2cba463df68325a520dcf376c169797261d8"
+  },
+  "core_version_and_commit": {
+    "value": null,
+    "basis": "UNVERIFIED: a mainnet ledger at protocol 29 from the public data lake; the data-lake emitter does not publish its core build"
+  },
+  "generator_version": "none (historical capture from the public Galexie data lake)",
+  "deterministic_seed": null,
+  "xdr_type": "LedgerCloseMeta",
+  "xdr_path": "ledger.xdr",
+  "sha256": "7e61555e31ac869cfa1457d094ea7c779db2e00f9479ce8c956bcc30e805d56b",
+  "focus": {
+    "tx_hash": "434442a640fbe4753021938699d9282ccad093e115d61b1ae55fb3cd113db422"
+  },
+  "expected_decoded_values": {
+    "xdr_json": [
+      {
+        "pointer": "/v2/ledger_header/header/ledger_seq",
+        "value": 65566583
+      },
+      {
+        "pointer": "/v2/ledger_header/header/ledger_version",
+        "value": 29
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/0/v0/0/txset_comp_txs_maybe_discounted_fee/txs/79/tx_fee_bump/tx/fee_source",
+        "value": "GAUA7XL5K54CC2DDGP77FJ2YBHRJLT36CPZDXWPM6MP7MANOGG77PNJU",
+        "why": "Horizon fee_account"
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/0/v0/0/txset_comp_txs_maybe_discounted_fee/txs/79/tx_fee_bump/tx/inner_tx/tx/tx/fee",
+        "value": 0,
+        "why": "CAP-0015: the inner fee may be below the minimum; Horizon inner_transaction.max_fee is 0"
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/0/v0/0/txset_comp_txs_maybe_discounted_fee/txs/79/tx_fee_bump/tx/inner_tx/tx/tx/operations/0/source_account",
+        "value": "GAUA7XL5K54CC2DDGP77FJ2YBHRJLT36CPZDXWPM6MP7MANOGG77PNJU",
+        "why": "Horizon operation source_account"
+      },
+      {
+        "pointer": "/v2/tx_processing/93/result/result/result/tx_fee_bump_inner_success/transaction_hash",
+        "value": "5b413ecc4c8cf342d922f164ab17cbf2fb101e8331fd404d6c57ae75283c1204",
+        "why": "the inner hash as Horizon reports it (inner_transaction.hash)"
+      }
+    ],
+    "probes": {
+      "ledger_sequence": 65566583,
+      "protocol_version": 29,
+      "tx_count": 272,
+      "focus": {
+        "tx_hash": "434442a640fbe4753021938699d9282ccad093e115d61b1ae55fb3cd113db422",
+        "successful": true,
+        "tx_source": "GCX7KS6PUHM4ZRJXACYNT6OGYNYR6JXWVIQLU4BSHMHKBKVMANWR56I3",
+        "tx_source_muxed_id": null,
+        "op_types": [
+          "PAYMENT"
+        ],
+        "op_sources": [
+          "GAUA7XL5K54CC2DDGP77FJ2YBHRJLT36CPZDXWPM6MP7MANOGG77PNJU"
+        ],
+        "muxed_ids": [],
+        "meta_signer_keys": [],
+        "meta_created_trustlines": [],
+        "envelope_pool_ids": [],
+        "op_contract_event_counts": [
+          1
+        ]
+      }
+    }
+  },
+  "expected_state_changes_or_participants": {
+    "participants_from_meta": [
+      "GAUA7XL5K54CC2DDGP77FJ2YBHRJLT36CPZDXWPM6MP7MANOGG77PNJU",
+      "GBRKZR72HVWLYV6ZMNUTFIEBCVJBDYEPNI622ZS2FG62I6SMYXLB5APL"
+    ],
+    "payment": {
+      "from": "GAUA7XL5K54CC2DDGP77FJ2YBHRJLT36CPZDXWPM6MP7MANOGG77PNJU",
+      "to": "GBRKZR72HVWLYV6ZMNUTFIEBCVJBDYEPNI622ZS2FG62I6SMYXLB5APL",
+      "asset": "USDC:GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
+      "amount_stroops": "499300000"
+    },
+    "fee_charged_stroops": "200",
+    "fee_account": "GAUA7XL5K54CC2DDGP77FJ2YBHRJLT36CPZDXWPM6MP7MANOGG77PNJU",
+    "indexer_must": "use the outer hash as the transaction ID and the inner source for the transaction's source; charge the fee to the fee source, not the inner source; keep the operation source when it differs from the transaction source",
+    "note": "the payment changes only the two USDC trustlines; no account entry changes in the operation meta"
+  },
+  "validation_evidence": [
+    {
+      "check": "rs-stellar-xdr strict decode and byte-exact re-encode",
+      "method": "ledgerwitness verify (stellar-xdr 30.0.0)",
+      "status": "verified"
+    },
+    {
+      "check": "ledger header hash recomputed from header bytes and matched to the recorded ledger hash",
+      "method": "ledgerwitness verify; ledger hash independently read from Horizon mainnet /ledgers/{seq}",
+      "status": "verified"
+    },
+    {
+      "check": "scp_value.tx_set_hash and tx_set_result_hash recomputed from the artifact",
+      "method": "ledgerwitness verify",
+      "status": "verified"
+    },
+    {
+      "check": "header signed by a pinned mainnet validator",
+      "method": "ledgerwitness verify (validator_signature; sources in docs/evidence/mainnet-validators/)",
+      "status": "verified"
+    },
+    {
+      "check": "every envelope hashes under the declared passphrase to a processed result",
+      "method": "ledgerwitness verify",
+      "status": "verified"
+    },
+    {
+      "check": "agreement with stellar-core --check-lcm goldens",
+      "method": "not applicable to network captures: core goldens are produced by core's own test suite under its test passphrase; see docs/spec/normalization.md",
+      "status": "not_applicable"
+    },
+    {
+      "check": "outer and inner hashes, success, fee charged, fee account, inner source, operation source and payment as Horizon reports them; ledger transaction count",
+      "method": "GET horizon mainnet /transactions/{hash}, /transactions/{hash}/operations and /ledgers/65566583 (successful plus failed transaction counts)",
+      "status": "verified"
+    },
+    {
+      "check": "no second copy of the ledger",
+      "method": "SDF runs no public mainnet RPC; the data-lake copy is the only artifact, so the meta is trusted to that emitter",
+      "status": "not_applicable"
+    }
+  ],
+  "known_regression_ids": [],
+  "expected_outcome": "decode_roundtrip_exact",
+  "license_or_provenance_notes": "Public mainnet ledger data from the public Galexie data lake (AWS Open Data, aws-public-blockchain). The focus transaction was submitted by a third party.",
+  "derived_artifacts": [
+    {
+      "xdr_type": "TransactionEnvelope",
+      "xdr_path": "focus-envelope.xdr",
+      "sha256": "6943d5d157e2e24a3dd38525276bf52660ad59ce891af8c938c13f79bbfb4ba4",
+      "derived_from": "focus_envelope"
+    }
+  ]
+}

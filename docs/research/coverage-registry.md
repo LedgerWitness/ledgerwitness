@@ -15,6 +15,7 @@ percentage is claimed.
 
 | CAP | Protocol | Indexer-visible shape | Corpus entries | Generation | Status |
 |---|---|---|---|---|---|
+| CAP-0015 | 13 | Fee-bump envelopes: outer hash recorded in `tx_processing`, inner hash inside `txFEE_BUMP_INNER_SUCCESS`; inner fee below the minimum (0); the fee charged to the fee source | `core.pubnet.cap15.fee-bump-zero-inner-fee.p29` | mainnet data lake | covered (plain fee source); a muxed fee source not yet |
 | CAP-0027 | 13 | `MuxedAccount` (M… strkey) as transaction source, operation source and payment destination; 64-bit IDs; as the source of a Soroban operation other than InvokeHostFunction | `core.testnet.cap27.muxed-large-ids-payment.p30`, `core.testnet.cap27.soroban-muxed-extend-ttl.p30` | testnet capture | covered (two shapes) |
 | CAP-0038 | 18 | Liquidity pools; pool-share trustlines; pool ID derived from byte-ordered asset pair | `core.testnet.cap38.lp-trustline-issuer-order.p30` | testnet capture | covered (one shape) |
 | CAP-0040 | 19 | Ed25519 signed-payload signer key (P… strkey) in SetOptions and account signers | `core.testnet.cap40.signed-payload-signer.p28`, `…-padded.p30` | data lake, testnet capture | covered (two shapes) |

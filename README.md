@@ -22,8 +22,8 @@ live testnet run work offline.
 
 | What | Result | Rerun |
 |---|---|---|
-| Corpus | 6 real testnet ledgers covering 7 CAPs, each verified offline against its ledger hash, header commitments and a validator signature | `make verify` |
-| SDK conformance | Rust, Go and JS 17.4.0 decode, re-encode byte for byte and produce every expected value on all 6; JS 17.2.0 rejects a valid pool trustline | `make conform` |
+| Corpus | 7 real ledgers (6 testnet, 1 mainnet) covering 8 CAPs, each verified offline against its ledger hash, header commitments and a validator signature | `make verify` |
+| SDK conformance | Rust, Go and JS 17.4.0 decode, re-encode byte for byte and produce every expected value on all 7, including a mainnet fee-bump; JS 17.2.0 rejects a valid pool trustline | `make conform` |
 | Known SDK bugs | js-stellar-sdk #1766, #1785 and #1789: 40/40 checks match before and after each fix | `make repro-js` |
 | Known indexer bugs | wallet-backend #729, #731 and #716 (two of its three paths) reproduced on the commits before and after each fix | `make repro-wallet-backend` |
 | Linter | Rule STLR003 flags the 6 envelope-only participant functions in wallet-backend before #753's fix, and runs clean after it and on current Horizon and stellar-etl | `make lint-wallet-backend` |
@@ -52,7 +52,7 @@ against.
 
 | Deliverable | What the complete project delivers | In the proof of concept |
 |---|---|---|
-| **Corpus and generator** | <ul><li>One entry per rare shape, tagged with the CAP and protocol that introduced it, with expected decoded values and a per-CAP coverage registry.</li><li>Only ledgers stellar-core actually emitted: from testnet or mainnet history, or generated offline by a pinned local stellar-core under both network passphrases. Hand-made entries are labelled synthetic.</li><li>The shapes that have already broken SDKs: issuer ordering, muxed accounts, IDs that decode to a different value than they encode, vectors at maximum length, nested authorization, map keys that collide after conversion.</li><li>Agreement with stellar-core's `--check-lcm` goldens.</li></ul> | **Implemented:**<ul><li>6 real testnet entries covering 7 CAPs (0027, 0038, 0040, 0046, 0067, 0073, 0088), protocols 28 and 30</li><li>live testnet generator and data-lake extraction</li><li>port of core's `--check-lcm` comparison</li></ul>**Planned:** offline local-core generator for both passphrases, mainnet entries, the remaining shapes, golden import, complete CAP registry |
+| **Corpus and generator** | <ul><li>One entry per rare shape, tagged with the CAP and protocol that introduced it, with expected decoded values and a per-CAP coverage registry.</li><li>Only ledgers stellar-core actually emitted: from testnet or mainnet history, or generated offline by a pinned local stellar-core under both network passphrases. Hand-made entries are labelled synthetic.</li><li>The shapes that have already broken SDKs: issuer ordering, muxed accounts, IDs that decode to a different value than they encode, vectors at maximum length, nested authorization, map keys that collide after conversion.</li><li>Agreement with stellar-core's `--check-lcm` goldens.</li></ul> | **Implemented:**<ul><li>7 real entries, 6 from testnet and 1 from mainnet, covering 8 CAPs (0015, 0027, 0038, 0040, 0046, 0067, 0073, 0088), protocols 28 to 30</li><li>live testnet generator and data-lake extraction</li><li>port of core's `--check-lcm` comparison</li></ul>**Planned:** offline local-core generator for both passphrases, more mainnet entries, the remaining shapes, golden import, complete CAP registry |
 | **Verifier** | Checks that each entry is intact and came from the network it claims, offline. | **Implemented:** hashes, decode/re-encode, header commitments, network binding, validator signature, alternate-copy equivalence |
 | **SDK conformance runner** | <ul><li>Runs every entry through the JavaScript, Go and Rust SDKs in CI.</li><li>Reports where they disagree with the network or with each other.</li><li>Opens a sibling issue in each SDK that shares a defect another SDK fixed.</li><li>Reproduces js-stellar-sdk #1766, #1785 and #1789 on their pre-fix releases.</li></ul> | **Implemented:**<ul><li>3 runners and 14 probes</li><li>comparison matrix bound to the exact input files</li><li>the three JS SDK issues reproduced before and after their fixes</li><li>two JS SDK releases checked live on fresh testnet transactions</li></ul>**Planned:** more shapes and releases, sibling-issue workflow |
 | **Replay harness** | <ul><li>Feeds the corpus to a real indexer through an input it already reads (mock RPC `getLedgers` first, then the Galexie data-lake layout), using a documented adapter interface.</li><li>Reports each shape the indexer stores wrongly or drops, with bounded memory.</li><li>Its reference adapter for wallet-backend reproduces #729, #731 and #716 before their fixes and passes after.</li></ul> | **Partial:**<ul><li>comparison of stored results against expected changes</li><li>#729 and #731 reproduced on wallet-backend's own indexer at the pre-fix and fix commits, in process (#731 with go-stellar-sdk raised identically at both)</li><li>#716's signed-payload and muxed Soroban-source producers reproduced through the columns' own storage conversion</li></ul>**Planned:** adapter interface, mock RPC, database-backed replay, #716's SEP-41 muxed-address producer |
@@ -124,7 +124,7 @@ corpus and do not contact a Stellar network.
 npm ci --prefix runners/javascript
 npm ci --prefix reproductions/js-sdk
 
-make verify      # check every corpus entry       -> "6 entries, 6 passed, 0 failed"
+make verify      # check every corpus entry       -> "7 entries, 7 passed, 0 failed"
 make test        # unit, tamper and CLI tests
 make conform     # run the three SDKs and compare -> prints the table below
 make repro-js    # JS SDK bugs before/after fixes -> "40/40 ... match the documented behaviour"
@@ -149,6 +149,7 @@ new run.
 | Signed-payload signer, the ledger from wallet-backend#729 | pass | pass | pass | pass |
 | Trustline created by the asset contract's `trust` function | pass | pass | pass | ledger unsupported |
 | `ExtendFootprintTTL` with a muxed operation source (JS 17.4.0's builder refuses to build it) | pass | pass | pass | ledger unsupported |
+| Mainnet fee-bump with an inner fee of 0, wrapping a payment whose operation source differs from the transaction source | pass | pass | pass | pass |
 
 What the labels mean:
 

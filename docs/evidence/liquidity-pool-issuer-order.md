@@ -118,7 +118,7 @@ Offline, from a clean checkout:
 
 ```sh
 npm ci --prefix runners/javascript
-make verify            # 6 entries, 6 passed
+make verify            # 7 entries, 7 passed
 make conform           # the table above, as results/conformance/matrix.md
 make testnet-evidence  # re-checks the recorded live run from its saved bytes
 ```
