@@ -82,12 +82,16 @@ enum Cmd {
     /// once the LCM extension is also ignored.
     CompareLcm { a: PathBuf, b: PathBuf },
     /// Write the envelope of one transaction in a LedgerCloseMeta as a
-    /// standalone TransactionEnvelope XDR file.
+    /// standalone TransactionEnvelope XDR file, or, with --all-to, every
+    /// envelope of the ledger as <DIR>/<tx-hash>.xdr from a single decode.
     ExtractEnvelope {
         file: PathBuf,
-        tx_hash: String,
-        #[arg(long)]
-        out: PathBuf,
+        #[arg(required_unless_present = "all_to")]
+        tx_hash: Option<String>,
+        #[arg(long, required_unless_present = "all_to", conflicts_with = "all_to")]
+        out: Option<PathBuf>,
+        #[arg(long, conflicts_with = "tx_hash")]
+        all_to: Option<PathBuf>,
         #[arg(long, default_value = "Test SDF Network ; September 2015")]
         network_passphrase: String,
     },
@@ -338,6 +342,7 @@ fn run(cli: Cli) -> Result<ExitCode> {
             file,
             tx_hash,
             out,
+            all_to,
             network_passphrase,
         } => {
             let Type::LedgerCloseMeta(lcm) =
@@ -345,6 +350,18 @@ fn run(cli: Cli) -> Result<ExitCode> {
             else {
                 unreachable!()
             };
+            if let Some(dir) = all_to {
+                fs::create_dir_all(&dir)?;
+                let nid = ledgerwitness::network_id(&network_passphrase);
+                let envs = ledgerwitness::envelopes(lcm_view(&lcm)?.tx_set);
+                for env in &envs {
+                    let hash = hex::encode(env.hash(nid)?);
+                    fs::write(dir.join(format!("{hash}.xdr")), env.to_xdr(Limits::none())?)?;
+                }
+                println!("wrote {} envelopes to {}", envs.len(), dir.display());
+                return Ok(ExitCode::SUCCESS);
+            }
+            let (tx_hash, out) = (tx_hash.context("tx_hash")?, out.context("--out")?);
             let env = ledgerwitness::focus_envelope(&lcm, &tx_hash, &network_passphrase)?;
             let bytes = env.to_xdr(Limits::none())?;
             fs::write(&out, &bytes)?;

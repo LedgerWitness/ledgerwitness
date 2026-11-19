@@ -10,7 +10,7 @@ REQUIRE_PASS := --require-pass stellar-xdr \
                 --require-pass github.com/stellar/go-stellar-sdk \
                 --require-pass "@stellar/stellar-sdk 17.4.0"
 
-.PHONY: all verify test runners conform repro-js linter lint-wallet-backend repro-wallet-backend capture testnet-smoke testnet-evidence clean
+.PHONY: all verify test runners conform repro-js linter lint-wallet-backend repro-wallet-backend capture testnet-smoke testnet-evidence sweep clean
 
 all: verify test conform repro-js
 
@@ -78,6 +78,21 @@ testnet-evidence:
 	    --tx-hash $$tx --ledger-hash $$hash || exit 1; \
 	done
 	node generators/testnet-capture/sdk-check.mjs $(EVIDENCE) target/debug/ledgerwitness
+
+# Cross-SDK sweep of public data-lake ledgers: every transaction through the
+# Rust, Go and JS runners, compared with each other (no expected values).
+# Downloads the ledgers; the comparison itself is offline.
+#   make sweep SWEEP_LEDGERS="65566583 65566590" [SWEEP_NETWORK=pubnet]
+SWEEP_NETWORK ?= pubnet
+SWEEP_DIR := results/sweep
+sweep: | $(OUT)
+	rm -rf $(SWEEP_DIR) && mkdir -p $(SWEEP_DIR)
+	generators/datalake-sweep/build.sh $(SWEEP_DIR)/set $(SWEEP_NETWORK) $(SWEEP_LEDGERS)
+	cargo build -q --release --locked -p ledgerwitness-runner-rust
+	target/release/ledgerwitness-runner-rust $(abspath $(SWEEP_DIR)/set) > $(SWEEP_DIR)/rust.json
+	cd runners/go && $(GO) run . $(abspath $(SWEEP_DIR)/set) > $(abspath $(SWEEP_DIR))/go.json
+	cd runners/javascript && node runner.mjs $(abspath $(SWEEP_DIR)/set) --sdk 17.4.0 > $(abspath $(SWEEP_DIR))/js.json
+	node generators/datalake-sweep/compare.mjs $(SWEEP_DIR)/rust.json $(SWEEP_DIR)/go.json $(SWEEP_DIR)/js.json --json $(SWEEP_DIR)/compare.json
 
 clean:
 	rm -rf target results

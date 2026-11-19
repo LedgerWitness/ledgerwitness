@@ -168,3 +168,28 @@ fn bare_conform_fails_on_any_non_pass_cell_unless_report_only() {
 
     fs::remove_dir_all(dir).unwrap();
 }
+
+#[test]
+fn extract_envelope_all_to_matches_the_single_extraction() {
+    let entry =
+        repo().join("corpus/entries/core-emitted/core.testnet.cap73.sac-trust-trustline.p30");
+    let manifest: serde_json::Value =
+        serde_json::from_slice(&fs::read(entry.join("entry.json")).unwrap()).unwrap();
+    let dir = std::env::temp_dir().join(format!("ledgerwitness-cli-{}-all", std::process::id()));
+    let output = Command::new(env!("CARGO_BIN_EXE_ledgerwitness"))
+        .arg("extract-envelope")
+        .arg(entry.join("ledger.xdr"))
+        .arg("--all-to")
+        .arg(&dir)
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    // One file per transaction in the ledger (15 in this entry).
+    assert_eq!(fs::read_dir(&dir).unwrap().count(), 15);
+    let focus = manifest["focus"]["tx_hash"].as_str().unwrap();
+    assert_eq!(
+        fs::read(dir.join(format!("{focus}.xdr"))).unwrap(),
+        fs::read(entry.join("focus-envelope.xdr")).unwrap()
+    );
+    fs::remove_dir_all(&dir).unwrap();
+}
