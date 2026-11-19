@@ -1291,8 +1291,16 @@ When a new protocol ships:
   independent proof of consensus, emitter identity or metadata authenticity.
   In particular, the recorded ledger hash is trusted: whoever can rewrite both
   an artifact and its recorded hash can change header fields the validator
-  signature does not cover. An anchor kept outside the manifests
-  (history-archive checkpoints) is planned.
+  signature does not cover. An anchor kept outside the manifests is
+  partly in place: `generators/datalake-sweep/archive-hash.mjs` reads a
+  ledger's hash from SDF's public history archive, independent of Horizon
+  and the data lake, and agreed with Horizon on every ledger both serve. The
+  verifier does not yet fetch it on its own.
+- **Validator pins describe today's set.** A historical ledger signed by a
+  validator that has since left the set fails `validator_signature` (ledger
+  52000000, signed by a key whose home domain is whalestack.com and that no
+  current stellar.toml declares). Attesting older history needs dated pin
+  sets with a historical source for each key.
 - **One mainnet entry.** Mainnet validators are pinned, 40 sampled mainnet
   ledgers pass `check-ledger`, and the corpus has one mainnet entry (a
   fee-bump), which has no second copy because SDF runs no public mainnet RPC.
