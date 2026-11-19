@@ -94,9 +94,6 @@ throwing", closed 2026-10-16. UNVERIFIED beyond the title and state.
   of #1789.
 - StellarCN/py-stellar-base #1251 and #1253 (closed): Python equivalent of
   #1785 (out-of-range 64-bit IDs encoded modulo 2^64) and its fix.
-- kasbsquall/xdr-shape-corpus #1 (open) cross-references #1785 and #1789. This
-  is a third-party repository working on a similar corpus; its contents have
-  not been reviewed.
 
 ## wallet-backend
 
