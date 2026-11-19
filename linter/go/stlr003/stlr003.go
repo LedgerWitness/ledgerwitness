@@ -22,6 +22,12 @@
 //
 // Suppress a finding with a "//lint:ignore STLR003 <reason>" line in the
 // function's doc comment.
+//
+// The rule runs on packages with type errors (RunDespiteErrors), so that one
+// unresolvable import, such as a cgo library that cannot be built where the
+// linter runs, does not hide the rest of the package. Expressions without
+// type information count as neither input: this can miss a finding but cannot
+// create one.
 package stlr003
 
 import (
@@ -41,6 +47,8 @@ var Analyzer = &analysis.Analyzer{
 	URL:      "https://github.com/LedgerWitness/ledgerwitness/blob/main/docs/architecture.md",
 	Requires: []*analysis.Analyzer{inspect.Analyzer},
 	Run:      run,
+
+	RunDespiteErrors: true,
 }
 
 var candidateName = regexp.MustCompile(`(?i)participant`)

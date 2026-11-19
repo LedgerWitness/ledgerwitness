@@ -9,5 +9,5 @@ import (
 )
 
 func TestSeededCases(t *testing.T) {
-	analysistest.Run(t, analysistest.TestData(), stlr003.Analyzer, "a")
+	analysistest.Run(t, analysistest.TestData(), stlr003.Analyzer, "a", "b")
 }
