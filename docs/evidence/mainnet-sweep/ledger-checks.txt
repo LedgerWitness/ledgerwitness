@@ -1,0 +1,20 @@
+PASS 50500000 p20 horizon:gone | FT SCV 3
+PASS 50500001 p20 horizon:gone | SDF 2
+FAIL 52000000 p20 horizon:gone | 
+PASS 52000001 p20 horizon:gone | Lyra
+PASS 54000000 p21 horizon:gone | LOBSTR 2 (Europe)
+PASS 55000000 p22 horizon:gone | FT SCV 1
+PASS 56500000 p22 horizon:gone | FT SCV 3
+PASS 58000000 p22 horizon:gone | SDF 3
+PASS 58000001 p22 horizon:gone | SDF 1
+PASS 59500000 p23 horizon:same | SDF 1
+PASS 60500000 p24 horizon:same | LOBSTR 2 (Europe)
+PASS 61500000 p25 horizon:same | LOBSTR 1 (Europe)
+PASS 62500000 p26 horizon:same | Alpha Node Validator
+PASS 63500000 p27 horizon:same | FT SCV 1
+PASS 64000000 p27 horizon:same | Hercules
+PASS 64500000 p28 horizon:same | Blockdaemon Validator 2
+PASS 65000000 p29 horizon:same | LOBSTR 1 (Europe)
+PASS 65300000 p29 horizon:same | SDF 2
+PASS 65566583 p29 horizon:same | Range1
+PASS 65566590 p29 horizon:same | MoneyGram 3

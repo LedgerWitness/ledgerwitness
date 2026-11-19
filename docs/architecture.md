@@ -20,7 +20,7 @@ acceptance gates are in section 19; the delivery plan is in section 21.
 | Verifier | **Implemented:** hashes, exact re-encode, header and transaction-set commitments, network binding, validator signature, alternate-copy equivalence | §6–8 |
 | Testnet generator and live SDK check | **Implemented** (online): five shapes, checked against Horizon and two SDK releases | §5.2, `docs/evidence/testnet-run/` |
 | Offline generator under both passphrases | Design | §5.3 |
-| SDK conformance runner | **Implemented:** Rust, Go and JavaScript; 14 probes; reports bound to their inputs | §9–10 |
+| SDK conformance runner | **Implemented:** Rust, Go and JavaScript; 14 probes; reports bound to their inputs; a cross-SDK sweep found no difference on 5,758 mainnet transactions | §9–10, `docs/evidence/mainnet-sweep/` |
 | Known SDK bugs | **Reproduced:** js-stellar-sdk #1766, #1785, #1789 (40/40 checks) | §11.1 |
 | Known indexer bugs | **Reproduced in process:** wallet-backend #729, #731, and #716 on two of its three paths | §11.2 |
 | Replay comparator | **Implemented:** typed oracles bound to their fixture | §12 |

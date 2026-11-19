@@ -71,6 +71,9 @@ spec are versioned separately (`schema_version`, `probe_spec`).
   mainnet validator. Rust, Go and both JS releases pass it, which also
   exercises the runners' fee-bump hashing and inner-source handling on real
   data for the first time.
+- Mainnet sweep: 5,758 transactions from 20 mainnet ledgers (protocols 20
+  to 29) through Rust, Go and JS with no difference; ledgers checked against
+  SDF's history archive (`archive-hash.mjs`) and validator signatures.
 - `make testnet-evidence`: offline re-check of the recorded live run, also
   run in CI. The recorded run now keeps the raw ledgers (testnet ledgers
   5804257–5804261).
