@@ -1,5 +1,7 @@
 # LedgerWitness
 
+[![ci](https://github.com/LedgerWitness/ledgerwitness/actions/workflows/ci.yml/badge.svg)](https://github.com/LedgerWitness/ledgerwitness/actions/workflows/ci.yml)
+
 Test data and tools for software that reads the Stellar ledger: SDKs,
 indexers, wallet backends and data pipelines.
 
@@ -12,6 +14,23 @@ The project builds a shared kit made of three parts:
 
 This repository holds the design of the complete kit and a **proof of
 concept** of part of it, running on real Stellar testnet data.
+
+## Evidence at a glance
+
+Every result below is reproducible with the command next to it; all but the
+live testnet run work offline.
+
+| What | Result | Rerun |
+|---|---|---|
+| Corpus | 6 real testnet ledgers covering 7 CAPs, each verified offline against its ledger hash, header commitments and a validator signature | `make verify` |
+| SDK conformance | Rust, Go and JS 17.4.0 decode, re-encode byte for byte and produce every expected value on all 6; JS 17.2.0 rejects a valid pool trustline | `make conform` |
+| Known SDK bugs | js-stellar-sdk #1766, #1785 and #1789: 40/40 checks match before and after each fix | `make repro-js` |
+| Known indexer bugs | wallet-backend #729, #731 and #716 (two of its three paths) reproduced on the commits before and after each fix | `make repro-wallet-backend` |
+| Linter | Rule STLR003 flags the 6 envelope-only participant functions in wallet-backend before #753's fix, and runs clean after it and on current Horizon and stellar-etl | `make lint-wallet-backend` |
+| Live testnet | Five rare shapes submitted and checked; core accepts a Soroban transaction that JS 17.4.0's builder refuses to build (js-stellar-sdk#1906) | `make testnet-smoke` |
+
+Status of every component, and the delivery plan for the rest:
+[architecture](docs/architecture.md) (at a glance, §21).
 
 ## Why
 
@@ -39,7 +58,7 @@ against.
 | **Replay harness** | <ul><li>Feeds the corpus to a real indexer through an input it already reads (mock RPC `getLedgers` first, then the Galexie data-lake layout), using a documented adapter interface.</li><li>Reports each shape the indexer stores wrongly or drops, with bounded memory.</li><li>Its reference adapter for wallet-backend reproduces #729, #731 and #716 before their fixes and passes after.</li></ul> | **Partial:**<ul><li>comparison of stored results against expected changes</li><li>#729 and #731 reproduced on wallet-backend's own indexer at the pre-fix and fix commits, in process (#731 with go-stellar-sdk raised identically at both)</li><li>#716's signed-payload and muxed Soroban-source producers reproduced through the columns' own storage conversion</li></ul>**Planned:** adapter interface, mock RPC, database-backed replay, #716's SEP-41 muxed-address producer |
 | **Go indexer linter** | Flags three mistakes in indexer source:<ul><li>trusting fields stellar-core does not validate;</li><li>recursing over authorization trees or nested ScVals without depth or size caps;</li><li>taking participants from the envelope instead of the meta.</li></ul>Flags seeded violations and runs clean on current wallet-backend. | **Prototype of the third rule (STLR003):** seeded cases in CI; on wallet-backend it flags the 6 envelope-only functions of the pre-#753 code and runs clean on the fix and on current `main` ([evidence](docs/evidence/linter-stlr003/README.md)). **Planned:** the other two rules |
 | **Indexer-hardening guide** | <ul><li>Which transaction fields core validates, field by field.</li><li>Recommended caps, participants from meta, muxed and signed-payload handling (SEP-0023).</li><li>A checklist matching the linter rules.</li></ul>Its tables are checked against the corpus manifests and reviewed by a core or platform engineer before publication. | **Planned** (design in [architecture §14](docs/architecture.md)) |
-| **Findings** | The corpus run against at least one SDF pipeline (wallet-backend or stellar-etl), each failure triaged (severity, CAP, minimal entry) and reported to its maintainers. | Two observations triaged, neither a defect; nothing filed yet |
+| **Findings** | The corpus run against at least one SDF pipeline (wallet-backend or stellar-etl), each failure triaged (severity, CAP, minimal entry) and reported to its maintainers. | Three observations triaged, none a defect; the linter run on wallet-backend, Horizon and stellar-etl; nothing filed yet |
 | **Release and maintenance** | Tests and CI for every tool, a tagged release, and maintenance through the first protocol upgrade after delivery. | **Implemented:** CI runs every offline check on each push and pull request. **Planned:** tagged release, upgrade procedure in practice |
 
 ### What the proof of concept covers, and why
@@ -78,8 +97,8 @@ This command:
 4. runs JS SDK 17.4.0 and 17.2.0 on every capture, and compares what they read
    with what stellar-core recorded in the ledger and with what was submitted.
 
-The recorded run of 2026-11-18 ([docs/evidence/testnet-run/](docs/evidence/testnet-run/))
-ends with:
+The recorded run of 2026-11-18 ([docs/evidence/testnet-run/](docs/evidence/testnet-run/)),
+made before the fifth shape was added, ends with:
 
 ```
 4/4 fresh testnet captures passed check-ledger
@@ -97,7 +116,7 @@ follows that case from the raw ledger to the result.
 ## Quick start (offline)
 
 Requirements: Rust (the version in `rust-toolchain.toml` installs
-automatically), Go 1.25 or later, Node.js 22, and `make`. Installing
+automatically), Go 1.26 or later, Node.js 22, and `make`. Installing
 dependencies uses the network; the commands themselves run against the local
 corpus and do not contact a Stellar network.
 
@@ -110,6 +129,7 @@ make test        # unit, tamper and CLI tests
 make conform     # run the three SDKs and compare -> prints the table below
 make repro-js    # JS SDK bugs before/after fixes -> "40/40 ... match the documented behaviour"
 make testnet-evidence  # recorded live testnet run, re-checked offline
+make linter      # linter rule STLR003 on its seeded cases
 ```
 
 `make conform` fails if a current SDK release disagrees with the expected
@@ -170,6 +190,15 @@ What the results show:
     #693, as its base account from #693, and no longer produced from #753.
   - This covers two of #716's three producers; the SEP-41 muxed-address
     producer needs a ledger shape the corpus does not have yet.
+- **Core accepts what an SDK refuses to build.** An `ExtendFootprintTTL` with
+  a muxed operation source succeeded on testnet (ledger 5818357), although JS
+  SDK 17.4.0's builder refuses it; core rejects a muxed source only on
+  InvokeHostFunction. This is js-stellar-sdk#1906, already reported upstream.
+  The Go and Python SDKs do not share the refusal.
+- **The linter catches a real fix.** STLR003 reports the 6 functions that took
+  Soroban participants from the envelope in wallet-backend before `9538b3ca`
+  (#753), none after it, and none on current Horizon or stellar-etl
+  ([evidence](docs/evidence/linter-stlr003/README.md)).
 - **Two sources serve the same ledger differently.** The public data lake and
   RPC `getLedgers` return different bytes for the same ledger: an extension
   field, the order of some changes, and timing values. The two copies agree
@@ -303,6 +332,11 @@ for the one-time downloads that produced the corpus. The endpoints are:
 The capture tool never writes keys to disk. The corpus holds only public
 testnet data. Nothing here collects usage data.
 
+Nothing needs to be hosted. Anyone can mirror the corpus: every file is
+pinned by SHA-256, and verification checks each ledger against network
+commitments and validator keys offline, without trusting the server it came
+from. See [architecture §22](docs/architecture.md).
+
 The Rust tools refuse oversized inputs (limits in `crates/ledgerwitness/src/input.rs`).
 The Go and JavaScript runners do not cap their inputs yet.
 
@@ -312,4 +346,5 @@ The Go and JavaScript runners do not cap their inputs yet.
 - [SECURITY.md](SECURITY.md): report vulnerabilities privately, including
   defects this kit finds in Stellar software.
 - [CHANGELOG.md](CHANGELOG.md): notable changes.
+- Roadmap: [architecture §21](docs/architecture.md), the delivery plan.
 - License: Apache-2.0 (see `LICENSE` and `NOTICE`).
