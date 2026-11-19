@@ -8,7 +8,8 @@ GO      ?= go
 # reported in the matrix but do not fail the build.
 REQUIRE_PASS := --require-pass stellar-xdr \
                 --require-pass github.com/stellar/go-stellar-sdk \
-                --require-pass "@stellar/stellar-sdk 17.4.0"
+                --require-pass "@stellar/stellar-sdk 17.4.0" \
+                --require-pass py-stellar-base
 
 .PHONY: all verify test runners conform repro-js linter lint-wallet-backend repro-wallet-backend capture testnet-smoke testnet-evidence sweep clean
 
@@ -29,9 +30,10 @@ runners: | $(OUT)
 	cd runners/go && $(GO) run . ../../$(ENTRIES) > ../../$(OUT)/go.json
 	cd runners/javascript && node runner.mjs ../../$(ENTRIES) --sdk 17.4.0 > ../../$(OUT)/js-17.4.0.json
 	cd runners/javascript && node runner.mjs ../../$(ENTRIES) --sdk 17.2.0 > ../../$(OUT)/js-17.2.0.json
+	PYTHONPATH=runners/python/.deps python3 runners/python/runner.py $(ENTRIES) > $(OUT)/python.json
 
 conform: runners
-	$(LCK) conform $(OUT)/rust.json $(OUT)/go.json $(OUT)/js-17.4.0.json $(OUT)/js-17.2.0.json \
+	$(LCK) conform $(OUT)/rust.json $(OUT)/go.json $(OUT)/js-17.4.0.json $(OUT)/js-17.2.0.json $(OUT)/python.json \
 	  --entries $(ENTRIES) --json $(OUT)/matrix.json --markdown $(OUT)/matrix.md $(REQUIRE_PASS)
 
 repro-js:

@@ -61,6 +61,8 @@ jobs:
           node-version: 22
       - run: npm ci --prefix runners/javascript
       - run: npm ci --prefix reproductions/js-sdk
+      - name: Python runner dependencies
+        run: python3 -m pip install --break-system-packages --target runners/python/.deps -r runners/python/requirements.txt
       - name: Go runner hygiene
         run: cd runners/go && go vet ./... && test -z "$(gofmt -l .)"
       - name: Divergence matrix (current SDKs must pass)

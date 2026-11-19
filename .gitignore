@@ -2,3 +2,5 @@
 node_modules/
 /generators/testnet-capture/out/
 /results/
+/runners/python/.deps/
+__pycache__/
