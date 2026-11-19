@@ -55,6 +55,10 @@ spec are versioned separately (`schema_version`, `probe_spec`).
 - wallet-backend #716 reproduction for its signed-payload producer
   (`run-716.sh`): silent truncation to an undecodable address before #693, a
   refused write at #693, an exact round trip from #729.
+- Corpus entry `core.testnet.cap27.soroban-muxed-extend-ttl.p30`:
+  ExtendFootprintTTL with a muxed operation source on testnet ledger
+  5818357, which core accepts and js-stellar-sdk 17.4.0's builder refuses
+  (js-stellar-sdk#1906). Rust, Go and JS 17.4.0 pass it.
 - `make testnet-evidence`: offline re-check of the recorded live run, also
   run in CI. The recorded run now keeps the raw ledgers (testnet ledgers
   5804257–5804261).

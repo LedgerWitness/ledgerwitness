@@ -294,8 +294,9 @@ proof: they share the XDR specification and may share assumptions or defects.
 | `core.testnet.cap27.muxed-large-ids-payment.p30` | CAP-0027, CAP-0067 | 30 | data lake | RPC |
 | `core.testnet.cap38.lp-trustline-issuer-order.p30` | CAP-0038 | 30 | data lake | RPC |
 | `core.testnet.cap73.sac-trust-trustline.p30` | CAP-0073 | 30 | data lake | RPC |
+| `core.testnet.cap27.soroban-muxed-extend-ttl.p30` | CAP-0027, CAP-0046 (CAP-0046-12) | 30 | data lake | RPC |
 
-Total size on disk is about 2.4 MB. The coverage denominator (which CAPs
+Total size on disk is about 3 MB. The coverage denominator (which CAPs
 introduced indexer-visible shapes) is tracked in `docs/research/coverage-registry.md`.
 
 ## 5. Generators: how artifacts are obtained
@@ -1249,7 +1250,7 @@ been secured.
 
 | Required outcome | PoC evidence | Evidence still needed for delivery |
 |---|---|---|
-| Language-neutral corpus, generator and CAP coverage | Five core-emitted testnet entries, JSON schema, recorded provenance, XDR assertions and testnet capture (§4–5) | An audited CAP/shape denominator; independently reviewed expectations; additional required cases; pinned core golden differential tests; reproducible isolated local-core generation under both passphrases |
+| Language-neutral corpus, generator and CAP coverage | Six core-emitted testnet entries, JSON schema, recorded provenance, XDR assertions and testnet capture (§4–5) | An audited CAP/shape denominator; independently reviewed expectations; additional required cases; pinned core golden differential tests; reproducible isolated local-core generation under both passphrases |
 | SDK conformance in JS, Go and Rust | Three runners, 14 probes, byte-exact round trips, reports bound to their input digests, current/historical matrix, JS pre/post-fix reproductions (§9–11), and a live two-release JS check on fresh testnet captures (§5.2) | Build-bound runner reports, class-aware coverage for SDK-only inputs, current stable pins checked at release, and matrix-backed regressions for the specified SDK sightings |
 | Replay against an indexer | Typed comparator, fixture-bound sidecars and synthetic-observation tests (§12) | Mock-RPC compatibility profile, isolated unmodified target, durable database observation, adapter contract and end-to-end pre/post-fix #729, #731 and #716 checks |
 | Three ingestion-mistake checks | Rule designs (§13); STLR003 prototype with seeded positive and negative cases in CI, documented blind spots, and a pinned wallet-backend run: 6 triaged findings before #753's fix, clean on the fix and on `main` (§13.1) | STLR001 and STLR002 analyzers with seeded cases; STLR003 helper coverage across packages; runs on further indexers |

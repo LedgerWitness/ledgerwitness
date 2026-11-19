@@ -1,0 +1,175 @@
+{
+  "schema_version": "0.1.0",
+  "id": "core.testnet.cap27.soroban-muxed-extend-ttl.p30",
+  "description": "ExtendFootprintTTL (CAP-0046-12) whose operation source is a muxed M... account with ID 2^53+1 (CAP-0027). stellar-core accepts a muxed source on this Soroban operation; it rejects one only on InvokeHostFunction (TransactionFrame::validateSorobanMemo, protocol 25+). js-stellar-sdk 17.4.0's TransactionBuilder refuses to build it (js-stellar-sdk#1906). Core extends the Stellar Asset Contract instance's TTL.",
+  "cap_ids": [
+    "CAP-0027",
+    "CAP-0046",
+    "CAP-0088"
+  ],
+  "protocol_versions": [
+    30
+  ],
+  "shape_tags": [
+    "op:extend_footprint_ttl",
+    "account:muxed_op_source",
+    "int:u64_above_2_53",
+    "strkey:m",
+    "soroban:muxed_source_on_non_invoke_op",
+    "meta:ttl_extended",
+    "event:none",
+    "header:stellar_value_signed_ms"
+  ],
+  "fixture_class": "core_emitted_valid",
+  "network_passphrase": "Test SDF Network ; September 2015",
+  "source_kind": "galexie_datalake",
+  "source_url_or_ledger": {
+    "url": "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/testnet/2025-12-18/FFA81BFF--5760000-5823999/FFA7380A--5818357.xdr.zst",
+    "ledger": 5818357,
+    "ledger_hash": "b9fdbef4ddcb50ebd91566885027613f17c1f5ceb5af739b73fabdf28634662d",
+    "object_sha256": "26108d1316028d42b42963f61bcfcb22f7ba8f35264e738b2ef6c332f037439f"
+  },
+  "core_version_and_commit": {
+    "value": "stellar-core 30.0.0 (0e49751aa9ddf892302cca02cea7f3f5d97df9f1)",
+    "basis": "the testnet network's core release as recorded for the other protocol-30 captures (RPC getVersionInfo); the data-lake emitter does not publish its core build, so this identifies the network's core release rather than the exact process that wrote the primary artifact"
+  },
+  "generator_version": "generators/testnet-capture/capture-testnet.mjs (@stellar/stellar-sdk 17.4.0), shape 5",
+  "deterministic_seed": null,
+  "xdr_type": "LedgerCloseMeta",
+  "xdr_path": "ledger.xdr",
+  "sha256": "beb49ed5c832db9afbf58daef37f50f7d1691a99bb9cc6cfc966913a99ddfa09",
+  "focus": {
+    "tx_hash": "63d700d45dfc81e80dce2b666e5bf0f24f9b114e483f29f7fdabc7c141318972"
+  },
+  "expected_decoded_values": {
+    "xdr_json": [
+      {
+        "pointer": "/v2/ledger_header/header/ledger_seq",
+        "value": 5818357
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/1/v1/execution_stages/0/0/11/tx/tx/operations/0/source_account",
+        "value": "MDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQABAAAAAAAAAAGDXQ",
+        "why": "the muxed operation source as submitted; Horizon reports the same source_account_muxed"
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/1/v1/execution_stages/0/0/11/tx/tx/operations/0/body/extend_footprint_ttl/extend_to",
+        "value": 130958
+      },
+      {
+        "pointer": "/v2/tx_processing/16/tx_apply_processing/v4/operations/0/changes/1/updated/data/ttl/live_until_ledger_seq",
+        "value": 5949315,
+        "why": "core extended the instance to the closing ledger plus extend_to"
+      },
+      {
+        "pointer": "/v2/tx_processing/16/tx_apply_processing/v4/operations/0/events",
+        "value": []
+      }
+    ],
+    "probes": {
+      "ledger_sequence": 5818357,
+      "protocol_version": 30,
+      "tx_count": 20,
+      "focus": {
+        "tx_hash": "63d700d45dfc81e80dce2b666e5bf0f24f9b114e483f29f7fdabc7c141318972",
+        "successful": true,
+        "tx_source": "GDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQBRI",
+        "tx_source_muxed_id": null,
+        "op_types": [
+          "EXTEND_FOOTPRINT_TTL"
+        ],
+        "op_sources": [
+          "MDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQABAAAAAAAAAAGDXQ"
+        ],
+        "muxed_ids": [
+          "9007199254740993"
+        ],
+        "meta_signer_keys": [],
+        "meta_created_trustlines": [],
+        "envelope_pool_ids": [],
+        "op_contract_event_counts": [
+          0
+        ]
+      }
+    }
+  },
+  "expected_state_changes_or_participants": {
+    "participants_from_meta": [
+      "GDG3LXPKBRWI7U2QZG3XJPJUSJLOOKYYKPMOJ4F4FJ3F7UB2NVRDQBRI"
+    ],
+    "ttl_changes": [
+      {
+        "contract": "CDJX7RWDIBS6SGF3IWF4WZJTJRR546BJ5D7BJRELFFRSXGKAWKVUNC6T",
+        "entry": "contract instance",
+        "live_until_before": 5939314,
+        "live_until_after": 5949315
+      }
+    ],
+    "indexer_must": "accept a muxed source on a Soroban operation other than InvokeHostFunction; store participants as the base G... account (or the full M... form), never a 32-byte truncation of the muxed key"
+  },
+  "validation_evidence": [
+    {
+      "check": "rs-stellar-xdr strict decode and byte-exact re-encode",
+      "method": "ledgerwitness verify (stellar-xdr 30.0.0)",
+      "status": "verified"
+    },
+    {
+      "check": "ledger header hash recomputed from header bytes and matched to the recorded ledger hash",
+      "method": "ledgerwitness verify; ledger hash independently read from Horizon testnet /ledgers/{seq}",
+      "status": "verified"
+    },
+    {
+      "check": "scp_value.tx_set_hash and tx_set_result_hash recomputed from the artifact",
+      "method": "ledgerwitness verify",
+      "status": "verified"
+    },
+    {
+      "check": "every envelope hashes under the declared passphrase to a processed result",
+      "method": "ledgerwitness verify",
+      "status": "verified"
+    },
+    {
+      "check": "agreement with stellar-core --check-lcm goldens",
+      "method": "not applicable to network captures: core goldens are produced by core's own test suite under its test passphrase; see docs/spec/normalization.md",
+      "status": "not_applicable"
+    },
+    {
+      "check": "same ledger fetched from RPC getLedgers is equal under stellar-core's --check-lcm normalization once the LCM extension is ignored",
+      "method": "ledgerwitness verify (alternate_equivalence)",
+      "status": "verified"
+    },
+    {
+      "check": "transaction successful, muxed operation source and its ID as Horizon reports them; ledger transaction count",
+      "method": "GET horizon-testnet /transactions/{hash}, /transactions/{hash}/operations (source_account_muxed, source_account_muxed_id) and /ledgers/5818357 (successful plus failed transaction counts)",
+      "status": "verified"
+    },
+    {
+      "check": "the network accepts a transaction js-stellar-sdk 17.4.0's TransactionBuilder refuses to build",
+      "method": "generators/testnet-capture/capture-testnet.mjs shape 5 sets the muxed source after the builder runs; the transaction succeeded on testnet",
+      "status": "verified"
+    }
+  ],
+  "known_regression_ids": [
+    "stellar/js-stellar-sdk#1906",
+    "stellar/wallet-backend#716"
+  ],
+  "expected_outcome": "decode_roundtrip_exact",
+  "license_or_provenance_notes": "Public testnet ledger data. Keys used to submit the focus transaction were generated per run, funded by friendbot and discarded; no secret material is stored.",
+  "alternate_artifacts": [
+    {
+      "xdr_path": "ledger.rpc.xdr",
+      "sha256": "a64ad0d2e957447bf31ddf728b0432a4480a7dff72f33b569876605c6ed2f322",
+      "source_kind": "rpc_get_ledgers",
+      "source_url": "https://soroban-testnet.stellar.org getLedgers startLedger=5818357",
+      "relation": "equal_under_core_normalization_ignoring_ext"
+    }
+  ],
+  "derived_artifacts": [
+    {
+      "xdr_type": "TransactionEnvelope",
+      "xdr_path": "focus-envelope.xdr",
+      "sha256": "e94600166125634cea089aacf2120b7e23cbff7a2ac9d803b8a60c5e6895a772",
+      "derived_from": "focus_envelope"
+    }
+  ]
+}

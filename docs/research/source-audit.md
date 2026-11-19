@@ -81,6 +81,33 @@ Commit SHAs come from `gh api` (merge commits of the pull requests) or from
 
 UNVERIFIED beyond the issue text: closed 2026-10-20. Not yet reproduced.
 
+### #1906: the builder refuses a muxed source on every Soroban operation
+
+Not an RFP sighting; found upstream while building a corpus shape, and filed
+by a third party on 2026-11-14 (open).
+
+- **Upstream** (VERIFIED FROM UPSTREAM SOURCE): `TransactionBuilder`
+  (`assertValidSoroban`) refuses a muxed transaction or operation source on
+  every Soroban transaction, with the comment "Core also rejects a muxed
+  operation source and a memo". stellar-core's
+  `TransactionFrame::validateSorobanMemo` (protocol 25 onward) returns early
+  unless the single operation is `INVOKE_HOST_FUNCTION`, so a muxed source
+  on `ExtendFootprintTTL` or `RestoreFootprint` is valid. 17.2.0 has no such
+  check.
+- **On the network** (VERIFIED BY EXECUTION, `make testnet-smoke`, shape 5):
+  an `ExtendFootprintTTL` with a muxed operation source succeeded on testnet
+  ledger 5818357 and extended a contract instance's TTL. Horizon reports the
+  operation's `source_account_muxed`. The capture tool sets the muxed source
+  in the XDR because the builder will not.
+- **Corpus:** `core.testnet.cap27.soroban-muxed-extend-ttl.p30`. Parsing is not
+  affected: `TransactionBuilder.fromXDR` in 17.2.0 and 17.4.0 reads the
+  transaction, and the conformance runners pass it.
+- **Sibling SDKs** (VERIFIED FROM UPSTREAM SOURCE): go-stellar-sdk `4cee025`
+  (`txnbuild`) and py-stellar-base `7b5fb3b` have no such check, so neither
+  refuses this transaction. No sibling issue is needed. Both also build an
+  InvokeHostFunction with a muxed source, which core rejects at submission;
+  that is a missing client-side check, not a refusal of valid input.
+
 ## js-xdr #165
 
 Issue "Writer primitive methods silently coerce invalid inputs instead of
