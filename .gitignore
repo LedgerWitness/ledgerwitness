@@ -4,3 +4,4 @@ node_modules/
 /results/
 /runners/python/.deps/
 __pycache__/
+/runners/java/.deps/

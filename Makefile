@@ -31,9 +31,10 @@ runners: | $(OUT)
 	cd runners/javascript && node runner.mjs ../../$(ENTRIES) --sdk 17.4.0 > ../../$(OUT)/js-17.4.0.json
 	cd runners/javascript && node runner.mjs ../../$(ENTRIES) --sdk 17.2.0 > ../../$(OUT)/js-17.2.0.json
 	PYTHONPATH=runners/python/.deps python3 runners/python/runner.py $(ENTRIES) > $(OUT)/python.json
+	runners/java/fetch.sh && java -cp 'runners/java/.deps/*' runners/java/Runner.java $(ENTRIES) > $(OUT)/java.json
 
 conform: runners
-	$(LCK) conform $(OUT)/rust.json $(OUT)/go.json $(OUT)/js-17.4.0.json $(OUT)/js-17.2.0.json $(OUT)/python.json \
+	$(LCK) conform $(OUT)/rust.json $(OUT)/go.json $(OUT)/js-17.4.0.json $(OUT)/js-17.2.0.json $(OUT)/python.json $(OUT)/java.json \
 	  --entries $(ENTRIES) --json $(OUT)/matrix.json --markdown $(OUT)/matrix.md $(REQUIRE_PASS)
 
 repro-js:
@@ -99,7 +100,8 @@ sweep: | $(OUT)
 	cd runners/go && $(GO) run . $(abspath $(SWEEP_DIR)/set) > $(abspath $(SWEEP_DIR))/go.json
 	cd runners/javascript && node runner.mjs $(abspath $(SWEEP_DIR)/set) --sdk 17.4.0 > $(abspath $(SWEEP_DIR))/js.json
 	PYTHONPATH=runners/python/.deps python3 runners/python/runner.py $(SWEEP_DIR)/set > $(SWEEP_DIR)/python.json
-	node generators/datalake-sweep/compare.mjs $(SWEEP_DIR)/rust.json $(SWEEP_DIR)/go.json $(SWEEP_DIR)/js.json $(SWEEP_DIR)/python.json --json $(SWEEP_DIR)/compare.json
+	runners/java/fetch.sh && java -Xmx6g -cp 'runners/java/.deps/*' runners/java/Runner.java $(SWEEP_DIR)/set > $(SWEEP_DIR)/java.json
+	node generators/datalake-sweep/compare.mjs $(SWEEP_DIR)/rust.json $(SWEEP_DIR)/go.json $(SWEEP_DIR)/js.json $(SWEEP_DIR)/python.json $(SWEEP_DIR)/java.json --json $(SWEEP_DIR)/compare.json
 
 clean:
 	rm -rf target results
