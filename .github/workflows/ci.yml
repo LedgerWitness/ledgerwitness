@@ -77,7 +77,7 @@ jobs:
         run: make conform
       - name: js-stellar-sdk pre/post-fix reproductions
         run: make repro-js
-      - name: SEP-23 strkey decoders (Rust, Go, JS, Python)
+      - name: SEP-23 strkey decoders (Rust, Go, JS, Python, Java)
         run: make strkey
       - name: Recorded live testnet run, re-checked offline
         run: make testnet-evidence

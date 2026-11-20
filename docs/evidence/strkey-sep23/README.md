@@ -2,7 +2,7 @@
 
 Every indexer decodes `G…`, `M…`, `P…` and the other SEP-23 strkeys, and two
 decoders that disagree on one string disagree about which account it names.
-`make strkey` (`reproductions/strkey/`) puts 144 strkeys through five
+`make strkey` (`reproductions/strkey/`) puts 144 strkeys through six
 decoders and scores them against SEP-23.
 
 ## Vectors
@@ -24,9 +24,10 @@ re-encode to the same string.
 | JS @stellar/stellar-sdk 17.4.0 | 143 | 0 | 0 |
 | JS @stellar/stellar-sdk 17.2.0 | 136 | 0 | 7 (`W…`) |
 | Python py-stellar-base 17.0.1 | 143 | 0 | 0 |
+| Java java-stellar-sdk 6.0.0 | 143 | 0 | 0 |
 
 The empty-payload `P…` key, which SEP-23 does not cover, is rejected by all
-five.
+six.
 
 The one wrong verdict: Go's `strkey.Decode` and `strkey.IsValidClaimableBalance`
 accept SEP-23's invalid vector "invalid claimable balance type (first byte of
@@ -44,7 +45,10 @@ these SDKs is unlikely, and the corpus's harder cases lie elsewhere.
 
 ## Limits
 
-- Five decoders. The Java, PHP, Dart, .NET and other SDKs are not tested here.
+- Six decoders. The PHP, Dart, .NET and other SDKs are not tested here.
+- Java's decoders are strict, as java-stellar-sdk#836 also reports. Its
+  encoders accept data of the wrong length; that is #836's subject and is not
+  tested here.
 - The decoders tested are the StrKey functions; wrappers built on them (for
   example account or keypair constructors) were checked by hand for
   lowercase input in JS and Python, and reject it.

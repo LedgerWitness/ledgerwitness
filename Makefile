@@ -40,7 +40,7 @@ conform: runners
 repro-js:
 	cd reproductions/js-sdk && node run.mjs --json results.json
 
-# SEP-23 strkey vectors (published and rule-derived) through five decoders.
+# SEP-23 strkey vectors (published and rule-derived) through six decoders.
 strkey:
 	GO=$(GO) reproductions/strkey/run.sh
 
