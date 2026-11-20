@@ -91,6 +91,9 @@ spec are versioned separately (`schema_version`, `probe_spec`).
 - Corpus entry `core.testnet.cap46.extend-ttl-extend-to-zero.p27` (testnet
   ledger 3619212): `ExtendFootprintTTL` with `extendTo = 0`, the on-chain
   witness of Soneso/kmp-stellar-sdk#176.
+- Testnet witnesses (`submit-witnesses.py`, `witnesses.json`): 12 shapes
+  applied on testnet and parsed by eight SDK releases
+  (`docs/evidence/testnet-witnesses/`).
 - First seven findings filed upstream, each with a reproduction in
   `reproductions/sdk-findings/`: Beans-BV/dotnet-stellar-sdk#281 (wrong
   hash for default-valued `PRECOND_V2`, 2 mainnet transactions),

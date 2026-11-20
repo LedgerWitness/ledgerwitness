@@ -9,17 +9,30 @@ Shapes:
   revoke-pool-share-sponsorship
                             RevokeSponsorship of a sponsored pool-share trustline
 
+Batch 2 (--batch 2), shapes that model-based SDKs may rebuild differently:
+  op-source-equals-tx-source
+                            an operation whose source is set to the transaction source
+  allow-trust-maintain-liabilities
+                            AllowTrust with authorize = 2 (AUTHORIZED_TO_MAINTAIN_LIABILITIES)
+  set-trustline-flags-zero  SetTrustLineFlags with clearFlags = setFlags = 0
+  fee-bump-muxed-fee-source a fee bump whose fee source is an M... account, ID 2^63+5
+  claim-predicate-depth-4   CreateClaimableBalance with 10 claimants, predicates nested 4 deep
+  path-payment-5-hops       PathPaymentStrictSend through 5 intermediate assets (fails:
+                            no offers; a failed transaction is still in the ledger)
+  bump-sequence-zero        BumpSequence with bumpTo = 0
+  set-options-empty         SetOptions with no field set
+
 Accounts are fresh friendbot accounts, discarded after the run. Each shape is
 built with py-stellar-base and then edited at the XDR level before signing,
 so the SDK's own builder checks cannot alter it. Prints one JSON line per
 transaction: shape, hash, ledger, status and the envelope in base64.
 
-Usage: PYTHONPATH=runners/python/.deps python3 reproductions/sdk-findings/submit-witnesses.py
+Usage: PYTHONPATH=runners/python/.deps python3 reproductions/sdk-findings/submit-witnesses.py [--batch 2]
 """
 
-import base64
 import hashlib
 import json
+import sys
 import time
 import urllib.error
 import urllib.parse
@@ -27,7 +40,9 @@ import urllib.request
 
 from stellar_sdk import (
     Account,
+    AllowTrust,
     Asset,
+    BumpSequence,
     ChangeTrust,
     Claimant,
     ClaimPredicate,
@@ -37,7 +52,10 @@ from stellar_sdk import (
     LiquidityPoolId,
     ManageData,
     Network,
+    PathPaymentStrictSend,
     RevokeSponsorship,
+    SetOptions,
+    SetTrustLineFlags,
     BeginSponsoringFutureReserves,
     EndSponsoringFutureReserves,
     TransactionBuilder,
@@ -84,18 +102,25 @@ def build(source, ops, edit=None):
     return tx
 
 
-def sign_and_submit(shape, tx, signers):
-    payload = X.TransactionSignaturePayload(
-        network_id=X.Hash(NETWORK_ID),
-        tagged_transaction=X.TransactionSignaturePayloadTaggedTransaction(
-            type=X.EnvelopeType.ENVELOPE_TYPE_TX, tx=tx
-        ),
-    )
+def signatures(tagged, signers):
+    payload = X.TransactionSignaturePayload(network_id=X.Hash(NETWORK_ID), tagged_transaction=tagged)
     tx_hash = hashlib.sha256(payload.to_xdr_bytes()).digest()
     sigs = [X.DecoratedSignature(X.SignatureHint(kp.signature_hint()), X.Signature(kp.sign(tx_hash))) for kp in signers]
-    env = X.TransactionEnvelope(
-        type=X.EnvelopeType.ENVELOPE_TYPE_TX, v1=X.TransactionV1Envelope(tx=tx, signatures=sigs)
-    )
+    return tx_hash, sigs
+
+
+def v1_envelope(tx, signers):
+    tagged = X.TransactionSignaturePayloadTaggedTransaction(type=X.EnvelopeType.ENVELOPE_TYPE_TX, tx=tx)
+    tx_hash, sigs = signatures(tagged, signers)
+    return tx_hash, X.TransactionEnvelope(type=X.EnvelopeType.ENVELOPE_TYPE_TX, v1=X.TransactionV1Envelope(tx=tx, signatures=sigs))
+
+
+def sign_and_submit(shape, tx, signers):
+    tx_hash, env = v1_envelope(tx, signers)
+    return submit(shape, tx_hash, env)
+
+
+def submit(shape, tx_hash, env):
     b64 = env.to_xdr()
     data = urllib.parse.urlencode({"tx": b64}).encode()
     try:
@@ -122,7 +147,7 @@ def set_v2(tx, **fields):
     tx.cond = X.Preconditions(type=X.PreconditionType.PRECOND_V2, v2=v2)
 
 
-def main():
+def batch1():
     a = fund()
     b = fund()
     issuer = fund()
@@ -176,5 +201,90 @@ def main():
     )
 
 
+def muxed(kp, mid):
+    return X.MuxedAccount(
+        type=X.CryptoKeyType.KEY_TYPE_MUXED_ED25519,
+        med25519=X.MuxedAccountMed25519(id=X.Uint64(mid), ed25519=X.Uint256(kp.raw_public_key())),
+    )
+
+
+def batch2():
+    a = fund()
+    b = fund()
+    issuer = fund()
+    lwb = Asset("LWB", issuer.public_key)
+
+    sign_and_submit("op-source-equals-tx-source", build(a.public_key, [ManageData("lw", b"3", source=a.public_key)]), [a])
+
+    # The issuer requires and can revoke authorization; B trusts LWB; the issuer
+    # moves B's trustline to "authorized to maintain liabilities".
+    sign_and_submit("setup-issuer-auth-flags", build(issuer.public_key, [SetOptions(set_flags=3)]), [issuer])
+    sign_and_submit("setup-trust-lwb", build(b.public_key, [ChangeTrust(lwb)]), [b])
+
+    def maintain_liabilities(tx):
+        tx.operations[0].body.allow_trust_op.authorize = X.Uint32(2)
+
+    sign_and_submit(
+        "allow-trust-maintain-liabilities",
+        build(issuer.public_key, [AllowTrust(b.public_key, "LWB", True)], maintain_liabilities),
+        [issuer],
+    )
+    sign_and_submit(
+        "set-trustline-flags-zero",
+        build(issuer.public_key, [SetTrustLineFlags(b.public_key, lwb, clear_flags=None, set_flags=None)],
+              lambda tx: _zero_trustline_flags(tx)),
+        [issuer],
+    )
+
+    inner_tx = build(a.public_key, [ManageData("lw", b"4")])
+    _, inner = v1_envelope(inner_tx, [a])
+    fee_bump = X.FeeBumpTransaction(
+        fee_source=muxed(b, 2**63 + 5),
+        fee=X.Int64(4000),
+        inner_tx=X.FeeBumpTransactionInnerTx(type=X.EnvelopeType.ENVELOPE_TYPE_TX, v1=inner.v1),
+        ext=X.FeeBumpTransactionExt(0),
+    )
+    tagged = X.TransactionSignaturePayloadTaggedTransaction(type=X.EnvelopeType.ENVELOPE_TYPE_TX_FEE_BUMP, fee_bump=fee_bump)
+    fb_hash, sigs = signatures(tagged, [b])
+    submit(
+        "fee-bump-muxed-fee-source",
+        fb_hash,
+        X.TransactionEnvelope(
+            type=X.EnvelopeType.ENVELOPE_TYPE_TX_FEE_BUMP,
+            fee_bump=X.FeeBumpTransactionEnvelope(tx=fee_bump, signatures=sigs),
+        ),
+    )
+
+    P = ClaimPredicate
+    deep = P.predicate_and(
+        P.predicate_or(P.predicate_not(P.predicate_before_absolute_time(4102444800)), P.predicate_before_relative_time(86400)),
+        P.predicate_unconditional(),
+    )
+    claimants = [Claimant(fund().public_key if i < 1 else Keypair.random().public_key, deep) for i in range(10)]
+    sign_and_submit("claim-predicate-depth-4", build(a.public_key, [CreateClaimableBalance(Asset.native(), "1", claimants)]), [a])
+
+    path = [Asset(f"LWH{i}", issuer.public_key) for i in range(5)]
+    sign_and_submit(
+        "path-payment-5-hops",
+        build(a.public_key, [PathPaymentStrictSend(b.public_key, Asset.native(), "1", lwb, "1", path)]),
+        [a],
+    )
+    sign_and_submit("bump-sequence-zero", build(a.public_key, [BumpSequence(0)]), [a])
+
+    def empty_set_options(tx):
+        op = tx.operations[0].body.set_options_op
+        for f in ("inflation_dest", "clear_flags", "set_flags", "master_weight", "low_threshold",
+                  "med_threshold", "high_threshold", "home_domain", "signer"):
+            setattr(op, f, None)
+
+    sign_and_submit("set-options-empty", build(a.public_key, [SetOptions(home_domain="x")], empty_set_options), [a])
+
+
+def _zero_trustline_flags(tx):
+    op = tx.operations[0].body.set_trust_line_flags_op
+    op.clear_flags = X.Uint32(0)
+    op.set_flags = X.Uint32(0)
+
+
 if __name__ == "__main__":
-    main()
+    batch2() if "--batch" in sys.argv and sys.argv[sys.argv.index("--batch") + 1] == "2" else batch1()
