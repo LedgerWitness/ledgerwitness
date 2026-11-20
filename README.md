@@ -29,6 +29,7 @@ live testnet run work offline.
 | Linter | Rule STLR003 flags the 6 envelope-only participant functions in wallet-backend before #753's fix, and runs clean after it and on current Horizon and stellar-etl | `make lint-wallet-backend` |
 | Mainnet sweep | 9,351 mainnet transactions from 40 ledgers (protocols 9 to 29, including 336 pre-CAP-15 V0 envelopes): Rust, Go, JS, Python and Java agree on every probe, with no decode, re-encoding or API failure, except that Java 6.0.0 computes the wrong hash for 2 transactions (java-stellar-sdk#844). All 40 ledgers match SDF's history archive | `make sweep` |
 | Strkey decoders | 144 SEP-23 strkeys (34 published, 110 derived from its rules) through six decoders (Rust, Go, two JS releases, Python, Java): all follow SEP-23 except one Go case already reported upstream | `make strkey` |
+| New SDK findings | Three defects found by running real transactions through SDKs and filed upstream: stellar-dotnet-sdk 17.0.0 and stellar-php-sdk 1.18.0 compute the wrong hash for transactions the network applied (Beans-BV/dotnet-stellar-sdk#281, Soneso/stellar-php-sdk#252), and go-stellar-sdk `txnbuild` cannot build a valid pool-share `RevokeSponsorship` (stellar/go-stellar-sdk#6062) | `reproductions/sdk-findings/` |
 | Live testnet | Five rare shapes submitted and checked; core accepts a Soroban transaction that JS 17.4.0's builder refuses to build (js-stellar-sdk#1906) | `make testnet-smoke` |
 
 Status of every component, and the delivery plan for the rest:
@@ -332,7 +333,7 @@ docs/            architecture, specifications, evidence, research, findings
 | [docs/spec/replay.md](docs/spec/replay.md) | Replay comparison format |
 | [docs/research/source-audit.md](docs/research/source-audit.md) | The upstream bugs behind each entry |
 | [docs/research/coverage-registry.md](docs/research/coverage-registry.md) | Which CAPs and shapes the corpus covers |
-| [docs/findings/README.md](docs/findings/README.md) | Observations from running the corpus against Stellar software |
+| [docs/findings/README.md](docs/findings/README.md) | Findings filed upstream, and observations from running the corpus against Stellar software |
 
 ## Network use and privacy
 

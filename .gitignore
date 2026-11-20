@@ -5,3 +5,6 @@ node_modules/
 /runners/python/.deps/
 __pycache__/
 /runners/java/.deps/
+/reproductions/sdk-findings/php-252/vendor/
+/reproductions/sdk-findings/dotnet-281/bin/
+/reproductions/sdk-findings/dotnet-281/obj/

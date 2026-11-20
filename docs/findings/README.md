@@ -2,9 +2,16 @@
 
 Observations from running the corpus against Stellar software and
 infrastructure. An observation becomes a finding only after triage confirms a
-defect. Confirmed findings are reported privately to the affected maintainers
-first (see `SECURITY.md`) and published here once disclosed. None has been
-filed yet.
+defect, reproduces it by execution, and finds no earlier report upstream.
+Security-relevant findings are reported privately to the maintainers first
+(see `SECURITY.md`). Functional defects are filed as public issues and listed
+here once filed.
+
+| ID | Component | Defect | Evidence | Upstream |
+|---|---|---|---|---|
+| FND-001 | stellar-dotnet-sdk 17.0.0 | `Transaction.Hash` is wrong for a `PRECOND_V2` transaction whose fields are at their defaults | 2 mainnet transactions, ledger 55000000 | [Beans-BV/dotnet-stellar-sdk#281](https://github.com/Beans-BV/dotnet-stellar-sdk/issues/281) |
+| FND-002 | stellar-php-sdk 1.18.0 | A SAC deployed with `CREATE_CONTRACT_V2` is re-encoded as `CREATE_CONTRACT`, so `hash()` is wrong | testnet transaction `11446413…`, ledger 5822970 | [Soneso/stellar-php-sdk#252](https://github.com/Soneso/stellar-php-sdk/issues/252) |
+| FND-003 | go-stellar-sdk v0.9.0 `txnbuild` | `RevokeSponsorship` of a pool-share trustline cannot be built, and its asset encodes as native | executed reproduction; core's own tests cover the shape | [stellar/go-stellar-sdk#6062](https://github.com/stellar/go-stellar-sdk/issues/6062) |
 
 Already-fixed upstream bugs that the corpus reproduces are regression tests,
 not findings; they are described in `docs/research/source-audit.md`.
@@ -98,3 +105,68 @@ not findings; they are described in `docs/research/source-audit.md`.
   network does not know.
 - **Next step:** none upstream. The Java column stays in the matrix as a
   reported, non-gating run until a release includes #832.
+
+## FND-001: stellar-dotnet-sdk hashes default-valued `PRECOND_V2` transactions as `PRECOND_TIME`
+
+- **Found by:** running the 9,351 mainnet sweep envelopes through
+  `Transaction.FromEnvelopeXdr(...).Hash(network)` on stellar-dotnet-sdk
+  17.0.0 (the current release; `main` at 6eea5fca is identical).
+- **Defect:** `TransactionPreconditions.FromXdr` keeps the field values but
+  not the decoded arm, and `ToXdr` picks the arm from `HasV2()`, which is
+  false when every V2 field has its default value. A `PRECOND_V2` with only
+  time bounds is re-encoded as `PRECOND_TIME`, and one with nothing set as
+  `PRECOND_NONE`. The hash, the re-encoded envelope and any signature made
+  from the parsed transaction then differ from the original.
+- **Evidence:** mainnet `b4a6d6a2…3db9` and `f38b082e…aaf7` (ledger 55000000,
+  protocol 22). The SDK returns `8299a5d4…209f` for the first. Both
+  transactions were applied, and stellar-core accepts any `PRECOND_V2` from
+  protocol 19.
+- **Duplicates:** none found in the repository's issues and pull requests.
+  The same class of bug is java-stellar-sdk#844 and stellar-php-sdk#222.
+- **Severity:** medium. Indexers record hashes that do not exist on chain,
+  and a co-signer signs a different transaction.
+- **Also seen, not filed:** `TimeBounds` refuses `minTime == maxTime`, which
+  core accepts. No on-chain example was found, so it is held back as low
+  value.
+
+## FND-002: stellar-php-sdk re-encodes a `CREATE_CONTRACT_V2` SAC deploy as `CREATE_CONTRACT`
+
+- **Found by:** crafted host-function cases through
+  `AbstractTransaction::fromEnvelopeBase64XdrString(...)->hash()` on
+  stellar-php-sdk 1.18.0 (`main` at 843384c5 is identical). Then confirmed on
+  chain: a SAC deploy through `CREATE_CONTRACT_V2` (preimage `FROM_ASSET`,
+  executable `STELLAR_ASSET`) was submitted to testnet and succeeded
+  (`11446413b5a7a95f8bb18e616a5187f19a5a7b146fdef3c5c2c77e5ea87aaadc`,
+  ledger 5822970).
+- **Defect:** `DeploySACWithAssetHostFunction::fromXdr` accepts both arms and
+  keeps only the asset; `toXdr()` always builds `CREATE_CONTRACT`. The SDK
+  hashes the on-chain transaction as `1fc58031…8e55`. Constructor arguments
+  of a V2 deploy are also dropped.
+- **Cross-check:** java-stellar-sdk 6.0.0 and py-stellar-base 17.0.1 return
+  the network hash and the original bytes for the same envelope.
+- **Duplicates:** none found; #66/#67 concern a different preimage and
+  executable pairing.
+- **Severity:** medium-low. The shape is valid but uncommon, because most
+  tools deploy a SAC with `CREATE_CONTRACT`.
+- **Also seen, not filed:** ManageSellOffer and ManageBuyOffer refuse a
+  negative offer ID, which core accepted before protocol 15. No on-chain
+  example was found.
+
+## FND-003: go-stellar-sdk `txnbuild` cannot revoke the sponsorship of a pool-share trustline
+
+- **Found by:** crafted cases through `txnbuild` on go-stellar-sdk v0.9.0
+  (`main` at 4cee0255 has the same files).
+- **Defect:** `RevokeSponsorship.Validate` checks the trustline asset with
+  `validateStellarAsset`, which requires an issuer, so `NewTransaction`
+  always refuses the operation. Separately,
+  `LiquidityPoolShareTrustLineAsset.ToXDR` does not set `Type`, so
+  `BuildXDR` returns no error for an operation whose asset encodes as native
+  and which core rejects as `REVOKE_SPONSORSHIP_MALFORMED`.
+- **Core accepts the shape:** `RevokeSponsorshipOpFrame::doCheckValid` and
+  the "pool share trustline" section of `RevokeSponsorshipTests.cpp`.
+- **Duplicates:** none for the validation half. The encoding half is fixed in
+  passing by the open pull request #5992, which the report credits.
+- **Severity:** low-medium. A valid operation cannot be built; no funds at
+  risk.
+- **Checked and clean:** `txnbuild` keeps the original envelope, so parsing
+  then hashing or re-encoding was exact on all 9,351 mainnet envelopes.
