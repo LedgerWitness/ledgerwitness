@@ -249,9 +249,10 @@ not findings; they are described in `docs/research/source-audit.md`.
   than core's: `isNotBlank()` on data names, a ban on nested `NOT`,
   `maxLedger` read with `.toInt()` and then required to be `>= 0`, and an
   explicit `UnsupportedOperationException` for pool-share trustline keys.
-- **Other SDKs:** java-stellar-sdk 6.0.0, py-stellar-base 17.0.1 and
-  js-stellar-sdk 17.4.0 and 17.2.0 parse all four and return the network
-  hash. The pool-share revoke is the shape go-stellar-sdk `txnbuild` cannot
+- **Other SDKs:** java-stellar-sdk 6.0.0, py-stellar-base 17.0.1,
+  js-stellar-sdk 17.4.0 and 17.2.0, stellar-dotnet-sdk 17.0.0,
+  stellar-php-sdk 1.18.0 and stellar_flutter_sdk 3.12.0 parse all four,
+  return the network hash and re-encode the original bytes. The pool-share revoke is the shape go-stellar-sdk `txnbuild` cannot
   build (FND-003), so it is now an on-chain witness for that finding too.
 - **Dropped:** a `PRECOND_V2` with `minSeqNum = -1` was rejected by core with
   `tx_bad_seq`, so the SDK's refusal of it is correct.
