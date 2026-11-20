@@ -22,12 +22,25 @@ Batch 2 (--batch 2), shapes that model-based SDKs may rebuild differently:
   bump-sequence-zero        BumpSequence with bumpTo = 0
   set-options-empty         SetOptions with no field set
 
+Batch 3 (--batch 3), fields that SDK models convert through their own types:
+  create-account-zero-balance
+                            a sponsored CreateAccount with startingBalance = 0
+  signer-signed-payload-64  SetOptions adding an Ed25519 signed-payload signer, 64-byte payload
+  signer-signed-payload-1   the same with a 1-byte payload (strkey padding)
+  signer-hash-x             SetOptions adding a sha256-hash (X...) signer
+  signer-pre-auth-tx        SetOptions adding a pre-authorized-transaction (T...) signer
+  precond-extra-signer-signed-payload-64
+                            PRECOND_V2 whose extra signer is a signed payload of 64 bytes,
+                            satisfied by a signature of that payload
+  lp-deposit-extreme-prices LiquidityPoolDeposit with minPrice 1/2147483647 and maxPrice 2147483647/1
+  lp-withdraw-zero-minimums LiquidityPoolWithdraw with both minimum amounts 0
+
 Accounts are fresh friendbot accounts, discarded after the run. Each shape is
 built with py-stellar-base and then edited at the XDR level before signing,
 so the SDK's own builder checks cannot alter it. Prints one JSON line per
 transaction: shape, hash, ledger, status and the envelope in base64.
 
-Usage: PYTHONPATH=runners/python/.deps python3 reproductions/sdk-findings/submit-witnesses.py [--batch 2]
+Usage: PYTHONPATH=runners/python/.deps python3 reproductions/sdk-findings/submit-witnesses.py [--batch 2|3]
 """
 
 import hashlib
@@ -44,13 +57,20 @@ from stellar_sdk import (
     Asset,
     BumpSequence,
     ChangeTrust,
+    CreateAccount,
     Claimant,
     ClaimPredicate,
     CreateClaimableBalance,
     Keypair,
     LiquidityPoolAsset,
+    LiquidityPoolDeposit,
     LiquidityPoolId,
+    LiquidityPoolWithdraw,
     ManageData,
+    Payment,
+    Price,
+    Signer,
+    SignerKey,
     Network,
     PathPaymentStrictSend,
     RevokeSponsorship,
@@ -280,6 +300,83 @@ def batch2():
     sign_and_submit("set-options-empty", build(a.public_key, [SetOptions(home_domain="x")], empty_set_options), [a])
 
 
+def batch3():
+    a = fund()
+    b = fund()
+    issuer = fund()
+
+    fresh = Keypair.random()
+
+    def zero_balance(tx):
+        tx.operations[1].body.create_account_op.starting_balance = X.Int64(0)
+
+    sign_and_submit(
+        "create-account-zero-balance",
+        build(
+            a.public_key,
+            [
+                BeginSponsoringFutureReserves(fresh.public_key),
+                CreateAccount(fresh.public_key, "1"),
+                EndSponsoringFutureReserves(source=fresh.public_key),
+            ],
+            zero_balance,
+        ),
+        [a, fresh],
+    )
+
+    payload64 = bytes(range(1, 65))
+    sign_and_submit(
+        "signer-signed-payload-64",
+        build(a.public_key, [SetOptions(signer=Signer(SignerKey.ed25519_signed_payload(
+            _signed_payload(b.public_key, payload64)), 1))]),
+        [a],
+    )
+    sign_and_submit(
+        "signer-signed-payload-1",
+        build(a.public_key, [SetOptions(signer=Signer(SignerKey.ed25519_signed_payload(
+            _signed_payload(b.public_key, b"\x01")), 1))]),
+        [a],
+    )
+    sign_and_submit("signer-hash-x", build(a.public_key, [SetOptions(signer=Signer(SignerKey.sha256_hash(bytes(32 * [7])), 1))]), [a])
+    sign_and_submit("signer-pre-auth-tx", build(a.public_key, [SetOptions(signer=Signer(SignerKey.pre_auth_tx(bytes(32 * [9])), 1))]), [a])
+
+    # The extra signer requires a signature by b's key of the 64-byte payload;
+    # its hint is the key's last 4 bytes XOR the payload's last 4 bytes.
+    def extra_signer(tx):
+        sp = X.SignerKeyEd25519SignedPayload(ed25519=X.Uint256(b.raw_public_key()), payload=payload64)
+        set_v2(tx)
+        tx.cond.v2.extra_signers = [X.SignerKey(type=X.SignerKeyType.SIGNER_KEY_TYPE_ED25519_SIGNED_PAYLOAD, ed25519_signed_payload=sp)]
+
+    tx = build(a.public_key, [ManageData("lw", b"5")], extra_signer)
+    tx_hash, env = v1_envelope(tx, [a])
+    hint = bytes(x ^ y for x, y in zip(b.raw_public_key()[-4:], payload64[-4:]))
+    env.v1.signatures.append(X.DecoratedSignature(X.SignatureHint(hint), X.Signature(b.sign(payload64))))
+    submit("precond-extra-signer-signed-payload-64", tx_hash, env)
+
+    # A pool between native and LWL with liquidity from b.
+    lwl = Asset("LWL", issuer.public_key)
+    pool = LiquidityPoolAsset(Asset.native(), lwl)
+    sign_and_submit("setup-trust-lwl", build(b.public_key, [ChangeTrust(lwl)]), [b])
+    sign_and_submit("setup-fund-lwl", build(issuer.public_key, [Payment(b.public_key, lwl, "1000")]), [issuer])
+    sign_and_submit("setup-trust-pool", build(b.public_key, [ChangeTrust(pool)]), [b])
+    sign_and_submit(
+        "lp-deposit-extreme-prices",
+        build(b.public_key, [LiquidityPoolDeposit(pool.liquidity_pool_id, "100", "100", Price(1, 2147483647), Price(2147483647, 1))]),
+        [b],
+    )
+    sign_and_submit(
+        "lp-withdraw-zero-minimums",
+        build(b.public_key, [LiquidityPoolWithdraw(pool.liquidity_pool_id, "1", "0", "0")]),
+        [b],
+    )
+
+
+def _signed_payload(account, payload):
+    from stellar_sdk import SignedPayloadSigner
+
+    return SignedPayloadSigner(account, payload)
+
+
 def _zero_trustline_flags(tx):
     op = tx.operations[0].body.set_trust_line_flags_op
     op.clear_flags = X.Uint32(0)
@@ -287,4 +384,5 @@ def _zero_trustline_flags(tx):
 
 
 if __name__ == "__main__":
-    batch2() if "--batch" in sys.argv and sys.argv[sys.argv.index("--batch") + 1] == "2" else batch1()
+    batch = sys.argv[sys.argv.index("--batch") + 1] if "--batch" in sys.argv else "1"
+    {"1": batch1, "2": batch2, "3": batch3}[batch]()

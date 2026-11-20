@@ -331,7 +331,7 @@ docs/            architecture, specifications, evidence, research, findings
 | [docs/evidence/linter-stlr003/](docs/evidence/linter-stlr003/README.md) | Linter rule STLR003 on wallet-backend before and after its participants fix |
 | [docs/evidence/mainnet-sweep/](docs/evidence/mainnet-sweep/README.md) | Five SDKs on 9,351 mainnet transactions (protocols 9 to 29, in two sets), and how the ledgers were verified |
 | [docs/evidence/mainnet-validators/](docs/evidence/mainnet-validators/README.md) | Sources of the pinned mainnet validator keys |
-| [docs/evidence/testnet-witnesses/](docs/evidence/testnet-witnesses/README.md) | 12 crafted shapes submitted to testnet and parsed by eight SDK releases |
+| [docs/evidence/testnet-witnesses/](docs/evidence/testnet-witnesses/README.md) | 20 crafted shapes submitted to testnet and parsed by eight SDK releases |
 | [docs/evidence/strkey-sep23/](docs/evidence/strkey-sep23/README.md) | Six strkey decoders against SEP-23's published and rule-derived cases |
 | [corpus/README.md](corpus/README.md) | Corpus format for consumers |
 | [docs/spec/probes.md](docs/spec/probes.md) | The 14 values every SDK runner computes, and the report format |
