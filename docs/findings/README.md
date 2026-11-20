@@ -15,6 +15,7 @@ here once filed.
 | FND-004 | stellar_flutter_sdk 3.12.0 | A SAC deployed with `CREATE_CONTRACT_V2` is re-encoded as `CREATE_CONTRACT`, so the hash is wrong | testnet transaction `11446413…`, ledger 5822970 | [Soneso/stellar_flutter_sdk#305](https://github.com/Soneso/stellar_flutter_sdk/issues/305) |
 | FND-005 | kmp-stellar-sdk 1.18.0 (JVM) | `hashHex` is wrong for a `PRECOND_V2` transaction whose fields are at their defaults | 2 mainnet transactions, ledger 55000000 (corpus entry `core.pubnet.cap21.precond-v2-default-fields.p22`) | [Soneso/kmp-stellar-sdk#175](https://github.com/Soneso/kmp-stellar-sdk/issues/175) |
 | FND-006 | kmp-stellar-sdk 1.18.0 (JVM) | `fromEnvelopeXdr` refuses a successful `ExtendFootprintTTL` with `extendTo = 0` | testnet transaction `21f5b9f4…`, ledger 3619212 (corpus entry `core.testnet.cap46.extend-ttl-extend-to-zero.p27`) | [Soneso/kmp-stellar-sdk#176](https://github.com/Soneso/kmp-stellar-sdk/issues/176) |
+| FND-007 | kmp-stellar-sdk 1.18.0 (JVM) | `fromEnvelopeXdr` refuses four kinds of transaction the network applied | 4 testnet transactions, ledgers 5829124 to 5829133 (`reproductions/sdk-findings/witnesses.json`) | [Soneso/kmp-stellar-sdk#177](https://github.com/Soneso/kmp-stellar-sdk/issues/177) |
 
 Already-fixed upstream bugs that the corpus reproduces are regression tests,
 not findings; they are described in `docs/research/source-audit.md`.
@@ -211,10 +212,8 @@ not findings; they are described in `docs/research/source-audit.md`.
   hasV2, wrong hash). The same class is FND-001 and Soneso/stellar-php-sdk#222.
 - **Severity:** medium, as FND-001.
 - **Other results of the same run:** a muxed transaction source is turned
-  into a G address (known, #170). The SDK also refuses several shapes core
-  accepts: `RevokeSponsorship` of a pool-share trustline, a ManageData name of one space,
-  nested `NOT` claim predicates, `minSeqNum` -1, and `maxLedger` of 2^31 or
-  more. None has an on-chain example yet, so they are not filed.
+  into a G address (known, #170). The crafted refusals were then submitted to
+  testnet; see FND-007.
 
 ## FND-006: kmp-stellar-sdk refuses a successful `ExtendFootprintTTL` with `extendTo = 0`
 
@@ -235,3 +234,28 @@ not findings; they are described in `docs/research/source-audit.md`.
   ExtendFootprintTTL, extend footprint).
 - **Severity:** low-medium. A valid transaction, and any ledger containing
   it, cannot be loaded through the SDK.
+
+## FND-007: kmp-stellar-sdk refuses four kinds of transaction the network applied
+
+- **Found by:** crafted cases in the kmp-stellar-sdk audit, then confirmed on
+  chain. `reproductions/sdk-findings/submit-witnesses.py` submitted each shape
+  from fresh testnet accounts, and all four were applied with `txSUCCESS`:
+  - a ManageData whose name is one space (`b6ffe005…`, ledger 5829124);
+  - a claimable balance with `NOT(NOT(unconditional))` (`c2123aae…`, 5829126);
+  - `PRECOND_V2` with `ledgerBounds {0, 2^32-1}` (`5fa3a252…`, 5829128);
+  - `RevokeSponsorship` of a sponsored pool-share trustline (`25e65885…`,
+    5829133).
+- **Defect:** the parser constructs each operation through checks stricter
+  than core's: `isNotBlank()` on data names, a ban on nested `NOT`,
+  `maxLedger` read with `.toInt()` and then required to be `>= 0`, and an
+  explicit `UnsupportedOperationException` for pool-share trustline keys.
+- **Other SDKs:** java-stellar-sdk 6.0.0, py-stellar-base 17.0.1 and
+  js-stellar-sdk 17.4.0 and 17.2.0 parse all four and return the network
+  hash. The pool-share revoke is the shape go-stellar-sdk `txnbuild` cannot
+  build (FND-003), so it is now an on-chain witness for that finding too.
+- **Dropped:** a `PRECOND_V2` with `minSeqNum = -1` was rejected by core with
+  `tx_bad_seq`, so the SDK's refusal of it is correct.
+- **Duplicates:** none in the repository (searched blank, NOT predicate,
+  nest, LedgerBounds, maxLedger, pool share, RevokeSponsorship).
+- **Severity:** low-medium. Valid transactions, and the ledgers that contain
+  them, cannot be loaded through the SDK.

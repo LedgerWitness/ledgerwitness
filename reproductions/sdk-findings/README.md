@@ -11,6 +11,7 @@ compares its result with the network's own hash.
 | `dart-305/` | FND-004: stellar_flutter_sdk 3.12.0 re-encodes a `CREATE_CONTRACT_V2` SAC deploy as `CREATE_CONTRACT` | Soneso/stellar_flutter_sdk#305 | `flutter pub get && dart run bin/check.dart` (the package needs the Flutter SDK) | wrong hash, exit 1 |
 | `kmp-175/` | FND-005: kmp-stellar-sdk 1.18.0 hashes a default-valued `PRECOND_V2` transaction as `PRECOND_TIME` | Soneso/kmp-stellar-sdk#175 | `./fetch.sh && java -cp '.deps/*' Check.java` (JDK 17+) | wrong hash, exit 1 |
 | `kmp-176/` | FND-006: kmp-stellar-sdk 1.18.0 refuses a successful `ExtendFootprintTTL` with `extendTo = 0` | Soneso/kmp-stellar-sdk#176 | `../kmp-175/fetch.sh && java -cp '../kmp-175/.deps/*' Check.java` | refused, exit 1 |
+| `kmp-177/` | FND-007: kmp-stellar-sdk 1.18.0 refuses four kinds of applied transaction | Soneso/kmp-stellar-sdk#177 | `../kmp-175/fetch.sh && java -cp '../kmp-175/.deps/*' Check.java` | 4 refused, exit 1 |
 | `go-6062/` | FND-003: go-stellar-sdk v0.9.0 `txnbuild` cannot build `RevokeSponsorship` for a pool-share trustline | stellar/go-stellar-sdk#6062 | `go run .` | validation error, and the asset encodes as native |
 
 Inputs:
@@ -31,9 +32,13 @@ Inputs:
 - `kmp-176`: the focus envelope of corpus entry
   `core.testnet.cap46.extend-ttl-extend-to-zero.p27`, a third party's
   testnet transaction.
+- `kmp-177`: the testnet transactions in `witnesses.json`, submitted by
+  `submit-witnesses.py` (fresh friendbot accounts, then discarded).
 - `go-6062`: no transaction is needed, because the SDK refuses to build the
-  operation. stellar-core accepts the shape (`RevokeSponsorshipOpFrame::doCheckValid`,
-  and the "pool share trustline" section of `RevokeSponsorshipTests.cpp`).
+  operation. The applied pool-share revoke in `witnesses.json`
+  (`25e65885…`, ledger 5829133) shows that core accepts the shape, as do
+  `RevokeSponsorshipOpFrame::doCheckValid` and the "pool share trustline"
+  section of `RevokeSponsorshipTests.cpp`.
 
 These reproductions need the .NET 8 SDK, PHP 8 with Composer, the Flutter
 SDK, and Go respectively. They are not part of `make` or CI.
