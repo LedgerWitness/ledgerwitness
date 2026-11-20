@@ -1,0 +1,144 @@
+{
+  "schema_version": "0.1.0",
+  "id": "core.testnet.cap46.extend-ttl-extend-to-zero.p27",
+  "description": "ExtendFootprintTTL (CAP-0046-12) with extendTo = 0 and an empty footprint, applied with txSUCCESS. stellar-core rejects only an extendTo above the network's maximum entry TTL, so 0 is valid. java-stellar-sdk refused this transaction until lightsail-network/java-stellar-sdk#811; kmp-stellar-sdk 1.18.0 refuses it (Soneso/kmp-stellar-sdk#176). Submitted by a third party; reported in lightsail-network/java-stellar-sdk#810.",
+  "cap_ids": [
+    "CAP-0046"
+  ],
+  "protocol_versions": [
+    27
+  ],
+  "shape_tags": [
+    "op:extend_footprint_ttl",
+    "int:u32_zero",
+    "soroban:empty_footprint",
+    "result:tx_success",
+    "event:none"
+  ],
+  "fixture_class": "core_emitted_valid",
+  "network_passphrase": "Test SDF Network ; September 2015",
+  "source_kind": "galexie_datalake",
+  "source_url_or_ledger": {
+    "url": "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/testnet/2025-12-18/FFC94FFF--3584000-3647999/FFC8C673--3619212.xdr.zst",
+    "ledger": 3619212,
+    "ledger_hash": "a1fb008e96ae1d9f23f05a83c13855602d36eccda3cdd4a79a19d85ac58b2fc6",
+    "object_sha256": "ba33e4fe060aac1e06238e89210bfce2d1463d956d96894bcfe459eb7654f3a1"
+  },
+  "core_version_and_commit": {
+    "value": null,
+    "basis": "UNVERIFIED: a testnet ledger at protocol 27 from the public data lake; the data-lake emitter does not publish its core build"
+  },
+  "generator_version": "none (historical capture from the public Galexie data lake)",
+  "deterministic_seed": null,
+  "xdr_type": "LedgerCloseMeta",
+  "xdr_path": "ledger.xdr",
+  "sha256": "bb146852afffd7f404e733b581b374ce952f0276b1fee35e0bdb7f24391fbe55",
+  "focus": {
+    "tx_hash": "21f5b9f42f5166038d3fb0d1bda5d13cc8b1fc1cdffaedb0bd76680c44180dec"
+  },
+  "expected_decoded_values": {
+    "xdr_json": [
+      {
+        "pointer": "/v2/ledger_header/header/ledger_seq",
+        "value": 3619212
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/1/v1/execution_stages/0/0/0/tx/tx/operations/0/body/extend_footprint_ttl/extend_to",
+        "value": 0,
+        "why": "Horizon reports extend_to 0"
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/1/v1/execution_stages/0/0/0/tx/tx/ext/v1/resources/footprint/read_only",
+        "value": []
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/1/v1/execution_stages/0/0/0/tx/tx/ext/v1/resources/footprint/read_write",
+        "value": []
+      },
+      {
+        "pointer": "/v2/tx_processing/4/result/result/result/tx_success/0/op_inner/extend_footprint_ttl",
+        "value": "success"
+      }
+    ],
+    "probes": {
+      "ledger_sequence": 3619212,
+      "protocol_version": 27,
+      "tx_count": 6,
+      "focus": {
+        "tx_hash": "21f5b9f42f5166038d3fb0d1bda5d13cc8b1fc1cdffaedb0bd76680c44180dec",
+        "successful": true,
+        "tx_source": "GDSN5OE4BSLILOUVOMH2DTDZFRLXJJEFRWASDRB7UA7TOTTSJKFAANHE",
+        "tx_source_muxed_id": null,
+        "op_types": [
+          "EXTEND_FOOTPRINT_TTL"
+        ],
+        "op_sources": [
+          null
+        ],
+        "muxed_ids": [],
+        "meta_signer_keys": [],
+        "meta_created_trustlines": [],
+        "envelope_pool_ids": [],
+        "op_contract_event_counts": [
+          0
+        ]
+      }
+    }
+  },
+  "expected_state_changes_or_participants": {
+    "participants_from_meta": [],
+    "indexer_must": "accept extendTo = 0 and an empty footprint; the operation succeeds and changes no entry",
+    "note": "the operation meta has no changes"
+  },
+  "validation_evidence": [
+    {
+      "check": "rs-stellar-xdr strict decode and byte-exact re-encode",
+      "method": "ledgerwitness verify (stellar-xdr 30.0.0)",
+      "status": "verified"
+    },
+    {
+      "check": "ledger header hash recomputed from header bytes and matched to the recorded ledger hash",
+      "method": "ledgerwitness verify; ledger hash independently read from Horizon testnet /ledgers/3619212",
+      "status": "verified"
+    },
+    {
+      "check": "header signed by a pinned testnet validator",
+      "method": "ledgerwitness verify (validator_signature)",
+      "status": "verified"
+    },
+    {
+      "check": "every envelope hashes under the declared passphrase to a processed result",
+      "method": "ledgerwitness verify",
+      "status": "verified"
+    },
+    {
+      "check": "agreement with stellar-core --check-lcm goldens",
+      "method": "not applicable to network captures: core goldens are produced by core's own test suite under its test passphrase; see docs/spec/normalization.md",
+      "status": "not_applicable"
+    },
+    {
+      "check": "no second copy of the ledger",
+      "method": "the ledger is older than RPC's retention window, so the data-lake copy is the only artifact",
+      "status": "not_applicable"
+    },
+    {
+      "check": "transaction successful, source account and extend_to as Horizon reports them; ledger transaction count",
+      "method": "GET horizon-testnet /transactions/{hash} (successful, source_account), /transactions/{hash}/operations (type extend_footprint_ttl, extend_to 0) and /ledgers/3619212 (4 successful plus 2 failed)",
+      "status": "verified"
+    }
+  ],
+  "known_regression_ids": [
+    "lightsail-network/java-stellar-sdk#810",
+    "soneso/kmp-stellar-sdk#176"
+  ],
+  "expected_outcome": "decode_roundtrip_exact",
+  "license_or_provenance_notes": "Public testnet ledger data from the public Galexie data lake (AWS Open Data, aws-public-blockchain). The focus transaction was submitted by a third party.",
+  "derived_artifacts": [
+    {
+      "xdr_type": "TransactionEnvelope",
+      "xdr_path": "focus-envelope.xdr",
+      "sha256": "a58024f8563c44028d4f863c7c72ee3ab0cf4eb47a8a4710e750fb81f9be9e83",
+      "derived_from": "focus_envelope"
+    }
+  ]
+}

@@ -14,6 +14,7 @@ here once filed.
 | FND-003 | go-stellar-sdk v0.9.0 `txnbuild` | `RevokeSponsorship` of a pool-share trustline cannot be built, and its asset encodes as native | executed reproduction; core's own tests cover the shape | [stellar/go-stellar-sdk#6062](https://github.com/stellar/go-stellar-sdk/issues/6062) |
 | FND-004 | stellar_flutter_sdk 3.12.0 | A SAC deployed with `CREATE_CONTRACT_V2` is re-encoded as `CREATE_CONTRACT`, so the hash is wrong | testnet transaction `11446413…`, ledger 5822970 | [Soneso/stellar_flutter_sdk#305](https://github.com/Soneso/stellar_flutter_sdk/issues/305) |
 | FND-005 | kmp-stellar-sdk 1.18.0 (JVM) | `hashHex` is wrong for a `PRECOND_V2` transaction whose fields are at their defaults | 2 mainnet transactions, ledger 55000000 (corpus entry `core.pubnet.cap21.precond-v2-default-fields.p22`) | [Soneso/kmp-stellar-sdk#175](https://github.com/Soneso/kmp-stellar-sdk/issues/175) |
+| FND-006 | kmp-stellar-sdk 1.18.0 (JVM) | `fromEnvelopeXdr` refuses a successful `ExtendFootprintTTL` with `extendTo = 0` | testnet transaction `21f5b9f4…`, ledger 3619212 (corpus entry `core.testnet.cap46.extend-ttl-extend-to-zero.p27`) | [Soneso/kmp-stellar-sdk#176](https://github.com/Soneso/kmp-stellar-sdk/issues/176) |
 
 Already-fixed upstream bugs that the corpus reproduces are regression tests,
 not findings; they are described in `docs/research/source-audit.md`.
@@ -211,7 +212,26 @@ not findings; they are described in `docs/research/source-audit.md`.
 - **Severity:** medium, as FND-001.
 - **Other results of the same run:** a muxed transaction source is turned
   into a G address (known, #170). The SDK also refuses several shapes core
-  accepts: `RevokeSponsorship` of a pool-share trustline,
-  `ExtendFootprintTTL` with `extendTo` 0, a ManageData name of one space,
+  accepts: `RevokeSponsorship` of a pool-share trustline, a ManageData name of one space,
   nested `NOT` claim predicates, `minSeqNum` -1, and `maxLedger` of 2^31 or
   more. None has an on-chain example yet, so they are not filed.
+
+## FND-006: kmp-stellar-sdk refuses a successful `ExtendFootprintTTL` with `extendTo = 0`
+
+- **Found by:** a crafted case in the kmp-stellar-sdk audit, then confirmed on
+  chain. Testnet transaction
+  `21f5b9f42f5166038d3fb0d1bda5d13cc8b1fc1cdffaedb0bd76680c44180dec`
+  (ledger 3619212, protocol 27) has `extendTo = 0` and an empty footprint and
+  was applied with `txSUCCESS`. It is the transaction reported in
+  lightsail-network/java-stellar-sdk#810.
+- **Defect:** `ExtendFootprintTTLOperation`'s `init` block requires
+  `extendTo > 0` (`Operation.kt:1879` on `main`), and the parser constructs
+  the operation through it, so `fromEnvelopeXdr` throws. stellar-core
+  rejects only an `extendTo` above the maximum entry TTL.
+- **Other SDKs:** py-stellar-base parses it, and java-stellar-sdk fixed the
+  same check in #811. The .NET, PHP, Flutter, Swift and Go sources have no
+  such check. The corpus entry passes on every runner in the matrix.
+- **Duplicates:** none in the repository (searched extendTo,
+  ExtendFootprintTTL, extend footprint).
+- **Severity:** low-medium. A valid transaction, and any ledger containing
+  it, cannot be loaded through the SDK.

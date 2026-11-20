@@ -16,7 +16,7 @@ acceptance gates are in section 19; the delivery plan is in section 21.
 
 | Component | Status | Evidence |
 |---|---|---|
-| Corpus and manifest schema | **Implemented:** 9 core-emitted entries (7 testnet, 2 mainnet), 10 CAPs, protocols 22 to 30 | `corpus/`, §4 |
+| Corpus and manifest schema | **Implemented:** 10 core-emitted entries (8 testnet, 2 mainnet), 10 CAPs, protocols 22 to 30 | `corpus/`, §4 |
 | Verifier | **Implemented:** hashes, exact re-encode, header and transaction-set commitments, network binding, validator signature, alternate-copy equivalence | §6–8 |
 | Testnet generator and live SDK check | **Implemented** (online): five shapes, checked against Horizon and two SDK releases | §5.2, `docs/evidence/testnet-run/` |
 | Offline generator under both passphrases | Design | §5.3 |
