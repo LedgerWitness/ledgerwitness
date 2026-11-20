@@ -11,7 +11,7 @@ here once filed.
 |---|---|---|---|---|
 | FND-001 | stellar-dotnet-sdk 17.0.0 | `Transaction.Hash` is wrong for a `PRECOND_V2` transaction whose fields are at their defaults | 2 mainnet transactions, ledger 55000000 | [Beans-BV/dotnet-stellar-sdk#281](https://github.com/Beans-BV/dotnet-stellar-sdk/issues/281) |
 | FND-002 | stellar-php-sdk 1.18.0 | A SAC deployed with `CREATE_CONTRACT_V2` is re-encoded as `CREATE_CONTRACT`, so `hash()` is wrong | testnet transaction `11446413…`, ledger 5822970 | [Soneso/stellar-php-sdk#252](https://github.com/Soneso/stellar-php-sdk/issues/252) |
-| FND-003 | go-stellar-sdk v0.9.0 `txnbuild` | `RevokeSponsorship` of a pool-share trustline cannot be built, and its asset encodes as native | executed reproduction; core's own tests cover the shape | [stellar/go-stellar-sdk#6062](https://github.com/stellar/go-stellar-sdk/issues/6062) |
+| FND-003 | go-stellar-sdk v0.9.0 `txnbuild` | `RevokeSponsorship` of a pool-share trustline cannot be built, and its asset encodes as native | testnet transaction `25e65885…`, ledger 5829133; core's own tests cover the shape | [stellar/go-stellar-sdk#6062](https://github.com/stellar/go-stellar-sdk/issues/6062) |
 | FND-004 | stellar_flutter_sdk 3.12.0 | A SAC deployed with `CREATE_CONTRACT_V2` is re-encoded as `CREATE_CONTRACT`, so the hash is wrong | testnet transaction `11446413…`, ledger 5822970 | [Soneso/stellar_flutter_sdk#305](https://github.com/Soneso/stellar_flutter_sdk/issues/305) |
 | FND-005 | kmp-stellar-sdk 1.18.0 (JVM) | `hashHex` is wrong for a `PRECOND_V2` transaction whose fields are at their defaults | 2 mainnet transactions, ledger 55000000 (corpus entry `core.pubnet.cap21.precond-v2-default-fields.p22`) | [Soneso/kmp-stellar-sdk#175](https://github.com/Soneso/kmp-stellar-sdk/issues/175) |
 | FND-006 | kmp-stellar-sdk 1.18.0 (JVM) | `fromEnvelopeXdr` refuses a successful `ExtendFootprintTTL` with `extendTo = 0` | testnet transaction `21f5b9f4…`, ledger 3619212 (corpus entry `core.testnet.cap46.extend-ttl-extend-to-zero.p27`) | [Soneso/kmp-stellar-sdk#176](https://github.com/Soneso/kmp-stellar-sdk/issues/176) |
@@ -172,6 +172,11 @@ not findings; they are described in `docs/research/source-audit.md`.
   passing by the open pull request #5992, which the report credits.
 - **Severity:** low-medium. A valid operation cannot be built; no funds at
   risk.
+- **On-chain witness (added later):** testnet transaction `25e65885…`
+  (ledger 5829133, `txSUCCESS`) revokes the sponsorship of a pool-share
+  trustline. With v0.9.0 its hash is correct, but the parsed operation fails
+  `Validate` and `BuildXDR` turns its asset into native. Posted to the issue
+  as a comment.
 - **Checked and clean:** `txnbuild` keeps the original envelope, so parsing
   then hashing or re-encoding was exact on all 9,351 mainnet envelopes.
 
