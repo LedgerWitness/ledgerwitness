@@ -78,6 +78,11 @@ spec are versioned separately (`schema_version`, `probe_spec`).
   and agrees with Rust, Go and JS on all 5,758 sweep transactions.
 - `make strkey`: 144 SEP-23 strkeys through Rust, Go, two JS releases and
   Python; one Go result is a known upstream issue (go-stellar-sdk#6042).
+- Java runner (java-stellar-sdk 6.0.0, `runners/java/`, jars pinned by
+  SHA-256): a reported, non-gating column. It rejects the CAP-38 issuer-order
+  entry (java-stellar-sdk#832, fixed on master and not yet released). In the
+  mainnet sweep it hashes 2 of 5,758 transactions differently from the
+  network (java-stellar-sdk#844).
 - `make testnet-evidence`: offline re-check of the recorded live run, also
   run in CI. The recorded run now keeps the raw ledgers (testnet ledgers
   5804257–5804261).

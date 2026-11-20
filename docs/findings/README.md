@@ -61,3 +61,40 @@ not findings; they are described in `docs/research/source-audit.md`.
   section. STLR003 cannot detect the pattern: the function also reads meta.
 - **Severity:** informational.
 - **Next step:** none upstream.
+
+## OBS-004: java-stellar-sdk 6.0.0 rejects a valid pool trustline and mis-hashes two mainnet transactions
+
+- **Observed with:** the Java runner (`runners/java/`, java-stellar-sdk
+  6.0.0, the current release, 2026-10-28) on the corpus and on the
+  5,758-transaction mainnet sweep (`docs/evidence/mainnet-sweep/`).
+- **What differs:**
+  1. On `core.testnet.cap38.lp-trustline-issuer-order.p30`,
+     `AbstractTransaction.fromEnvelopeXdr` throws "Assets are not in
+     lexicographic order" on a successful testnet transaction.
+     `AssetTypeCreditAlphaNum4/12.compareTo` orders same-code assets by
+     issuer strkey text, while core orders them by key bytes. It is the same
+     bug as js-stellar-sdk#1766.
+  2. In the mainnet sweep, Java's `hashHex()` differs from the network hash
+     for 2 of 5,758 transactions (ledger 55000000: `b4a6d6a2…`,
+     `f38b082e…`). Both use `PRECOND_V2` with every field at its default
+     except the time bounds. `TransactionPreconditions.hasV2()` is then false,
+     so the SDK re-encodes `PRECOND_TIME`. The other four SDKs agree with the
+     network.
+- **Triage:** confirmed defects, both already reported upstream, so neither
+  is a finding of ours. (1) is fixed on master by java-stellar-sdk#832
+  (merged 2026-11-05, not released). Verified by execution: with the two
+  asset classes compiled from the fix commit `95bca0b5` on the classpath,
+  the runner parses the transaction and derives the pool ID core recorded
+  (`f21c7468…0b1e`). (2) is java-stellar-sdk#844 (opened 2026-11-18, open).
+  The sweep found it without expected values, only by comparing SDKs.
+- **Ruled out while triaging:** `ManageDataOperation` and
+  `SetOptionsOperation` hold the data name and home domain as Java strings
+  through a lossy UTF-8 conversion, but core's `isStringValid` accepts only
+  printable ASCII in both fields, so valid ledgers cannot trigger it.
+- **Severity:** (1) medium for Java consumers: a valid transaction cannot
+  be loaded, and a trustline to such a pool cannot be built. (2) medium: a
+  wallet that decodes and re-signs such an envelope signs a different
+  transaction, and an indexer that hashes with the SDK records a hash the
+  network does not know.
+- **Next step:** none upstream. The Java column stays in the matrix as a
+  reported, non-gating run until a release includes #832.

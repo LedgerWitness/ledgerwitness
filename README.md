@@ -23,11 +23,11 @@ live testnet run work offline.
 | What | Result | Rerun |
 |---|---|---|
 | Corpus | 7 real ledgers (6 testnet, 1 mainnet) covering 8 CAPs, each verified offline against its ledger hash, header commitments and a validator signature | `make verify` |
-| SDK conformance | Rust, Go, JS 17.4.0 and Python (py-stellar-base 17.0.1) decode, re-encode byte for byte and produce every expected value on all 7, including a mainnet fee-bump; JS 17.2.0 rejects a valid pool trustline | `make conform` |
+| SDK conformance | Rust, Go, JS 17.4.0 and Python (py-stellar-base 17.0.1) decode, re-encode byte for byte and produce every expected value on all 7, including a mainnet fee-bump; JS 17.2.0 and java-stellar-sdk 6.0.0, the current Java release, reject a valid pool trustline | `make conform` |
 | Known SDK bugs | js-stellar-sdk #1766, #1785 and #1789: 40/40 checks match before and after each fix | `make repro-js` |
 | Known indexer bugs | wallet-backend #729, #731 and #716 (two of its three paths) reproduced on the commits before and after each fix | `make repro-wallet-backend` |
 | Linter | Rule STLR003 flags the 6 envelope-only participant functions in wallet-backend before #753's fix, and runs clean after it and on current Horizon and stellar-etl | `make lint-wallet-backend` |
-| Mainnet sweep | 5,758 mainnet transactions from 20 ledgers (protocols 20 to 29): Rust, Go, JS and Python agree on every probe, with no decode, re-encoding or API failure; the ledgers are checked against SDF's history archive and validator signatures | `make sweep` |
+| Mainnet sweep | 5,758 mainnet transactions from 20 ledgers (protocols 20 to 29): Rust, Go, JS and Python agree on every probe, with no decode, re-encoding or API failure. Java 6.0.0 computes the wrong hash for 2 of them (java-stellar-sdk#844). The ledgers are checked against SDF's history archive and validator signatures | `make sweep` |
 | Strkey decoders | 144 SEP-23 strkeys (34 published, 110 derived from its rules) through five decoders: all follow SEP-23 except one Go case already reported upstream | `make strkey` |
 | Live testnet | Five rare shapes submitted and checked; core accepts a Soroban transaction that JS 17.4.0's builder refuses to build (js-stellar-sdk#1906) | `make testnet-smoke` |
 
@@ -118,7 +118,7 @@ follows that case from the raw ledger to the result.
 ## Quick start (offline)
 
 Requirements: Rust (the version in `rust-toolchain.toml` installs
-automatically), Go 1.26 or later, Node.js 22, Python 3.10 or later, and
+automatically), Go 1.26 or later, Node.js 22, Python 3.10 or later, a JDK 17 or later, and
 `make`. Installing
 dependencies uses the network; the commands themselves run against the local
 corpus and do not contact a Stellar network.
@@ -130,30 +130,30 @@ python3 -m pip install --target runners/python/.deps -r runners/python/requireme
 
 make verify      # check every corpus entry       -> "7 entries, 7 passed, 0 failed"
 make test        # unit, tamper and CLI tests
-make conform     # run the four SDKs and compare  -> prints the table below
+make conform     # run the SDK runners and compare -> prints the table below
 make repro-js    # JS SDK bugs before/after fixes -> "40/40 ... match the documented behaviour"
 make testnet-evidence  # recorded live testnet run, re-checked offline
 make linter      # linter rule STLR003 on its seeded cases
 ```
 
 `make conform` fails if a current SDK release disagrees with the expected
-values. The older release in the table is reported but does not fail the
-build.
+values. JS 17.2.0 (an older release) and Java 6.0.0 (whose fix is not
+released yet) are reported but do not fail the build.
 
 ## Results
 
 Recorded with the pinned versions in this repository. A newer build needs a
 new run.
 
-| Corpus entry | Rust (stellar-xdr 30.0.0) | Go (go-stellar-sdk v0.9.0) | JS 17.4.0 | Python (py-stellar-base 17.0.1) | JS 17.2.0 |
-|---|---|---|---|---|---|
-| Payment between muxed accounts, IDs 2^53+1 and 2^64−1 | pass | pass | pass | pass | ledger unsupported |
-| Liquidity-pool trustline, issuers sort differently as text and bytes | pass | pass | pass | pass | **rejects valid input** |
-| Signed-payload signer with a padded payload | pass | pass | pass | pass | ledger unsupported |
-| Signed-payload signer, the ledger from wallet-backend#729 | pass | pass | pass | pass | pass |
-| Trustline created by the asset contract's `trust` function | pass | pass | pass | pass | ledger unsupported |
-| `ExtendFootprintTTL` with a muxed operation source (JS 17.4.0's builder refuses to build it) | pass | pass | pass | pass | ledger unsupported |
-| Mainnet fee-bump with an inner fee of 0, wrapping a payment whose operation source differs from the transaction source | pass | pass | pass | pass | pass |
+| Corpus entry | Rust (stellar-xdr 30.0.0) | Go (go-stellar-sdk v0.9.0) | JS 17.4.0 | Python (py-stellar-base 17.0.1) | JS 17.2.0 | Java (java-stellar-sdk 6.0.0) |
+|---|---|---|---|---|---|---|
+| Payment between muxed accounts, IDs 2^53+1 and 2^64−1 | pass | pass | pass | pass | ledger unsupported | pass |
+| Liquidity-pool trustline, issuers sort differently as text and bytes | pass | pass | pass | pass | **rejects valid input** | **rejects valid input** |
+| Signed-payload signer with a padded payload | pass | pass | pass | pass | ledger unsupported | pass |
+| Signed-payload signer, the ledger from wallet-backend#729 | pass | pass | pass | pass | pass | pass |
+| Trustline created by the asset contract's `trust` function | pass | pass | pass | pass | ledger unsupported | pass |
+| `ExtendFootprintTTL` with a muxed operation source (JS 17.4.0's builder refuses to build it) | pass | pass | pass | pass | ledger unsupported | pass |
+| Mainnet fee-bump with an inner fee of 0, wrapping a payment whose operation source differs from the transaction source | pass | pass | pass | pass | pass | pass |
 
 What the labels mean:
 
@@ -169,6 +169,12 @@ What the results show:
 - **JS SDK 17.2.0 rejects a real transaction.** It is the last release before
   js-stellar-sdk#1766 was fixed. It rejects a successful testnet transaction
   with "Assets are not in lexicographic order"; 17.4.0 handles it.
+- **The current Java release has the same bug.** java-stellar-sdk 6.0.0
+  (2026-10-28) orders same-code assets by issuer strkey text, so
+  `AbstractTransaction.fromEnvelopeXdr` throws on the same transaction. The
+  fix (java-stellar-sdk#832) is on master but not yet released. With the
+  two asset classes from the fix commit on the classpath, the runner parses
+  the transaction and derives the pool ID core recorded.
 - **Old JS bugs reproduce exactly.** For js-stellar-sdk #1766, #1785 and
   #1789, all 40 checks show the documented behaviour before and after each
   fix. Each throwing case must produce the documented error message, and the
@@ -301,7 +307,7 @@ How `ledgerwitness conform` exits:
 corpus/          the corpus: schema, entries, expected replay results
 crates/ledgerwitness/      the ledgerwitness command-line tool and library (Rust)
 crates/replay/   replay comparison library (Rust)
-runners/         SDK runners: rust/, go/, javascript/, python/
+runners/         SDK runners: rust/, go/, javascript/, python/, java/
 linter/go/       indexer linter prototype (rule STLR003) and its seeded cases
 generators/      testnet capture tool, live smoke test, capture provenance
 reproductions/   known bugs, before and after their fixes

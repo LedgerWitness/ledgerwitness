@@ -42,6 +42,19 @@ CLAIM_CLAIMABLE_BALANCE 520; CHANGE_TRUST 67; SET_OPTIONS 50; BUMP_SEQUENCE
 9 each; ALLOW_TRUST 9; LIQUIDITY_POOL_DEPOSIT 5; CLAWBACK 4;
 SET_TRUST_LINE_FLAGS 2.
 
+## Java: two hashes differ from the network
+
+A fifth runner, java-stellar-sdk 6.0.0 (the current release), was added after
+the four-SDK run and compared over the same set (`compare-5.json`). It
+decodes and re-encodes every ledger and envelope and matches every meta
+probe. On 2 of the 5,758 transactions it disagrees with the other four SDKs and
+with the network on `tx_hash`: `b4a6d6a2…` and `f38b082e…`, both in ledger
+55000000. Both transactions use `PRECOND_V2` with every field at its default
+except the time bounds, and Java re-encodes them as `PRECOND_TIME` before
+hashing. This is java-stellar-sdk#844, already reported upstream (see
+`docs/findings/README.md`, OBS-004). The comparison found it without any
+expected value.
+
 ## The ledgers are mainnet ledgers
 
 Each ledger was checked with `ledgerwitness check-ledger` against a ledger hash
@@ -88,7 +101,7 @@ the comparison exits 1.
 
 ## Limits
 
-- **Agreement is not correctness.** The sweep has no expected values: four
+- **Agreement is not correctness.** The sweep has no expected values: the
   SDKs can agree and all be wrong. Correctness is what the curated corpus
   entries check against independent values.
 - **Shapes it barely reaches.** Muxed IDs occur in 5 transactions and
