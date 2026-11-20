@@ -6,15 +6,29 @@
 - Go: 1.26 or later (`linter/go/go.mod`; the runner in `runners/go` needs 1.25)
 - Node.js: 22
 - Python: 3.10 or later (`runners/python/requirements.txt`)
+- A JDK 17 or later (`runners/java/fetch.sh` downloads the pinned jars)
 - `make`
 
 ```sh
 npm ci --prefix runners/javascript
 npm ci --prefix reproductions/js-sdk
+python3 -m pip install --target runners/python/.deps -r runners/python/requirements.txt
 make all        # verify, test, conform, repro-js
+make witnesses  # testnet witnesses through Python, Java and JS
 ```
 
-Everything except `make capture` runs offline against `corpus/entries`.
+Everything except `make capture`, `make testnet-smoke`, `make sweep` and
+`reproductions/sdk-findings/submit-witnesses.py` runs offline against the
+repository.
+
+## Reporting a defect found with the kit
+
+Before filing, reproduce it by execution, confirm that the network accepts
+the input (an applied transaction, or stellar-core's validity rule), and
+search the SDK's tracker and default branch for an earlier report or fix.
+Record it in `docs/findings/README.md` with a reproduction under
+`reproductions/sdk-findings/`. Security-relevant defects follow
+`SECURITY.md`.
 
 ## Before opening a pull request
 

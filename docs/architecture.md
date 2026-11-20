@@ -17,8 +17,9 @@ acceptance gates are in section 19; the delivery plan is in section 21.
 | Component | Status | Evidence |
 |---|---|---|
 | Corpus and manifest schema | **Implemented:** 10 core-emitted entries (8 testnet, 2 mainnet), 10 CAPs, protocols 22 to 30 | `corpus/`, §4 |
-| Verifier | **Implemented:** hashes, exact re-encode, header and transaction-set commitments, network binding, validator signature, alternate-copy equivalence | §6–8 |
+| Verifier | **Implemented:** hashes, exact re-encode, header and transaction-set commitments (LedgerCloseMeta v0 to v2, legacy and generalized sets), network binding, validator signature, alternate-copy equivalence, history-archive ledger hashes | §6–8 |
 | Testnet generator and live SDK check | **Implemented** (online): five shapes, checked against Horizon and two SDK releases | §5.2, `docs/evidence/testnet-run/` |
+| Testnet witnesses | **Implemented** (online): 21 crafted shapes applied by testnet, parsed by nine SDK releases; four releases gate CI (`make witnesses`) | §5.4, `docs/evidence/testnet-witnesses/` |
 | Offline generator under both passphrases | Design | §5.3 |
 | SDK conformance runner | **Implemented:** Rust, Go, JavaScript, Python and Java; 14 probes; reports bound to their inputs; a cross-SDK sweep of 9,351 mainnet transactions (protocols 9 to 29) whose only difference is a known Java hash bug (java-stellar-sdk#844) | §9–10, `docs/evidence/mainnet-sweep/` |
 | Known SDK bugs | **Reproduced:** js-stellar-sdk #1766, #1785, #1789 (40/40 checks) | §11.1 |
@@ -27,8 +28,8 @@ acceptance gates are in section 19; the delivery plan is in section 21.
 | Replay transports and database adapter | Design | §12.2–12.4 |
 | Go linter | **Prototype** of rule STLR003: flags wallet-backend before #753's fix, clean after it and on current Horizon and stellar-etl; STLR001 and STLR002 are designs | §13 |
 | Indexer-hardening guide | **Draft started:** 8 source-linked field rules, the participants rule and a checklist | §14, `docs/guide/` |
-| Findings | Three observations triaged, none a defect; nothing filed yet | `docs/findings/` |
-| CI | **Implemented:** three offline jobs on every push and pull request | §16 |
+| Findings | **10 new defects filed** in the .NET, PHP, Flutter, KMP, Swift and Go SDKs, each with on-chain evidence; **2 fix pull requests** (go-stellar-sdk#6063, kmp-stellar-sdk#178); 4 observations triaged | §5.4, §9.3, `docs/findings/` |
+| CI | **Implemented:** three offline jobs on every push and pull request: corpus, linter, and conformance (matrix, JS reproductions, strkeys, testnet witnesses, recorded testnet run) | §16 |
 
 ## The stack in plain English
 
@@ -45,8 +46,8 @@ LedgerWitness is a set of real ledgers plus the tools that use them.
    network it claims, and carries a valid signature from one of that network's
    validators.
 3. **The SDK runners** are one small program per language (Rust, Go,
-   JavaScript). Each reads every ledger with its SDK and writes down what it
-   saw. A comparison step lines these up against the expected values and
+   JavaScript, Python, Java). Each reads every ledger with its SDK and writes
+   down what it saw. A comparison step lines these up against the expected values and
    against each other, and prints a table of where an SDK disagrees with the
    network.
 4. **The reproductions and replay** run real indexer code (wallet-backend)
@@ -55,8 +56,13 @@ LedgerWitness is a set of real ledgers plus the tools that use them.
 5. **The linter** (Go) reads indexer source code and flags known ingestion
    mistakes, such as taking a transaction's participants from what the
    submitter claimed rather than from what the network recorded.
-6. **The guide** (planned) explains, field by field, what stellar-core
+6. **The guide** (draft started) explains, field by field, what stellar-core
    checks and what an indexer must check itself.
+7. **The witnesses and findings.** Shapes that core accepts but an SDK might
+   mishandle are submitted to testnet and then parsed by every SDK we can run.
+   A shape the network applied and an SDK refuses or rehashes is a defect.
+   It is checked against the upstream tracker and filed with the transaction
+   as evidence.
 
 Everything except capturing new ledgers runs offline, on a laptop or in CI,
 in a few minutes.
@@ -99,8 +105,9 @@ Contents:
   provenance; constructed data is labelled and admitted only with evidence.
 - Each entry carries expected decoded values, so an SDK can check both
   decoding and byte-exact re-encoding.
-- Runners that put the corpus through the Rust, Go and JavaScript SDKs and
-  report where they diverge from the network and from each other.
+- Runners that put the corpus through the Rust, Go and JavaScript SDKs (and,
+  so far, Python and Java as well) and report where they diverge from the
+  network and from each other.
 - A replay harness that feeds the corpus to indexers through inputs they
   already consume, a Go linter for three ingestion mistakes, and a guide for
   indexer authors.
@@ -127,7 +134,9 @@ flowchart LR
     DL[Galexie data lake<br/>aws-public-blockchain]
     RPC[Stellar RPC<br/>getLedgers]
     TN[testnet submission<br/>generators/testnet-capture]
+    WIT[testnet witnesses<br/>submit-witnesses.py]
     HZ[Horizon<br/>ledger hashes]
+    HA[SDF history archive<br/>mainnet ledger hashes]
     CORE[local stellar-core<br/>design]
   end
 
@@ -138,7 +147,9 @@ flowchart LR
 
   subgraph Tooling
     LCK[ledgerwitness verify]
-    RUN[runners: rust, go, javascript]
+    RUN[runners: rust, go, javascript, python, java]
+    SWEEP[data-lake sweep<br/>9,351 mainnet transactions]
+    MODEL[model round-trip checks<br/>.NET, PHP, Flutter, KMP, Swift, Go txnbuild]
     CONF[ledgerwitness conform]
     REPRO[reproductions]
     REPLAY[replay comparator<br/>implemented; transports design]
@@ -157,7 +168,14 @@ flowchart LR
   ENTRIES --> RUN --> CONF --> MATRIX[divergence matrix]
   ENTRIES --> REPRO
   ENTRIES --> WB
-  ENTRIES -.-> REPLAY -.-> FINDINGS[findings]
+  HA -.->|independent ledger hash| SWEEP
+  DL --> SWEEP --> RUN
+  WIT --> MODEL
+  ENTRIES --> MODEL
+  SWEEP --> MODEL
+  MODEL --> FINDINGS[findings filed upstream<br/>with on-chain evidence]
+  CONF --> FINDINGS
+  ENTRIES -.-> REPLAY -.-> FINDINGS
   LINT -.-> FINDINGS
 ```
 
@@ -171,7 +189,10 @@ The flow has three stages:
    header/transaction commitments against the recorded source hash; it does
    not independently authenticate that source or every metadata field.
 3. **Use** (offline). SDK runners, the divergence matrix, historical
-   reproductions and, later, indexer replay consume the verified entries.
+   reproductions, model round-trip checks and, later, indexer replay consume
+   the verified entries, the sweep sets and the testnet witnesses. A
+   disagreement with the network becomes a finding once triage rules out a
+   known upstream report.
 
 ## 3. Repository layout
 
@@ -195,21 +216,28 @@ crates/ledgerwitness/                     Rust: verifier, normalization, conform
   tests/                        tamper tests, matrix tests
 crates/replay/                  typed oracles, fixture binding and comparison; no process launcher
 runners/                        one conformance runner per SDK
-  rust/  go/  javascript/
+  rust/  go/  javascript/  python/  java/
 linter/go/                      Go module: indexer linter (STLR003 prototype, seeded cases)
 generators/
   testnet-capture/              submits rare shapes to testnet, captures their LCM,
                                 checks two JS SDK releases on the captures
+  datalake-sweep/               builds cross-SDK sweep sets from data-lake ledgers,
+                                compares runners, reads history-archive ledger hashes
 reproductions/
   js-sdk/                       pre-fix / post-fix js-stellar-sdk reproductions
   wallet-backend/               replay of a corpus ledger through historical commits
+  strkey/                       SEP-23 vectors through six strkey decoders
+  sdk-findings/                 one reproduction per filed finding; testnet witness
+                                script, witnesses.json and its CI checkers
 docs/
   architecture.md               this document
   spec/probes.md                probe definitions and runner output format
   spec/normalization.md         LCM equivalence, observed emitter differences
   spec/replay.md                implemented standalone comparison format and exit codes
   research/                     upstream source audit, CAP coverage registry
-  findings/                     observations and findings, issue drafts
+  findings/                     filed findings (FND-*) and observations (OBS-*)
+  evidence/                     recorded runs: testnet run, sweeps, witnesses,
+                                strkeys, linter, mainnet validator sources
 .github/workflows/ci.yml        offline CI
 Makefile                        entry points used by CI and by hand
 ```
@@ -353,8 +381,12 @@ proof: they share the XDR specification and may share assumptions or defects.
 | `core.testnet.cap73.sac-trust-trustline.p30` | CAP-0073 | 30 | data lake | RPC |
 | `core.testnet.cap27.soroban-muxed-extend-ttl.p30` | CAP-0027, CAP-0046 (CAP-0046-12) | 30 | data lake | RPC |
 | `core.pubnet.cap15.fee-bump-zero-inner-fee.p29` | CAP-0015 | 29 | mainnet data lake, ledger 65566583 | — (no public mainnet RPC) |
+| `core.pubnet.cap21.precond-v2-default-fields.p22` | CAP-0021 | 22 | mainnet data lake, ledger 55000000 (hash from SDF's history archive) | — |
+| `core.testnet.cap46.sac-deploy-create-contract-v2.p30` | CAP-0046, CAP-0058 | 30 | data lake, ledger 5822970 | RPC |
+| `core.testnet.cap46.extend-ttl-extend-to-zero.p27` | CAP-0046 | 27 | data lake, ledger 3619212 | — (older than RPC retention) |
 
-Total size on disk is about 3 MB. The coverage denominator (which CAPs
+The last three are the on-chain witnesses of filed findings (FND-001, FND-005
+and FND-008; FND-002 and FND-004; FND-006). Total size on disk is about 6 MB. The coverage denominator (which CAPs
 introduced indexer-visible shapes) is tracked in `docs/research/coverage-registry.md`.
 
 ## 5. Generators: how artifacts are obtained
@@ -479,6 +511,61 @@ network-disabled path. Saved-history extraction already runs offline, but
 whether extraction alone satisfies generation is an unresolved acceptance
 interpretation, not an implemented substitute. No local-core generator or
 golden importer exists in this repository yet.
+
+### 5.4 Testnet witnesses (implemented)
+
+A crafted envelope is only evidence once the network accepts it.
+`reproductions/sdk-findings/submit-witnesses.py` turns crafted shapes into
+applied transactions:
+
+1. It creates fresh friendbot accounts for each batch and discards them
+   afterwards; no key is written to disk.
+2. It builds each shape with py-stellar-base, then edits the XDR before
+   signing, so that no SDK builder check can change the shape.
+3. It signs, submits to Horizon testnet, and keeps the envelope Horizon
+   returns, together with its hash and ledger, in `witnesses.json`.
+
+A shape core rejects is dropped, not recorded. For example, a `PRECOND_V2`
+with `minSeqNum = -1` came back `tx_bad_seq`.
+
+The four batches cover 21 shapes, plus the setup transactions they need
+(issuer flags, trustlines, sponsorship, a pool with liquidity):
+
+| Batch | Shapes |
+|---|---|
+| 1 | ManageData name of one space; nested `NOT` predicate; `PRECOND_V2` with `maxLedger` 2^32−1; `RevokeSponsorship` of a pool-share trustline |
+| 2 | op source equal to the tx source; AllowTrust to maintain liabilities; zero SetTrustLineFlags; fee bump with a muxed fee source (ID above 2^63); depth-4 predicates with 10 claimants; failed 5-hop path payment; BumpSequence to 0; empty SetOptions |
+| 3 | sponsored CreateAccount with starting balance 0; signed-payload signers with 64- and 1-byte payloads; hash-x and pre-auth signers; `PRECOND_V2` extra signer satisfied by a payload signature; pool deposit at extreme price bounds; pool withdraw with zero minimums |
+| 4 | memo text that is not UTF-8 |
+
+Each witness is parsed with each SDK's transaction model. The SDK must not
+refuse it, its hash must equal the network's, and re-encoding must reproduce
+the original bytes. The results for nine releases are in
+`docs/evidence/testnet-witnesses/`. `make witnesses` (CI) requires
+py-stellar-base, java-stellar-sdk and both js-stellar-sdk releases to pass
+all of them. The .NET, PHP, Flutter, KMP and Swift checks run outside CI,
+because their toolchains are not in the CI image yet.
+
+### 5.5 Data-lake sweep (implemented)
+
+`generators/datalake-sweep/build.sh` turns a list of public data-lake ledgers
+into one directory per transaction: the ledger, the envelope extracted with
+`extract-envelope --all-to`, and a minimal manifest with no expected values.
+`make sweep` runs every runner over the set. `compare.mjs` then reports where
+runners disagree with each other, or fail to decode, re-encode or parse.
+`archive-hash.mjs` reads each ledger's hash from SDF's history archive, and
+`check-ledger` binds the ledger to it.
+
+Two sets are recorded in `docs/evidence/mainnet-sweep/`:
+
+- 5,758 transactions from 20 ledgers, protocols 20 to 29;
+- 3,593 transactions from 20 ledgers, protocols 9 to 19, as LedgerCloseMeta
+  v0 with legacy transaction sets.
+
+The only divergence is a known Java hash bug (java-stellar-sdk#844), on two
+transactions. Those two transactions then became corpus entry
+`core.pubnet.cap21.precond-v2-default-fields.p22`, the witness of FND-001,
+FND-005 and FND-008.
 
 ## 6. `ledgerwitness`: verification, normalization, conformance
 
@@ -745,6 +832,26 @@ an artifact that decoded, the affected probes are reported as
 Running the same runner against several SDK releases is how the project
 reproduces SDK bugs on network data. The Makefile runs pinned JS 17.4.0 and
 17.2.0 (last release before #1766 was fixed).
+
+**Model round-trip checks beyond the runners.** Several SDKs rebuild a parsed
+transaction from their own model before hashing it, where the five runners
+above mostly hash the bytes they decoded. That rebuild is where every
+wrong-hash finding came from. These SDKs are therefore also checked with the
+same three conditions as the witnesses: the SDK parses the envelope, its hash
+equals the network's, and re-encoding gives the original bytes. The checks
+run on the mainnet sweep sets, the corpus and the witnesses:
+
+| SDK | Release | How it runs | Results |
+|---|---|---|---|
+| stellar-dotnet-sdk | 17.0.0 | .NET 8 console project | FND-001; known #274, #276 |
+| stellar-php-sdk | 1.18.0 | static PHP 8 with Composer | FND-002 |
+| stellar_flutter_sdk | 3.12.0 | Dart SDK; the three Flutter-only files are removed from the vendored package, none on the XDR or hash path | FND-004; known #296, #299, #300 |
+| kmp-stellar-sdk (JVM) | 1.18.0 | JVM jars pinned by SHA-256 | FND-005 to FND-007; known #170 |
+| stellar-ios-mac-sdk | 3.16.0 | Swift 6 on Linux; CommonCrypto mapped to OpenSSL, checked against 9,249 network hashes | FND-008 to FND-010; known #83, #91 |
+| go-stellar-sdk `txnbuild` | v0.9.0 | `TransactionFromXDR`, then rebuild | FND-003; parsing keeps the envelope, so the hash was exact on all 9,351 sweep envelopes |
+
+These checks are not yet runners under the probe contract, and they do not
+run in CI. Turning them into runners is planned work (§21).
 
 ## 10. Divergence matrix
 
@@ -1190,7 +1297,10 @@ filed or published without that review step.
   omitted probes/results, decode failures, explicit round-trip evidence,
   malformed reports and absent required SDKs.
 - `crates/ledgerwitness/tests/cli.rs`: nonzero exits for missing reports, empty corpus
-  and absent required libraries, with diagnostic matrix output retained.
+  and absent required libraries, with diagnostic matrix output retained;
+  `extract-envelope --all-to` against the single extraction; the legacy
+  transaction-set hash on mainnet ledger 18000000 (protocol 9) against the
+  hash SDF's history archive records.
 - `crates/ledgerwitness/tests/input.rs`: byte boundaries, sparse oversized files,
   symlinks, invalid paths and bounded decompression.
 - `crates/replay/tests/compare.rs` and `crates/ledgerwitness/tests/replay_cli.rs`: synthetic
@@ -1205,6 +1315,12 @@ filed or published without that review step.
   `analysistest`, including a package with an unrelated type error.
 - Runner output against the corpus is itself a test, enforced through
   `--require-pass`.
+- `reproductions/strkey/`: 144 SEP-23 vectors through six decoders; a known
+  upstream result is listed in `known.json`, and the run fails if it stops
+  reproducing.
+- `reproductions/sdk-findings/check-witnesses.*` and `CheckWitnesses.java`:
+  every applied testnet witness through py-stellar-base, java-stellar-sdk
+  and both js-stellar-sdk releases.
 
 **CI (`.github/workflows/ci.yml`)**
 
@@ -1217,9 +1333,12 @@ filed or published without that review step.
    on Go 1.26 or later because `golang.org/x/tools` requires it.
 3. `conformance` job:
    - Go vet and gofmt;
-   - `make conform` (Rust, Go and JS 17.4.0 must pass; JS 17.2.0 is reported
-     only);
+   - `make conform` (Rust, Go, JS 17.4.0 and Python must pass; JS 17.2.0 and
+     Java 6.0.0 are reported only);
    - `make repro-js`;
+   - `make strkey` (six strkey decoders against SEP-23);
+   - `make witnesses` (the testnet witnesses through Python, Java and both JS
+     releases);
    - `make testnet-evidence` (the recorded live testnet run, re-checked
      offline);
    - wallet replay report checker tests against stored evidence;
@@ -1230,7 +1349,9 @@ filed or published without that review step.
    possible extension; none is configured. Report-checker CI does not replace it.
 
 The corpus and conformance jobs install Rust 1.94.1; the conformance job also
-installs Node 22 and Go from `runners/go/go.mod`. The workspace includes Rust tests
+installs Node 22, Go from `runners/go/go.mod`, Python dependencies pinned in
+`runners/python/requirements.txt`, and Temurin JDK 21, with the Java jars
+pinned by SHA-256 and cached between runs. The workspace includes Rust tests
 for validator attestation and Node report-checker tests; use the test runner's
 output for the current count.
 Hosted CI passed on the first push to GitHub. On 2026-11-18 the full
@@ -1248,10 +1369,13 @@ replay. A green current corpus is not evidence those planned components work.
 **Entry points**
 
 - `make verify`, `make test`, `make conform`, `make repro-js`,
-  `make testnet-evidence`, `make linter`.
+  `make witnesses`, `make strkey`, `make testnet-evidence`, `make linter`.
+- Need network access to the public data lake: `make sweep SWEEP_LEDGERS=…`
+  (optionally `SWEEP_DIR=…`).
 - Need a clone of wallet-backend: `make repro-wallet-backend WALLET_BACKEND=…`,
   `make lint-wallet-backend WALLET_BACKEND=…`.
-- Live, testnet only: `make capture`, `make testnet-smoke`.
+- Live, testnet only: `make capture`, `make testnet-smoke`,
+  `reproductions/sdk-findings/submit-witnesses.py [--batch 2|3|4]`.
 
 ## 17. Versioning and protocol upgrades
 
@@ -1288,7 +1412,8 @@ When a new protocol ships:
 - **The coverage registry is incomplete**, so no coverage percentage is
   claimed.
 - **Replay comparison is implemented; orchestration, transports, database
-  adapters, linter rules STLR001 and STLR002, and the guide remain designs.**
+  adapters and linter rules STLR001 and STLR002 remain designs, and the guide
+  is a draft.**
   STLR003 is a prototype (§13.1). Three oracle sidecars do not
   establish full-corpus replay coverage or persistence evidence.
 - **The transaction-producing generator is online.** Local offline generation
@@ -1307,16 +1432,28 @@ When a new protocol ships:
   52000000, signed by a key whose home domain is whalestack.com and that no
   current stellar.toml declares). Attesting older history needs dated pin
   sets with a historical source for each key.
-- **One mainnet entry.** Mainnet validators are pinned, 40 sampled mainnet
-  ledgers pass `check-ledger`, and the corpus has one mainnet entry (a
-  fee-bump), which has no second copy because SDF runs no public mainnet RPC.
-  The pinned set must be updated when the mainnet validator set changes.
+- **Two mainnet entries.** Mainnet validators are pinned, 40 sampled mainnet
+  ledgers match SDF's history archive, and the corpus has two mainnet entries
+  (a fee bump, and the default-valued `PRECOND_V2`). Neither has a second copy,
+  because SDF runs no public mainnet RPC. The pinned set must be updated when
+  the mainnet validator set changes.
 - **Class-aware negative conformance is absent.** `ledgerwitness conform` cannot score
   `sdk_negative_only` entries yet. Report binding is implemented (§10); it
   identifies inputs but does not prove a runner ran honestly.
-- **Corpus shapes still missing:** a fee-bump with a muxed fee source (a
-  fee-bump with a plain fee source is covered), `TransactionV0`, nested authorization, vectors at maximum length, map keys
-  that collide after native conversion, and offer IDs above 2^53.
+- **Corpus shapes still missing:** nested authorization, vectors at maximum
+  length, map keys that collide after native conversion, and offer IDs above
+  2^53. A fee bump with a muxed fee source and `TransactionV0` envelopes are
+  covered by the testnet witnesses and the legacy sweep (336 V0 envelopes),
+  but are not corpus entries with expected values yet.
+- **Five SDKs are checked outside CI.** The .NET, PHP, Flutter, KMP and Swift
+  checks (§9.3) run on a developer machine. The Flutter and Swift builds
+  remove or replace platform code off the XDR and hash path to build on
+  Linux (§9.3), and the KMP test suite runs on the repository's own GitHub
+  workflow, because it needs more memory than the development machine has.
+- **Testnet witnesses depend on testnet.** Testnet resets periodically. The
+  envelopes and hashes are kept in `witnesses.json`, so `make witnesses`
+  keeps working, but a reader can only look the transactions up on Horizon
+  until the next reset. The corpus entries keep the full ledgers.
 - **Replay oracles assert participants as subsets**, so they cannot detect an
   indexer recording extra participants; exact sets need an agreed participant
   definition.
@@ -1357,13 +1494,13 @@ been secured.
 
 | Required outcome | PoC evidence | Evidence still needed for delivery |
 |---|---|---|
-| Language-neutral corpus, generator and CAP coverage | Seven core-emitted entries (six testnet, one mainnet), JSON schema, recorded provenance, XDR assertions and testnet capture (§4–5) | An audited CAP/shape denominator; independently reviewed expectations; additional required cases; pinned core golden differential tests; reproducible isolated local-core generation under both passphrases |
-| SDK conformance in JS, Go and Rust | Three runners, 14 probes, byte-exact round trips, reports bound to their input digests, current/historical matrix, JS pre/post-fix reproductions (§9–11), a live two-release JS check on fresh testnet captures (§5.2), and js-stellar-sdk#1906 confirmed on the network with go-stellar-sdk and py-stellar-base checked for the same defect (none shares it) | Build-bound runner reports, class-aware coverage for SDK-only inputs, current stable pins checked at release, and matrix-backed regressions for the specified SDK sightings |
+| Language-neutral corpus, generator and CAP coverage | Ten core-emitted entries (eight testnet, two mainnet) covering 10 CAPs, JSON schema, recorded provenance, XDR assertions, testnet capture, 21 testnet witnesses and two mainnet sweep sets (§4–5) | An audited CAP/shape denominator; independently reviewed expectations; additional required cases; pinned core golden differential tests; reproducible isolated local-core generation under both passphrases |
+| SDK conformance in JS, Go and Rust | Five runners (Rust, Go, JS at two releases, Python, Java), 14 probes, byte-exact round trips, reports bound to their input digests, current/historical matrix, a 9,351-transaction mainnet sweep, JS pre/post-fix reproductions (§9–11), a live two-release JS check on fresh testnet captures (§5.2), model round-trip checks of six more SDKs (§9.3), and ten new SDK defects filed upstream with on-chain evidence, two with fix pull requests | Build-bound runner reports, class-aware coverage for SDK-only inputs, current stable pins checked at release, and matrix-backed regressions for the specified SDK sightings |
 | Replay against an indexer | Typed comparator, fixture-bound sidecars and synthetic-observation tests (§12); wallet-backend #729, #731 and #716 (two of three producers) reproduced in process before and after their fixes, on that commit's own indexer (§11.2) | Mock-RPC compatibility profile, isolated unmodified target, durable database observation, adapter contract and end-to-end pre/post-fix #729, #731 and #716 checks |
 | Three ingestion-mistake checks | Rule designs (§13); STLR003 prototype with seeded positive and negative cases in CI, documented blind spots, and a pinned wallet-backend run: 6 triaged findings before #753's fix, clean on the fix and on `main` (§13.1) | STLR001 and STLR002 analyzers with seeded cases; STLR003 helper coverage across packages; runs on further indexers |
-| Indexer-hardening guide | Proposed outline and evidence requirements (§14) | Field-by-field source-backed guide, versioned limits, checklist, cross-check with manifest and review by a core or platform engineer |
-| SDF pipeline findings | In-process reproductions of #729, #731 and #716 (§11.2); STLR003 runs on wallet-backend, Horizon and stellar-etl (§13.1); OBS-003 on failed-operation attribution, triaged as a documented design difference | Real ingestion and committed-storage evidence, minimal reproductions, severity and CAP mapping, and a filed issue or appropriate private disclosure reference for each finding |
-| Release, CI and maintenance | Local commands, lockfiles, hosted CI passing on GitHub, an offline re-check of a recorded live run, and upgrade procedure (§16–17) | Tested offline and resource-bounded workflows, tagged release, named maintainers and an agreed post-launch maintenance commitment including the first protocol upgrade |
+| Indexer-hardening guide | Draft with 8 source-linked field rules, the participants rule and a checklist (§14) | Field-by-field source-backed guide, versioned limits, checklist, cross-check with manifest and review by a core or platform engineer |
+| SDF pipeline findings | In-process reproductions of #729, #731 and #716 (§11.2); STLR003 runs on wallet-backend, Horizon and stellar-etl (§13.1); OBS-003 on failed-operation attribution, triaged as a documented design difference; in SDF's go-stellar-sdk, FND-003 filed with an on-chain witness and a fix pull request (#6062, #6063) | Real ingestion and committed-storage evidence, minimal reproductions, severity and CAP mapping, and a filed issue or appropriate private disclosure reference for each finding |
+| Release, CI and maintenance | Local commands, lockfiles, pinned jars, hosted CI passing on GitHub (corpus, linter, conformance, strkeys, witnesses), an offline re-check of a recorded live run, and upgrade procedure (§16–17) | Tested offline and resource-bounded workflows, tagged release, named maintainers and an agreed post-launch maintenance commitment including the first protocol upgrade |
 
 ### 20.1 Reproducible evidence
 
@@ -1425,9 +1562,9 @@ clean checkout, and each builds on what the proof of concept already does.
 
 | Milestone | Scope | Closes when |
 |---|---|---|
-| **1. Corpus and generator** | Audited CAP and shape inventory from a pinned `stellar-protocol` revision; local stellar-core generation under the testnet and mainnet passphrases with networking disabled; the missing shapes of §18 (fee-bump with a muxed fee source, `TransactionV0`, nested authorization, maximum-length vectors, colliding map keys, offer IDs above 2^53, a SEP-41 muxed address); mainnet history entries with pinned mainnet validators and a history-archive anchor for ledger hashes; the normalization port checked against core's `--check-lcm` goldens | `make verify` passes on the agreed inventory; the generator reproduces its entries offline under both passphrases; the coverage registry lists every inventory item with its entry or a stated exclusion |
-| **2. Conformance and replay** | Runners for the agreed SDKs in CI, including a Python runner; class-aware scoring for SDK-only vectors; a mock RPC `getLedgers` transport, then the data-lake layout; a wallet-backend adapter on its own database (PostgreSQL with TimescaleDB) and the adapter contract of §12.4; #729, #731 and all three #716 producers end to end; a findings report with triage | `make conform` passes the agreed matrix; the replay reproduces each named wallet-backend issue on its pre-fix commit and passes on the fixed one through real ingestion and storage; every finding has a minimal entry, severity, CAP and a reference to its upstream report |
-| **3. Linter, guide and release** | STLR001 and STLR002 with seeded cases; STLR003 across packages; the hardening guide with its field table generated from the manifests; sibling issues for defects shared by several SDKs; a tagged release and the protocol-upgrade procedure of §17 rehearsed | the linter flags its seeded violations and runs clean on current wallet-backend; the guide's table agrees with the manifests in CI and has been reviewed by a core or platform engineer; the release installs from a clean machine |
+| **1. Corpus and generator** | Audited CAP and shape inventory from a pinned `stellar-protocol` revision; local stellar-core generation under the testnet and mainnet passphrases with networking disabled; the missing shapes of §18 (nested authorization, maximum-length vectors, colliding map keys, offer IDs above 2^53, a SEP-41 muxed address), and the testnet witnesses and V0 envelopes turned into corpus entries with expected values; more mainnet history entries, with the history-archive ledger hash fetched by the verifier itself; the normalization port checked against core's `--check-lcm` goldens | `make verify` passes on the agreed inventory; the generator reproduces its entries offline under both passphrases; the coverage registry lists every inventory item with its entry or a stated exclusion |
+| **2. Conformance and replay** | Runners for the agreed SDKs in CI, adding the .NET, PHP, Flutter, KMP and Swift checks of §9.3 under the probe contract; class-aware scoring for SDK-only vectors; a mock RPC `getLedgers` transport, then the data-lake layout; a wallet-backend adapter on its own database (PostgreSQL with TimescaleDB) and the adapter contract of §12.4; #729, #731 and all three #716 producers end to end; a findings report with triage | `make conform` passes the agreed matrix; the replay reproduces each named wallet-backend issue on its pre-fix commit and passes on the fixed one through real ingestion and storage; every finding has a minimal entry, severity, CAP and a reference to its upstream report |
+| **3. Linter, guide and release** | STLR001 and STLR002 with seeded cases; STLR003 across packages; the hardening guide with its field table generated from the manifests; sibling issues for defects shared by several SDKs (begun: the default-valued `PRECOND_V2` defect was filed in four SDKs); a tagged release and the protocol-upgrade procedure of §17 rehearsed | the linter flags its seeded violations and runs clean on current wallet-backend; the guide's table agrees with the manifests in CI and has been reviewed by a core or platform engineer; the release installs from a clean machine |
 
 Order of work inside milestones 1 and 2 follows §19: offline generation first,
 then the mock RPC profile and the replay contract, then adapter breadth.
@@ -1436,8 +1573,10 @@ then the mock RPC profile and the replay contract, then adapter breadth.
 
 - **Infrastructure.** Nothing needs to be hosted. The corpus is plain files in
   this repository; the tools run on a developer machine or in CI. The only
-  network endpoints, used only when capturing new ledgers, are listed in the
-  README: the public data lake, testnet RPC, Horizon testnet and friendbot.
+  network endpoints, used only when capturing ledgers, sweeping history or
+  submitting testnet witnesses, are listed in the README: the public data
+  lake, SDF's mainnet history archive, testnet RPC, Horizon testnet and
+  mainnet, and friendbot.
 - **Decentralisation.** Anyone can mirror the corpus, and its integrity does
   not depend on who serves it: every file is pinned by SHA-256, and the
   verifier checks each ledger against network commitments and validator keys
@@ -1445,8 +1584,9 @@ then the mock RPC profile and the replay contract, then adapter breadth.
   independently from public history or, with milestone 1, from a local
   stellar-core.
 - **Privacy and user tracking.** None. The tools collect no usage data and
-  contact no service while verifying or comparing. The capture tool keeps
-  throwaway keys in memory only; the corpus holds public ledger data.
+  contact no service while verifying or comparing. The capture tool and the
+  witness script keep throwaway testnet keys in memory only; the corpus holds
+  public ledger data.
 - **Maintenance.** Two maintainers share releases and upgrades. For each
   protocol upgrade, §17 lists the steps: raise the SDK pins, re-run the
   corpus as a regression check, add the new CAPs to the coverage registry and
@@ -1454,4 +1594,6 @@ then the mock RPC profile and the replay contract, then adapter breadth.
   not support yet is recorded as an expected result for that SDK, so no SDK's
   CI turns red on a shape it has not implemented.
 - **Licence and openness.** Apache-2.0; development, CI results and findings
-  are public, and security-relevant findings follow `SECURITY.md`.
+  are public, and security-relevant findings follow `SECURITY.md`. Functional
+  defects go to the maintainers' public trackers with on-chain evidence; when
+  the fix is small, a pull request with a failing-then-passing test follows.

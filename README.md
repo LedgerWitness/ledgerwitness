@@ -13,7 +13,10 @@ The project builds a shared kit made of three parts:
 - guidance for writing ledger readers that do not break on them.
 
 This repository holds the design of the complete kit and a **proof of
-concept** of part of it, running on real Stellar testnet data.
+concept** of part of it, running on real Stellar testnet and mainnet data.
+The proof of concept has already found ten new defects in six Stellar SDKs,
+each confirmed on a transaction the network applied and filed upstream, with
+fix pull requests for two of them ([findings](#findings-filed-upstream)).
 
 ## Evidence at a glance
 
@@ -30,10 +33,37 @@ live testnet run work offline.
 | Mainnet sweep | 9,351 mainnet transactions from 40 ledgers (protocols 9 to 29, including 336 pre-CAP-15 V0 envelopes): Rust, Go, JS, Python and Java agree on every probe, with no decode, re-encoding or API failure, except that Java 6.0.0 computes the wrong hash for 2 transactions (java-stellar-sdk#844). All 40 ledgers match SDF's history archive | `make sweep` |
 | Strkey decoders | 144 SEP-23 strkeys (34 published, 110 derived from its rules) through six decoders (Rust, Go, two JS releases, Python, Java): all follow SEP-23 except one Go case already reported upstream | `make strkey` |
 | New SDK findings | Ten defects found by running real transactions through SDKs and filed upstream, with fix pull requests for two of them (stellar/go-stellar-sdk#6063, Soneso/kmp-stellar-sdk#178): stellar-dotnet-sdk 17.0.0, stellar-php-sdk 1.18.0, stellar_flutter_sdk 3.12.0, kmp-stellar-sdk 1.18.0 and stellar-ios-mac-sdk 3.16.0 compute the wrong hash for transactions the network applied (Beans-BV/dotnet-stellar-sdk#281, Soneso/stellar-php-sdk#252, Soneso/stellar_flutter_sdk#305, Soneso/kmp-stellar-sdk#175, Soneso/stellar-ios-mac-sdk#330 and #331), stellar-ios-mac-sdk cannot decode a transaction whose memo is not UTF-8, which breaks the receiver's history page (#332), kmp-stellar-sdk refuses five kinds of successful testnet transaction (Soneso/kmp-stellar-sdk#176, #177), and go-stellar-sdk `txnbuild` cannot build a valid pool-share `RevokeSponsorship` (stellar/go-stellar-sdk#6062) | `reproductions/sdk-findings/` |
+| Testnet witnesses | 21 crafted shapes submitted to testnet and applied by the network, then parsed by nine SDK releases; Python, Java and both JS releases must pass all 28 transactions in CI | `make witnesses` |
 | Live testnet | Five rare shapes submitted and checked; core accepts a Soroban transaction that JS 17.4.0's builder refuses to build (js-stellar-sdk#1906) | `make testnet-smoke` |
 
 Status of every component, and the delivery plan for the rest:
 [architecture](docs/architecture.md) (at a glance, §21).
+
+## Findings filed upstream
+
+Each finding was reproduced by execution, confirmed on a transaction the
+network applied (or against stellar-core's own validity rule and tests),
+checked against the upstream tracker for an earlier report, and filed from
+the project's account. Details, duplicate searches and severities:
+[docs/findings/README.md](docs/findings/README.md). Reproductions:
+[reproductions/sdk-findings/](reproductions/sdk-findings/README.md).
+
+| ID | SDK | Defect | On-chain evidence | Upstream |
+|---|---|---|---|---|
+| FND-001 | stellar-dotnet-sdk 17.0.0 | Wrong hash for a `PRECOND_V2` whose fields are at their defaults | 2 mainnet transactions | [#281](https://github.com/Beans-BV/dotnet-stellar-sdk/issues/281) |
+| FND-002 | stellar-php-sdk 1.18.0 | Wrong hash for a SAC deployed with `CREATE_CONTRACT_V2` | testnet transaction we submitted | [#252](https://github.com/Soneso/stellar-php-sdk/issues/252) |
+| FND-003 | go-stellar-sdk v0.9.0 | `txnbuild` cannot build a pool-share `RevokeSponsorship`, and encodes its asset as native | testnet transaction we submitted | [#6062](https://github.com/stellar/go-stellar-sdk/issues/6062), fix [#6063](https://github.com/stellar/go-stellar-sdk/pull/6063) |
+| FND-004 | stellar_flutter_sdk 3.12.0 | Wrong hash for a SAC deployed with `CREATE_CONTRACT_V2` | same testnet transaction as FND-002 | [#305](https://github.com/Soneso/stellar_flutter_sdk/issues/305) |
+| FND-005 | kmp-stellar-sdk 1.18.0 | Wrong hash for a default-valued `PRECOND_V2` | corpus entry, mainnet | [#175](https://github.com/Soneso/kmp-stellar-sdk/issues/175) |
+| FND-006 | kmp-stellar-sdk 1.18.0 | Refuses `ExtendFootprintTTL` with `extendTo = 0` | a third party's testnet transaction, now a corpus entry | [#176](https://github.com/Soneso/kmp-stellar-sdk/issues/176), fix [#178](https://github.com/Soneso/kmp-stellar-sdk/pull/178) |
+| FND-007 | kmp-stellar-sdk 1.18.0 | Refuses four other kinds of applied transaction | 4 testnet transactions we submitted | [#177](https://github.com/Soneso/kmp-stellar-sdk/issues/177) |
+| FND-008 | stellar-ios-mac-sdk 3.16.0 | Wrong hash for a default-valued `PRECOND_V2` | 2 mainnet transactions | [#330](https://github.com/Soneso/stellar-ios-mac-sdk/issues/330) |
+| FND-009 | stellar-ios-mac-sdk 3.16.0 | Parsing a fee bump drops its inner Soroban data | 1,358 mainnet fee bumps | [#331](https://github.com/Soneso/stellar-ios-mac-sdk/issues/331) |
+| FND-010 | stellar-ios-mac-sdk 3.16.0 | A memo that is not UTF-8 makes the envelope, and the receiver's Horizon page, undecodable | testnet transaction we submitted | [#332](https://github.com/Soneso/stellar-ios-mac-sdk/issues/332) |
+
+The same runs also found bugs that others had already reported, for example
+java-stellar-sdk #844 and #832. Those are recorded as observations, not
+claimed as findings.
 
 ## Why
 
@@ -56,12 +86,12 @@ against.
 | Deliverable | What the complete project delivers | In the proof of concept |
 |---|---|---|
 | **Corpus and generator** | <ul><li>One entry per rare shape, tagged with the CAP and protocol that introduced it, with expected decoded values and a per-CAP coverage registry.</li><li>Only ledgers stellar-core actually emitted: from testnet or mainnet history, or generated offline by a pinned local stellar-core under both network passphrases. Hand-made entries are labelled synthetic.</li><li>The shapes that have already broken SDKs: issuer ordering, muxed accounts, IDs that decode to a different value than they encode, vectors at maximum length, nested authorization, map keys that collide after conversion.</li><li>Agreement with stellar-core's `--check-lcm` goldens.</li></ul> | **Implemented:**<ul><li>10 real entries, 8 from testnet and 2 from mainnet, covering 10 CAPs (0015, 0021, 0027, 0038, 0040, 0046, 0058, 0067, 0073, 0088), protocols 22 to 30</li><li>live testnet generator and data-lake extraction</li><li>port of core's `--check-lcm` comparison</li></ul>**Planned:** offline local-core generator for both passphrases, more mainnet entries, the remaining shapes, golden import, complete CAP registry |
-| **Verifier** | Checks that each entry is intact and came from the network it claims, offline. | **Implemented:** hashes, decode/re-encode, header commitments, network binding, validator signature, alternate-copy equivalence |
-| **SDK conformance runner** | <ul><li>Runs every entry through the JavaScript, Go and Rust SDKs in CI.</li><li>Reports where they disagree with the network or with each other.</li><li>Opens a sibling issue in each SDK that shares a defect another SDK fixed.</li><li>Reproduces js-stellar-sdk #1766, #1785 and #1789 on their pre-fix releases.</li></ul> | **Implemented:**<ul><li>3 runners and 14 probes</li><li>comparison matrix bound to the exact input files</li><li>the three JS SDK issues reproduced before and after their fixes</li><li>two JS SDK releases checked live on fresh testnet transactions</li></ul>**Planned:** more shapes and releases, sibling-issue workflow |
+| **Verifier** | Checks that each entry is intact and came from the network it claims, offline. | **Implemented:** hashes, decode/re-encode, header commitments (generalized and legacy transaction sets, LedgerCloseMeta v0 to v2), network binding, validator signature, alternate-copy equivalence, ledger hashes cross-checked against SDF's history archive |
+| **SDK conformance runner** | <ul><li>Runs every entry through the JavaScript, Go and Rust SDKs in CI.</li><li>Reports where they disagree with the network or with each other.</li><li>Opens a sibling issue in each SDK that shares a defect another SDK fixed.</li><li>Reproduces js-stellar-sdk #1766, #1785 and #1789 on their pre-fix releases.</li></ul> | **Implemented:**<ul><li>5 runners (Rust, Go, JavaScript at two releases, Python, Java) and 14 probes</li><li>comparison matrix bound to the exact input files</li><li>cross-SDK sweep of 9,351 mainnet transactions, protocols 9 to 29</li><li>testnet witnesses through nine SDK releases, four of them gating CI</li><li>the three JS SDK issues reproduced before and after their fixes</li><li>sibling issues in practice: the default-valued `PRECOND_V2` defect, fixed in one SDK, filed in four others</li></ul>**Planned:** runners for the .NET, PHP, Flutter, KMP and Swift SDKs in CI, more shapes and releases |
 | **Replay harness** | <ul><li>Feeds the corpus to a real indexer through an input it already reads (mock RPC `getLedgers` first, then the Galexie data-lake layout), using a documented adapter interface.</li><li>Reports each shape the indexer stores wrongly or drops, with bounded memory.</li><li>Its reference adapter for wallet-backend reproduces #729, #731 and #716 before their fixes and passes after.</li></ul> | **Partial:**<ul><li>comparison of stored results against expected changes</li><li>#729 and #731 reproduced on wallet-backend's own indexer at the pre-fix and fix commits, in process (#731 with go-stellar-sdk raised identically at both)</li><li>#716's signed-payload and muxed Soroban-source producers reproduced through the columns' own storage conversion</li></ul>**Planned:** adapter interface, mock RPC, database-backed replay, #716's SEP-41 muxed-address producer |
 | **Go indexer linter** | Flags three mistakes in indexer source:<ul><li>trusting fields stellar-core does not validate;</li><li>recursing over authorization trees or nested ScVals without depth or size caps;</li><li>taking participants from the envelope instead of the meta.</li></ul>Flags seeded violations and runs clean on current wallet-backend. | **Prototype of the third rule (STLR003):** seeded cases in CI; on wallet-backend it flags the 6 envelope-only functions of the pre-#753 code and runs clean on the fix and on current `main` ([evidence](docs/evidence/linter-stlr003/README.md)). **Planned:** the other two rules |
 | **Indexer-hardening guide** | <ul><li>Which transaction fields core validates, field by field.</li><li>Recommended caps, participants from meta, muxed and signed-payload handling (SEP-0023).</li><li>A checklist matching the linter rules.</li></ul>Its tables are checked against the corpus manifests and reviewed by a core or platform engineer before publication. | **Draft started** ([docs/guide/indexer-hardening.md](docs/guide/indexer-hardening.md)): 8 field rules, each linked to stellar-core source at a pinned commit and to the corpus entry that exercises it, the participants rule and a checklist. **Planned:** remaining fields, measured limits, CI cross-check, review |
-| **Findings** | The corpus run against at least one SDF pipeline (wallet-backend or stellar-etl), each failure triaged (severity, CAP, minimal entry) and reported to its maintainers. | Three observations triaged, none a defect; the linter run on wallet-backend, Horizon and stellar-etl; nothing filed yet |
+| **Findings** | The corpus run against at least one SDF pipeline (wallet-backend or stellar-etl), each failure triaged (severity, CAP, minimal entry) and reported to its maintainers. | **10 new defects filed** in the .NET, PHP, Flutter, KMP, Swift and Go SDKs, each with on-chain evidence, and **2 fix pull requests** ([list](#findings-filed-upstream)); 4 observations triaged (known upstream bugs, or no defect); the linter run on wallet-backend, Horizon and stellar-etl. **Planned:** the corpus through SDF pipelines' replay adapters |
 | **Release and maintenance** | Tests and CI for every tool, a tagged release, and maintenance through the first protocol upgrade after delivery. | **Implemented:** CI runs every offline check on each push and pull request. **Planned:** tagged release, upgrade procedure in practice |
 
 ### What the proof of concept covers, and why
@@ -69,18 +99,22 @@ against.
 The proof of concept takes one working slice through each layer, rather
 than finishing any one deliverable:
 
-1. **Real data with provenance.** Real testnet ledgers whose origin is
-   checked offline.
-2. **SDK conformance.** Three SDKs compared on those ledgers.
+1. **Real data with provenance.** Real testnet and mainnet ledgers whose
+   origin is checked offline.
+2. **SDK conformance.** Five runners compared on those ledgers and on 9,351
+   mainnet transactions, and nine SDK releases on testnet witnesses.
 3. **Known bugs reproduced.** Upstream bugs reproduced before and after
    their fixes.
-4. **Live check.** One command that repeats all of it on testnet.
-5. **Linter rule.** One of the three linter rules, checked on wallet-backend
+4. **New bugs found and filed.** Ten defects in six SDKs, each with on-chain
+   evidence, and fix pull requests for two.
+5. **Live check.** One command that repeats the capture and checks on
+   testnet.
+6. **Linter rule.** One of the three linter rules, checked on wallet-backend
    before and after the fix for that mistake.
 
-The other two linter rules, the guide, database-backed replay and offline
-generation are designed in [docs/architecture.md](docs/architecture.md) but
-not built.
+The other two linter rules, the rest of the guide, database-backed replay and
+offline generation are designed in [docs/architecture.md](docs/architecture.md)
+but not built.
 
 ## See it work on testnet
 
@@ -132,7 +166,7 @@ python3 -m pip install --target runners/python/.deps -r runners/python/requireme
 make verify      # check every corpus entry       -> "10 entries, 10 passed, 0 failed"
 make test        # unit, tamper and CLI tests
 make conform     # run the SDK runners and compare -> prints the table below
-make witnesses   # 27 testnet transactions through Python, Java and JS -> "27/27 witnesses ok"
+make witnesses   # 28 testnet transactions through Python, Java and JS -> "28/28 witnesses ok"
 make repro-js    # JS SDK bugs before/after fixes -> "40/40 ... match the documented behaviour"
 make testnet-evidence  # recorded live testnet run, re-checked offline
 make linter      # linter rule STLR003 on its seeded cases
@@ -317,7 +351,7 @@ crates/replay/   replay comparison library (Rust)
 runners/         SDK runners: rust/, go/, javascript/, python/, java/
 linter/go/       indexer linter prototype (rule STLR003) and its seeded cases
 generators/      testnet capture tool, live smoke test, capture provenance
-reproductions/   known bugs, before and after their fixes
+reproductions/   known bugs before and after their fixes; sdk-findings/ for our filed findings
 docs/            architecture, specifications, evidence, research, findings
 ```
 
@@ -344,17 +378,26 @@ docs/            architecture, specifications, evidence, research, findings
 
 ## Network use and privacy
 
-Verification, tests and comparisons run offline. Only the capture tool and
-`make testnet-smoke` contact a Stellar network, and only testnet. The same goes
-for the one-time downloads that produced the corpus. The endpoints are:
+Verification, tests and comparisons run offline. Only these contact a
+Stellar network:
 
-- the public data lake (`aws-public-blockchain.s3.us-east-2.amazonaws.com`);
+- the capture tool, `make testnet-smoke` and `submit-witnesses.py`, which
+  submit transactions to testnet only;
+- `make sweep` and the one-time downloads that produced the corpus, which
+  read public data only.
+
+The endpoints are:
+
+- the public data lake (`aws-public-blockchain.s3.us-east-2.amazonaws.com`),
+  testnet and mainnet;
+- SDF's mainnet history archive, for independent ledger hashes;
 - testnet RPC (`soroban-testnet.stellar.org`);
-- Horizon testnet;
+- Horizon testnet and mainnet;
 - testnet friendbot.
 
-The capture tool never writes keys to disk. The corpus holds only public
-testnet data. Nothing here collects usage data.
+The tools never write keys to disk; testnet accounts are created per run and
+discarded. The corpus holds only public testnet and mainnet data. Nothing here
+collects usage data.
 
 Nothing needs to be hosted. Anyone can mirror the corpus: every file is
 pinned by SHA-256, and verification checks each ledger against network
@@ -362,7 +405,7 @@ commitments and validator keys offline, without trusting the server it came
 from. See [architecture §22](docs/architecture.md).
 
 The Rust tools refuse oversized inputs (limits in `crates/ledgerwitness/src/input.rs`).
-The Go and JavaScript runners do not cap their inputs yet.
+The Go, JavaScript, Python and Java runners do not cap their inputs yet.
 
 ## Contributing, security, license
 

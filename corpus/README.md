@@ -63,7 +63,7 @@ binary values are lowercase hex, accounts and keys are SEP-0023 strkeys.
 For each entry: read `entry.json`, check `sha256` of `xdr_path`, decode it as
 `xdr_type`, re-encode, and compare the bytes. Then compare whatever your
 library exposes against `expected_decoded_values`. `runners/` in this
-repository does this for Rust, Go and JavaScript.
+repository does this for Rust, Go, JavaScript, Python and Java.
 
 ## Adding an entry
 
