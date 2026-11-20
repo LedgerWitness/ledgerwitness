@@ -1,0 +1,169 @@
+{
+  "schema_version": "0.1.0",
+  "id": "core.testnet.cap46.sac-deploy-create-contract-v2.p30",
+  "description": "InvokeHostFunction that deploys the Stellar Asset Contract for LWV2 through HOST_FUNCTION_TYPE_CREATE_CONTRACT_V2 (CAP-0058) with an asset preimage, the stellar_asset executable and no constructor arguments. Most tools deploy a SAC with CREATE_CONTRACT (v1); core and the host accept V2 as well. stellar-php-sdk 1.18.0 and stellar_flutter_sdk 3.12.0 re-encode the host function as CREATE_CONTRACT and so compute a wrong transaction hash (Soneso/stellar-php-sdk#252, Soneso/stellar_flutter_sdk#305).",
+  "cap_ids": [
+    "CAP-0046",
+    "CAP-0058"
+  ],
+  "protocol_versions": [
+    30
+  ],
+  "shape_tags": [
+    "op:invoke_host_function",
+    "host_function:create_contract_v2",
+    "preimage:from_asset",
+    "executable:stellar_asset",
+    "soroban:sac_deploy",
+    "meta:contract_instance_created",
+    "event:none",
+    "header:stellar_value_signed_ms"
+  ],
+  "fixture_class": "core_emitted_valid",
+  "network_passphrase": "Test SDF Network ; September 2015",
+  "source_kind": "galexie_datalake",
+  "source_url_or_ledger": {
+    "url": "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/testnet/2025-12-18/FFA81BFF--5760000-5823999/FFA72605--5822970.xdr.zst",
+    "ledger": 5822970,
+    "ledger_hash": "b9f96f43aa5eb4fb8a7db70173a86efc10efd8283c12477f6ec70a9237d92da1",
+    "object_sha256": "d9413eaca73bad275e596e87314eb63492b8e6984e0c8e8b8f7e6977252115b6"
+  },
+  "core_version_and_commit": {
+    "value": "stellar-core 30.0.0 (0e49751aa9ddf892302cca02cea7f3f5d97df9f1)",
+    "basis": "the testnet network's core release as recorded for the other protocol-30 captures (RPC getVersionInfo); the data-lake emitter does not publish its core build, so this identifies the network's core release rather than the exact process that wrote the primary artifact"
+  },
+  "generator_version": "reproductions/sdk-findings/php-252/deploy-testnet.mjs (@stellar/stellar-sdk 17.4.0)",
+  "deterministic_seed": null,
+  "xdr_type": "LedgerCloseMeta",
+  "xdr_path": "ledger.xdr",
+  "sha256": "336b3e0a0adf8086e5bd169333867b5c11b012eaf56235eba5d605d63dd07750",
+  "focus": {
+    "tx_hash": "11446413b5a7a95f8bb18e616a5187f19a5a7b146fdef3c5c2c77e5ea87aaadc"
+  },
+  "expected_decoded_values": {
+    "xdr_json": [
+      {
+        "pointer": "/v2/ledger_header/header/ledger_seq",
+        "value": 5822970
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/1/v1/execution_stages/0/0/2/tx/tx/operations/0/body/invoke_host_function/host_function/create_contract_v2/contract_id_preimage/asset/credit_alphanum4/asset_code",
+        "value": "LWV2",
+        "why": "Horizon reports the function as HostFunctionTypeCreateContractV2"
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/1/v1/execution_stages/0/0/2/tx/tx/operations/0/body/invoke_host_function/host_function/create_contract_v2/executable",
+        "value": "stellar_asset"
+      },
+      {
+        "pointer": "/v2/tx_set/v1/phases/1/v1/execution_stages/0/0/2/tx/tx/operations/0/body/invoke_host_function/host_function/create_contract_v2/constructor_args",
+        "value": []
+      },
+      {
+        "pointer": "/v2/tx_processing/3/tx_apply_processing/v4/operations/0/changes/1/created/data/contract_data/contract",
+        "value": "CBX5ZSWH6MP6I3KE4U5K6RMJ3BIBYYC37GJX6BGXW4MCYM46DPN7H5XH",
+        "why": "the SAC instance the deploy created"
+      }
+    ],
+    "probes": {
+      "ledger_sequence": 5822970,
+      "protocol_version": 30,
+      "tx_count": 6,
+      "focus": {
+        "tx_hash": "11446413b5a7a95f8bb18e616a5187f19a5a7b146fdef3c5c2c77e5ea87aaadc",
+        "successful": true,
+        "tx_source": "GAGAT7QTGVPWGU4HPFAPI4QHIMRII73TQLCRN2SHRQQZWCAA77KA5MYX",
+        "tx_source_muxed_id": null,
+        "op_types": [
+          "INVOKE_HOST_FUNCTION"
+        ],
+        "op_sources": [
+          null
+        ],
+        "muxed_ids": [],
+        "meta_signer_keys": [],
+        "meta_created_trustlines": [],
+        "envelope_pool_ids": [],
+        "op_contract_event_counts": [
+          0
+        ]
+      }
+    }
+  },
+  "expected_state_changes_or_participants": {
+    "participants_from_meta": [],
+    "contract_created": "CBX5ZSWH6MP6I3KE4U5K6RMJ3BIBYYC37GJX6BGXW4MCYM46DPN7H5XH",
+    "indexer_must": "read the host function type as decoded (CREATE_CONTRACT_V2) and never rebuild it from a model; hash the envelope bytes as they are",
+    "note": "the operation changes only the new contract instance and its TTL; the fee and sequence changes are transaction-level"
+  },
+  "validation_evidence": [
+    {
+      "check": "rs-stellar-xdr strict decode and byte-exact re-encode",
+      "method": "ledgerwitness verify (stellar-xdr 30.0.0)",
+      "status": "verified"
+    },
+    {
+      "check": "ledger header hash recomputed from header bytes and matched to the recorded ledger hash",
+      "method": "ledgerwitness verify; ledger hash independently read from RPC getLedgers and from Horizon testnet /ledgers/5822970",
+      "status": "verified"
+    },
+    {
+      "check": "scp_value.tx_set_hash and tx_set_result_hash recomputed from the artifact",
+      "method": "ledgerwitness verify",
+      "status": "verified"
+    },
+    {
+      "check": "header signed by a pinned testnet validator",
+      "method": "ledgerwitness verify (validator_signature)",
+      "status": "verified"
+    },
+    {
+      "check": "every envelope hashes under the declared passphrase to a processed result",
+      "method": "ledgerwitness verify",
+      "status": "verified"
+    },
+    {
+      "check": "agreement with stellar-core --check-lcm goldens",
+      "method": "not applicable to network captures: core goldens are produced by core's own test suite under its test passphrase; see docs/spec/normalization.md",
+      "status": "not_applicable"
+    },
+    {
+      "check": "same ledger fetched from RPC getLedgers is equal under stellar-core's --check-lcm normalization once the LCM extension is ignored",
+      "method": "ledgerwitness verify (alternate_equivalence)",
+      "status": "verified"
+    },
+    {
+      "check": "submitted envelope equals the envelope in the ledger",
+      "method": "byte comparison of the base64 envelope returned by the submitting script with focus-envelope.xdr",
+      "status": "verified"
+    },
+    {
+      "check": "transaction successful, source account and host function type as Horizon reports them; ledger transaction count",
+      "method": "GET horizon-testnet /transactions/{hash} (successful, source_account), /transactions/{hash}/operations (function HostFunctionTypeHostFunctionTypeCreateContractV2) and /ledgers/5822970 (4 successful plus 2 failed)",
+      "status": "verified"
+    }
+  ],
+  "known_regression_ids": [
+    "soneso/stellar-php-sdk#252",
+    "soneso/stellar_flutter_sdk#305"
+  ],
+  "expected_outcome": "decode_roundtrip_exact",
+  "license_or_provenance_notes": "Public testnet ledger data. Keys used to submit the focus transaction were generated per run, funded by friendbot and discarded; no secret material is stored.",
+  "alternate_artifacts": [
+    {
+      "xdr_path": "ledger.rpc.xdr",
+      "sha256": "5f727acdd81a8ad5091e0e38382bc8777afaeaa7f1a3e06fd1f5cb24aba3acd3",
+      "source_kind": "rpc_get_ledgers",
+      "source_url": "https://soroban-testnet.stellar.org getLedgers startLedger=5822970",
+      "relation": "equal_under_core_normalization_ignoring_ext"
+    }
+  ],
+  "derived_artifacts": [
+    {
+      "xdr_type": "TransactionEnvelope",
+      "xdr_path": "focus-envelope.xdr",
+      "sha256": "ddb5ea58aba6f31e2244e3fcd2f4deeb68d57777e057ef9b5125eb0fb7fd3163",
+      "derived_from": "focus_envelope"
+    }
+  ]
+}

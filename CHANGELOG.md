@@ -83,6 +83,11 @@ spec are versioned separately (`schema_version`, `probe_spec`).
   entry (java-stellar-sdk#832, fixed on master and not yet released). In the
   mainnet sweep it hashes 2 of 5,758 transactions differently from the
   network (java-stellar-sdk#844).
+- Corpus entries `core.pubnet.cap21.precond-v2-default-fields.p22` (mainnet
+  ledger 55000000) and `core.testnet.cap46.sac-deploy-create-contract-v2.p30`
+  (testnet ledger 5822970): the on-chain witnesses of the hash findings. All
+  current SDK runners pass both; java-stellar-sdk 6.0.0 hashes the first
+  wrongly (#844).
 - First four findings filed upstream, each with a reproduction in
   `reproductions/sdk-findings/`: Beans-BV/dotnet-stellar-sdk#281 (wrong
   hash for default-valued `PRECOND_V2`, 2 mainnet transactions),
