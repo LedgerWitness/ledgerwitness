@@ -400,9 +400,14 @@ discarded. The corpus holds only public testnet and mainnet data. Nothing here
 collects usage data.
 
 Nothing needs to be hosted. Anyone can mirror the corpus: every file is
-pinned by SHA-256, and verification checks each ledger against network
-commitments and validator keys offline, without trusting the server it came
-from. See [architecture §22](docs/architecture.md).
+pinned by SHA-256, and verification checks offline that the header,
+transaction set and results match the recorded ledger hash and that a pinned
+validator signed the transaction set and close time. A mirror cannot change
+those parts undetected, as long as the recorded ledger hash is authentic
+(mainnet hashes come from SDF's history archive). The meta is not covered by
+the header and is cross-checked against a second copy instead. See the
+[trust model](docs/architecture.md#7-provenance-and-trust-model) and
+[architecture §22](docs/architecture.md).
 
 The Rust tools refuse oversized inputs (limits in `crates/ledgerwitness/src/input.rs`).
 The Go, JavaScript, Python and Java runners do not cap their inputs yet.

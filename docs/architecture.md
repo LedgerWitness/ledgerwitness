@@ -1577,10 +1577,13 @@ then the mock RPC profile and the replay contract, then adapter breadth.
   submitting testnet witnesses, are listed in the README: the public data
   lake, SDF's mainnet history archive, testnet RPC, Horizon testnet and
   mainnet, and friendbot.
-- **Decentralisation.** Anyone can mirror the corpus, and its integrity does
-  not depend on who serves it: every file is pinned by SHA-256, and the
-  verifier checks each ledger against network commitments and validator keys
-  offline, without trusting a server. Entries can be regenerated
+- **Decentralisation.** Anyone can mirror the corpus. Every file is pinned by
+  SHA-256, and the verifier checks offline that the header, transaction set
+  and results match the recorded ledger hash and that a pinned validator
+  signed the transaction set and close time. A mirror cannot change those
+  parts undetected while the recorded ledger hash is authentic; the meta is
+  not covered by the header and relies on a second copy (section 7).
+  Entries can be regenerated
   independently from public history or, with milestone 1, from a local
   stellar-core.
 - **Privacy and user tracking.** None. The tools collect no usage data and
