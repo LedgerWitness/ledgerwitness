@@ -62,6 +62,13 @@ sponsorship) are in `witnesses.json` but not in the table.
 - **One shape core rejects:** a `PRECOND_V2` with `minSeqNum = -1` came back
   `tx_bad_seq`, so it is not a witness and the SDK that refuses it is right.
 
+## Regression check
+
+`make witnesses`, also run in CI, requires py-stellar-base, java-stellar-sdk
+and both js-stellar-sdk releases to pass every transaction in
+`witnesses.json`. A future SDK release that refuses or rehashes one of these
+shapes fails the build. The other SDKs have no runner in CI yet.
+
 ## Reproduce
 
 ```sh

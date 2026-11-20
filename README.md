@@ -132,6 +132,7 @@ python3 -m pip install --target runners/python/.deps -r runners/python/requireme
 make verify      # check every corpus entry       -> "10 entries, 10 passed, 0 failed"
 make test        # unit, tamper and CLI tests
 make conform     # run the SDK runners and compare -> prints the table below
+make witnesses   # 27 testnet transactions through Python, Java and JS -> "27/27 witnesses ok"
 make repro-js    # JS SDK bugs before/after fixes -> "40/40 ... match the documented behaviour"
 make testnet-evidence  # recorded live testnet run, re-checked offline
 make linter      # linter rule STLR003 on its seeded cases

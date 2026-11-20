@@ -11,7 +11,7 @@ REQUIRE_PASS := --require-pass stellar-xdr \
                 --require-pass "@stellar/stellar-sdk 17.4.0" \
                 --require-pass py-stellar-base
 
-.PHONY: all verify test runners conform repro-js linter lint-wallet-backend repro-wallet-backend capture testnet-smoke testnet-evidence sweep strkey clean
+.PHONY: all verify test runners conform repro-js witnesses linter lint-wallet-backend repro-wallet-backend capture testnet-smoke testnet-evidence sweep strkey clean
 
 all: verify test conform repro-js
 
@@ -39,6 +39,15 @@ conform: runners
 
 repro-js:
 	cd reproductions/js-sdk && node run.mjs --json results.json
+
+# Testnet witnesses (reproductions/sdk-findings/witnesses.json): the current
+# Python, Java and JS releases must parse each applied transaction, return
+# the network hash and re-encode the original bytes.
+witnesses:
+	PYTHONPATH=runners/python/.deps python3 reproductions/sdk-findings/check-witnesses.py
+	runners/java/fetch.sh && java -cp 'runners/java/.deps/*' reproductions/sdk-findings/CheckWitnesses.java
+	node reproductions/sdk-findings/check-witnesses.mjs --sdk 17.4.0
+	node reproductions/sdk-findings/check-witnesses.mjs --sdk 17.2.0
 
 # SEP-23 strkey vectors (published and rule-derived) through six decoders.
 strkey:
