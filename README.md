@@ -27,7 +27,7 @@ live testnet run work offline.
 | Known SDK bugs | js-stellar-sdk #1766, #1785 and #1789: 40/40 checks match before and after each fix | `make repro-js` |
 | Known indexer bugs | wallet-backend #729, #731 and #716 (two of its three paths) reproduced on the commits before and after each fix | `make repro-wallet-backend` |
 | Linter | Rule STLR003 flags the 6 envelope-only participant functions in wallet-backend before #753's fix, and runs clean after it and on current Horizon and stellar-etl | `make lint-wallet-backend` |
-| Mainnet sweep | 5,758 mainnet transactions from 20 ledgers (protocols 20 to 29): Rust, Go, JS and Python agree on every probe, with no decode, re-encoding or API failure. Java 6.0.0 computes the wrong hash for 2 of them (java-stellar-sdk#844). The ledgers are checked against SDF's history archive and validator signatures | `make sweep` |
+| Mainnet sweep | 9,351 mainnet transactions from 40 ledgers (protocols 9 to 29, including 336 pre-CAP-15 V0 envelopes): Rust, Go, JS, Python and Java agree on every probe, with no decode, re-encoding or API failure, except that Java 6.0.0 computes the wrong hash for 2 transactions (java-stellar-sdk#844). All 40 ledgers match SDF's history archive | `make sweep` |
 | Strkey decoders | 144 SEP-23 strkeys (34 published, 110 derived from its rules) through five decoders: all follow SEP-23 except one Go case already reported upstream | `make strkey` |
 | Live testnet | Five rare shapes submitted and checked; core accepts a Soroban transaction that JS 17.4.0's builder refuses to build (js-stellar-sdk#1906) | `make testnet-smoke` |
 
@@ -323,7 +323,7 @@ docs/            architecture, specifications, evidence, research, findings
 | [docs/evidence/liquidity-pool-issuer-order.md](docs/evidence/liquidity-pool-issuer-order.md) | One case from raw ledger to SDK results, with a live testnet reproduction |
 | [docs/evidence/testnet-run/](docs/evidence/testnet-run/README.md) | The recorded live testnet run: raw ledgers, provenance, logs and SDK results |
 | [docs/evidence/linter-stlr003/](docs/evidence/linter-stlr003/README.md) | Linter rule STLR003 on wallet-backend before and after its participants fix |
-| [docs/evidence/mainnet-sweep/](docs/evidence/mainnet-sweep/README.md) | Three SDKs on 5,758 mainnet transactions, and how the ledgers were verified |
+| [docs/evidence/mainnet-sweep/](docs/evidence/mainnet-sweep/README.md) | Five SDKs on 9,351 mainnet transactions (protocols 9 to 29, in two sets), and how the ledgers were verified |
 | [docs/evidence/mainnet-validators/](docs/evidence/mainnet-validators/README.md) | Sources of the pinned mainnet validator keys |
 | [docs/evidence/strkey-sep23/](docs/evidence/strkey-sep23/README.md) | Five strkey decoders against SEP-23's published and rule-derived cases |
 | [corpus/README.md](corpus/README.md) | Corpus format for consumers |

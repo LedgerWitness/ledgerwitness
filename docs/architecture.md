@@ -20,7 +20,7 @@ acceptance gates are in section 19; the delivery plan is in section 21.
 | Verifier | **Implemented:** hashes, exact re-encode, header and transaction-set commitments, network binding, validator signature, alternate-copy equivalence | §6–8 |
 | Testnet generator and live SDK check | **Implemented** (online): five shapes, checked against Horizon and two SDK releases | §5.2, `docs/evidence/testnet-run/` |
 | Offline generator under both passphrases | Design | §5.3 |
-| SDK conformance runner | **Implemented:** Rust, Go, JavaScript and Python; 14 probes; reports bound to their inputs; a cross-SDK sweep found no difference on 5,758 mainnet transactions | §9–10, `docs/evidence/mainnet-sweep/` |
+| SDK conformance runner | **Implemented:** Rust, Go, JavaScript, Python and Java; 14 probes; reports bound to their inputs; a cross-SDK sweep of 9,351 mainnet transactions (protocols 9 to 29) whose only difference is a known Java hash bug (java-stellar-sdk#844) | §9–10, `docs/evidence/mainnet-sweep/` |
 | Known SDK bugs | **Reproduced:** js-stellar-sdk #1766, #1785, #1789 (40/40 checks) | §11.1 |
 | Known indexer bugs | **Reproduced in process:** wallet-backend #729, #731, and #716 on two of its three paths | §11.2 |
 | Replay comparator | **Implemented:** typed oracles bound to their fixture | §12 |
@@ -293,8 +293,12 @@ Conditional rules (`allOf` in the schema):
 
 `ledgerwitness verify` fails an entry whose manifest class disagrees with its directory.
 Core-emitted provenance currently requires a `LedgerCloseMeta` primary
-artifact, and the ledger view supports only v1/v2 with generalized transaction
-sets. LCM v0 can be decoded/normalized but cannot pass these provenance checks.
+artifact. The ledger view reads v0 (legacy transaction set, before protocol
+20) as well as v1/v2 (generalized set). For a legacy set the header commits
+to stellar-core's own contents hash, not to the hash of the set's XDR. A v0
+ledger passes every provenance check except attestation where its header is
+unsigned (`STELLAR_VALUE_BASIC`, protocols up to 13), so such ledgers serve the
+sweep and the tests but cannot be core-emitted entries.
 Generic SDK-negative inputs can be checked for expected decode rejection;
 `reject_on_validation` explicitly fails because there is no semantic validator.
 
@@ -488,7 +492,7 @@ golden importer exists in this repository yet.
 |---|---|
 | `input` | regular-file reads with metadata and streaming byte checks; entry-relative artifact reads; bounded decompression. Defaults: 1 MiB manifests/schema, 64 MiB artifacts/compressed inputs, 16 MiB reports/oracles, 256 MiB decompressed batches. These are policy limits, not protocol maxima or total RSS/CPU limits. |
 | `xdr` | `decode(type_name, bytes)` via `Type::from_xdr(TypeVariant, …)` with `Limits { depth: 500, len: bytes.len() }`; `encode`; `to_xdr_json`; `sha256_hex`; `network_id(passphrase)` |
-| `ledger` | `lcm_view` (header, header hash, tx set and results across LCM v1 and v2); `envelopes_with_pointers` (walks classic v0 components and parallel Soroban v1 stages, returning JSON pointers); `focus_envelope`; `lcm_equivalence` and `Equivalence::relation` |
+| `ledger` | `lcm_view` (header, header hash, tx set and results across LCM v0, v1 and v2; `TxSetRef::contents_hash` for legacy and generalized sets); `envelopes_with_pointers` (walks classic v0 components and parallel Soroban v1 stages, returning JSON pointers); `focus_envelope`; `lcm_equivalence` and `Equivalence::relation` |
 | `normalize` | `normalize_lcm` and `clear_lcm_ext` (section 8) |
 | `attest` | verifies the validator signature on the header's `StellarValue` against pinned validator keys per network (section 7) |
 | `verify` | `find_entries`, `load_schema`, `verify_entry` → `EntryReport { id, dir, fixture_class, checks[] }` |
@@ -530,7 +534,7 @@ evidence that its condition passed.
 | `provenance` | fail when a core-emitted primary is not LCM; no extra row on success |
 | `roundtrip_exact` | re-encoding reproduces the artifact bytes |
 | `xdr_json_assertions` | every pointer assertion holds exactly |
-| `ledger_view` | ledger checks fail on unsupported LCM v0; no extra row on success |
+| `ledger_view` | fails when the ledger view cannot be built; no extra row on success |
 | `header_hash` | SHA-256 of the encoded `LedgerHeader` equals the hash carried in the LCM |
 | `ledger_hash_matches_source` | that hash equals the manifest's recorded `ledger_hash`; source independence is an admission requirement |
 | `ledger_sequence` | header sequence equals the manifest's `ledger` |
@@ -730,6 +734,7 @@ constant names.
 | `runners/go` | go-stellar-sdk v0.9.0 | `xdr.SafeUnmarshal`; `LedgerCloseMeta.LedgerSequence/CountTransactions/TransactionHash/TxApplyProcessing/TransactionResultPair`; `network.HashTransactionInEnvelope`; `MuxedAccount.GetAddress/GetId`; `SignerKey.GetAddress`; `xdr.NewPoolId` (rejects mis-ordered pairs) |
 | `runners/python` | py-stellar-base (`stellar-sdk` on PyPI) 17.0.1 | `xdr.LedgerCloseMeta.from_xdr_bytes`; `TransactionBuilder.from_xdr` and parsed operations; `MuxedAccount.account_muxed_id`; `SignerKey.encoded_signer_key`; `LiquidityPoolAsset.liquidity_pool_id`. Decoded ledgers are cached by SHA-256 for sweep sets |
 | `runners/javascript` | @stellar/stellar-sdk, any version installed under an `sdk-<version>` npm alias | `xdr.LedgerCloseMeta.fromXDR`; `TransactionBuilder.fromXDR` and parsed `operations` (the layer applications use); `MuxedAccount.fromAddress`; `SignerKey.encodeSignerKey`; `getLiquidityPoolId` |
+| `runners/java` | java-stellar-sdk 6.0.0 (jars pinned by SHA-256, run with the JDK's source launcher) | `xdr.LedgerCloseMeta.fromXdrByteArray`; `AbstractTransaction.fromEnvelopeXdr` and parsed operations; `MuxedAccount.getMuxedId`; `SignerKey.getEncodedSignerKey`; `LiquidityPool.getLiquidityPoolId`. A reported column: 6.0.0 rejects the CAP-38 issuer-order entry (java-stellar-sdk#832, fixed on master and not yet released) |
 
 The JavaScript runner goes through the SDK's public transaction API on
 purpose. js-stellar-sdk#1766 lives there, not in raw XDR decoding, and that

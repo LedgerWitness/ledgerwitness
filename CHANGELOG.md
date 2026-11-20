@@ -83,6 +83,10 @@ spec are versioned separately (`schema_version`, `probe_spec`).
   entry (java-stellar-sdk#832, fixed on master and not yet released). In the
   mainnet sweep it hashes 2 of 5,758 transactions differently from the
   network (java-stellar-sdk#844).
+- LedgerCloseMeta v0 (legacy transaction sets, before protocol 20) in the
+  CLI and all runners. A second mainnet sweep of 3,593 transactions from 20
+  ledgers (protocols 9 to 19, 336 V0 envelopes) found no divergence across
+  the five SDKs. All 20 ledgers match SDF's history archive.
 - `make testnet-evidence`: offline re-check of the recorded live run, also
   run in CI. The recorded run now keeps the raw ledgers (testnet ledgers
   5804257–5804261).

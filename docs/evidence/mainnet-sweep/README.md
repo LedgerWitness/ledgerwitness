@@ -107,8 +107,10 @@ the comparison exits 1.
 - **Shapes it barely reaches.** Muxed IDs occur in 5 transactions and
   pool-share trustlines in none; history rarely contains the rare shapes,
   which is why the corpus also captures and generates them.
-- **Not covered:** ledgers before protocol 20 (LedgerCloseMeta v0, which the
-  tools do not read yet) and older SDK releases.
+- **Not covered here:** ledgers before protocol 20. They are LedgerCloseMeta
+  v0, and the second set in [`legacy/`](legacy/README.md) covers them: 3,593
+  transactions from protocols 9 to 19, with no divergence across five SDKs.
+  Older SDK releases are not covered.
 
 ## Reproduce
 
