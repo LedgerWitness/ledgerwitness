@@ -94,6 +94,9 @@ spec are versioned separately (`schema_version`, `probe_spec`).
 - Testnet witnesses (`submit-witnesses.py`, `witnesses.json`): 21 shapes
   applied on testnet and parsed by nine SDK releases
   (`docs/evidence/testnet-witnesses/`).
+- Fix pull requests for two findings: stellar/go-stellar-sdk#6063
+  (pool-share `RevokeSponsorship`) and Soneso/kmp-stellar-sdk#178
+  (`extendTo = 0`), each with a test that fails before the fix.
 - First ten findings filed upstream, each with a reproduction in
   `reproductions/sdk-findings/`: Beans-BV/dotnet-stellar-sdk#281 (wrong
   hash for default-valued `PRECOND_V2`, 2 mainnet transactions),
