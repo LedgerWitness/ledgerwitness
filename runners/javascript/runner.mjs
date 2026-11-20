@@ -126,7 +126,6 @@ function trustlineAsset(a) {
 }
 
 function ledgerProbes(lcm, focusHash) {
-  if (lcm.type === "v0") throw new Error("LedgerCloseMeta v0 is not supported");
   const m = lcm[lcm.type];
   const ledger = {
     ledger_sequence: m.ledgerHeader.header.ledgerSeq,

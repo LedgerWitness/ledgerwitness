@@ -87,11 +87,12 @@ testnet-evidence:
 	node generators/testnet-capture/sdk-check.mjs $(EVIDENCE) target/debug/ledgerwitness
 
 # Cross-SDK sweep of public data-lake ledgers: every transaction through the
-# Rust, Go, JS and Python runners, compared with each other (no expected values).
+# Rust, Go, JS, Python and Java runners, compared with each other (no expected
+# values).
 # Downloads the ledgers; the comparison itself is offline.
 #   make sweep SWEEP_LEDGERS="65566583 65566590" [SWEEP_NETWORK=pubnet]
 SWEEP_NETWORK ?= pubnet
-SWEEP_DIR := results/sweep
+SWEEP_DIR ?= results/sweep
 sweep: | $(OUT)
 	rm -rf $(SWEEP_DIR) && mkdir -p $(SWEEP_DIR)
 	generators/datalake-sweep/build.sh $(SWEEP_DIR)/set $(SWEEP_NETWORK) $(SWEEP_LEDGERS)

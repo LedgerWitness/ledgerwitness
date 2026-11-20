@@ -119,9 +119,7 @@ def trustline_asset(a):
 
 
 def ledger_probes(lcm, focus_hash):
-    if lcm.v == 0:
-        raise ValueError("LedgerCloseMeta v0 is not supported")
-    m = lcm.v2 if lcm.v == 2 else lcm.v1
+    m = {0: lcm.v0, 1: lcm.v1, 2: lcm.v2}[lcm.v]
     ledger = {
         "ledger_sequence": m.ledger_header.header.ledger_seq.uint32,
         "protocol_version": m.ledger_header.header.ledger_version.uint32,

@@ -18,7 +18,7 @@ envelope.
   (`SET_OPTIONS`, `PAYMENT`, …).
 - `null` means "absent" (for example an operation without its own source).
 
-## Ledger-level probes (artifact type `LedgerCloseMeta`, v1 or v2)
+## Ledger-level probes (artifact type `LedgerCloseMeta`, v0, v1 or v2)
 
 | Probe | Definition |
 |---|---|

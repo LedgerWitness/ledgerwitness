@@ -197,13 +197,13 @@ fn ledger_checks(entry: &Value, lcm: &LedgerCloseMeta, r: &mut EntryReport) {
     );
 
     let want_set = view.header.scp_value.tx_set_hash.0;
-    match sha256_of(view.tx_set) {
+    match view.tx_set.contents_hash() {
         Ok(h) => r.expect(
             "tx_set_hash",
             h == want_set,
             hex::encode(h),
             format!(
-                "header {}, sha256(tx_set) {}",
+                "header {}, tx set hash {}",
                 hex::encode(want_set),
                 hex::encode(h)
             ),

@@ -6,7 +6,7 @@
 use std::path::Path;
 use std::time::Instant;
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result};
 use ledgerwitness::input::{read_artifact, read_file, MAX_MANIFEST_BYTES};
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
@@ -183,7 +183,13 @@ fn ledger_probes(
         _,
         Vec<(&stellar_xdr::TransactionResultPair, &TransactionMeta)>,
     ) = match lcm {
-        LedgerCloseMeta::V0(_) => return Err(anyhow!("LedgerCloseMeta v0 is not supported")),
+        LedgerCloseMeta::V0(m) => (
+            &m.ledger_header.header,
+            m.tx_processing
+                .iter()
+                .map(|p| (&p.result, &p.tx_apply_processing))
+                .collect(),
+        ),
         LedgerCloseMeta::V1(m) => (
             &m.ledger_header.header,
             m.tx_processing

@@ -191,6 +191,12 @@ public class Runner {
     LedgerHeader header;
     List<TxProcessing> txs = new ArrayList<>();
     switch (lcm.getDiscriminant()) {
+      case 0 -> {
+        header = lcm.getV0().getLedgerHeader().getHeader();
+        for (TransactionResultMeta p : lcm.getV0().getTxProcessing())
+          txs.add(new TxProcessing(p.getResult().getTransactionHash().getHash(),
+              p.getResult().getResult().getResult().getDiscriminant(), p.getTxApplyProcessing()));
+      }
       case 1 -> {
         header = lcm.getV1().getLedgerHeader().getHeader();
         for (TransactionResultMeta p : lcm.getV1().getTxProcessing())

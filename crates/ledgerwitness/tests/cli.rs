@@ -193,3 +193,36 @@ fn extract_envelope_all_to_matches_the_single_extraction() {
     );
     fs::remove_dir_all(&dir).unwrap();
 }
+
+#[test]
+fn check_ledger_reads_a_legacy_transaction_set() {
+    // LedgerCloseMeta v0: the header commits to the legacy set's own hash,
+    // not to the hash of its XDR.
+    let output = Command::new(env!("CARGO_BIN_EXE_ledgerwitness"))
+        .arg("check-ledger")
+        .arg(repo().join("crates/ledgerwitness/tests/data/pubnet-18000000.xdr"))
+        .args([
+            "--network-passphrase",
+            "Public Global Stellar Network ; September 2015",
+            "--ledger-hash",
+            "713a9e0464674bc646d234afbb9df640185053156aee9fa9cd72069921f70f9c",
+        ])
+        .output()
+        .unwrap();
+    let out = String::from_utf8_lossy(&output.stdout);
+    for check in [
+        "ledger_hash_matches_source",
+        "tx_set_hash",
+        "tx_set_result_hash",
+        "envelopes_match_results",
+    ] {
+        assert!(
+            out.lines()
+                .any(|l| l.trim_start().starts_with("ok") && l.contains(check)),
+            "{check} did not pass:\n{out}"
+        );
+    }
+    // Protocol 9 headers are unsigned, so the ledger cannot be attested.
+    assert!(out.contains("STELLAR_VALUE_BASIC"), "{out}");
+    assert!(!output.status.success());
+}

@@ -1,11 +1,12 @@
 //! Version-independent access to LedgerCloseMeta: header, transaction set,
 //! results, envelopes, and equivalence between two copies of one ledger.
 
-use anyhow::{anyhow, bail, Result};
+use anyhow::{anyhow, Result};
 use serde::Serialize;
+use sha2::{Digest, Sha256};
 use stellar_xdr::{
-    GeneralizedTransactionSet, LedgerCloseMeta, LedgerHeader, TransactionEnvelope,
-    TransactionPhase, TransactionResultPair, TxSetComponent,
+    GeneralizedTransactionSet, LedgerCloseMeta, LedgerHeader, Limits, TransactionEnvelope,
+    TransactionPhase, TransactionResultPair, TransactionSet, TxSetComponent, WriteXdr,
 };
 
 use crate::normalize;
@@ -15,38 +16,78 @@ use crate::xdr::network_id;
 pub struct LcmView<'a> {
     pub header: &'a LedgerHeader,
     pub header_hash: [u8; 32],
-    pub tx_set: &'a GeneralizedTransactionSet,
+    pub tx_set: TxSetRef<'a>,
     pub results: Vec<TransactionResultPair>,
 }
 
-/// v1 and v2 share the fields used here. v0 carries a legacy
-/// `TransactionSet` and is not supported.
+/// The transaction set of a LedgerCloseMeta: the legacy `TransactionSet` of
+/// v0 (ledgers before protocol 20), or the generalized set of v1 and v2.
+#[derive(Clone, Copy)]
+pub enum TxSetRef<'a> {
+    Legacy(&'a TransactionSet),
+    Generalized(&'a GeneralizedTransactionSet),
+}
+
+impl TxSetRef<'_> {
+    /// The hash the header's `StellarValue.tx_set_hash` commits to. A
+    /// generalized set hashes as its XDR. A legacy set hashes as the previous
+    /// ledger hash followed by each envelope's XDR, without the array length
+    /// (stellar-core `computeNonGenericTxSetContentsHash`).
+    pub fn contents_hash(&self) -> Result<[u8; 32]> {
+        match self {
+            TxSetRef::Generalized(set) => Ok(Sha256::digest(set.to_xdr(Limits::none())?).into()),
+            TxSetRef::Legacy(set) => {
+                let mut h = Sha256::new();
+                h.update(set.previous_ledger_hash.0);
+                for env in set.txs.iter() {
+                    h.update(env.to_xdr(Limits::none())?);
+                }
+                Ok(h.finalize().into())
+            }
+        }
+    }
+}
+
+/// v0, v1 and v2 share the fields used here, except the transaction set.
 pub fn lcm_view(lcm: &LedgerCloseMeta) -> Result<LcmView<'_>> {
     match lcm {
-        LedgerCloseMeta::V0(_) => {
-            bail!("LedgerCloseMeta v0 carries a legacy TransactionSet; not supported")
-        }
+        LedgerCloseMeta::V0(m) => Ok(LcmView {
+            header: &m.ledger_header.header,
+            header_hash: m.ledger_header.hash.0,
+            tx_set: TxSetRef::Legacy(&m.tx_set),
+            results: m.tx_processing.iter().map(|p| p.result.clone()).collect(),
+        }),
         LedgerCloseMeta::V1(m) => Ok(LcmView {
             header: &m.ledger_header.header,
             header_hash: m.ledger_header.hash.0,
-            tx_set: &m.tx_set,
+            tx_set: TxSetRef::Generalized(&m.tx_set),
             results: m.tx_processing.iter().map(|p| p.result.clone()).collect(),
         }),
         LedgerCloseMeta::V2(m) => Ok(LcmView {
             header: &m.ledger_header.header,
             header_hash: m.ledger_header.hash.0,
-            tx_set: &m.tx_set,
+            tx_set: TxSetRef::Generalized(&m.tx_set),
             results: m.tx_processing.iter().map(|p| p.result.clone()).collect(),
         }),
     }
 }
 
-/// Every envelope in a generalized transaction set, in set order, with its
-/// JSON pointer relative to the set's XDR-JSON form. Covers both the classic
-/// phase (v0 components) and the parallel Soroban phase (v1 stages).
-pub fn envelopes_with_pointers(
-    set: &GeneralizedTransactionSet,
-) -> Vec<(String, &TransactionEnvelope)> {
+/// Every envelope in a transaction set, in set order, with its JSON pointer
+/// relative to the set's XDR-JSON form. For a generalized set this covers
+/// both the classic phase (v0 components) and the parallel Soroban phase (v1
+/// stages).
+pub fn envelopes_with_pointers(set: TxSetRef<'_>) -> Vec<(String, &TransactionEnvelope)> {
+    let set = match set {
+        TxSetRef::Legacy(set) => {
+            return set
+                .txs
+                .iter()
+                .enumerate()
+                .map(|(t, env)| (format!("/txs/{t}"), env))
+                .collect();
+        }
+        TxSetRef::Generalized(set) => set,
+    };
     let GeneralizedTransactionSet::V1(v1) = set;
     let mut out = Vec::new();
     for (p, phase) in v1.phases.iter().enumerate() {
@@ -81,8 +122,8 @@ pub fn envelopes_with_pointers(
     out
 }
 
-/// Every envelope in a generalized transaction set, in set order.
-pub fn envelopes(set: &GeneralizedTransactionSet) -> Vec<&TransactionEnvelope> {
+/// Every envelope in a transaction set, in set order.
+pub fn envelopes(set: TxSetRef<'_>) -> Vec<&TransactionEnvelope> {
     envelopes_with_pointers(set)
         .into_iter()
         .map(|(_, e)| e)

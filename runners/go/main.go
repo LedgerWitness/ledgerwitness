@@ -206,9 +206,6 @@ func envelopeProbes(env xdr.TransactionEnvelope, passphrase string) (map[string]
 // ledgerProbes computes ledger-level probes and the focus transaction's meta
 // probes.
 func ledgerProbes(lcm xdr.LedgerCloseMeta, focusHash string) (map[string]any, map[string]any, error) {
-	if lcm.V == 0 {
-		return nil, nil, fmt.Errorf("LedgerCloseMeta v0 is not supported")
-	}
 	ledger := map[string]any{
 		"ledger_sequence":  lcm.LedgerSequence(),
 		"protocol_version": lcm.ProtocolVersion(),

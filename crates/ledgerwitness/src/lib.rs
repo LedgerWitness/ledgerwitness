@@ -20,7 +20,7 @@ pub mod xdr;
 
 pub use ledger::{
     envelopes, envelopes_with_pointers, focus_envelope, lcm_equivalence, lcm_view, Equivalence,
-    LcmView,
+    LcmView, TxSetRef,
 };
 pub use verify::{find_entries, load_schema, verify_entry, Check, EntryReport, Status, CLASSES};
 pub use xdr::{decode, encode, network_id, sha256_hex, to_xdr_json, DECODE_DEPTH_LIMIT};
