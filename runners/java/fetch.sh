@@ -7,7 +7,7 @@ mkdir -p .deps
 M=https://repo1.maven.org/maven2
 while read -r sum path; do
   f=".deps/$(basename "$path")"
-  [ -f "$f" ] || curl -sSfL -o "$f" "$M/$path"
+  [ -f "$f" ] || curl -sSfL --retry 6 --retry-all-errors --retry-delay 5 -o "$f" "$M/$path"
   echo "$sum  $f" | sha256sum -c --quiet || { rm -f "$f"; exit 1; }
 done <<'JARS'
 d13e24aa87eaddf4c54296d1af97ae7cc010290b308ad4876ccb94a99ac55be9 network/lightsail/stellar-sdk/6.0.0/stellar-sdk-6.0.0.jar

@@ -69,6 +69,14 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+      # The jars are pinned by SHA-256 in fetch.sh; caching them avoids
+      # Maven Central's rate limit on shared runners.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: runners/java/.deps
+          key: java-deps-${{ hashFiles('runners/java/fetch.sh') }}
+      - name: Java runner dependencies
+        run: runners/java/fetch.sh
       - name: Python runner dependencies
         run: python3 -m pip install --break-system-packages --target runners/python/.deps -r runners/python/requirements.txt
       - name: Go runner hygiene
