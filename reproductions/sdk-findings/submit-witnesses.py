@@ -35,12 +35,16 @@ Batch 3 (--batch 3), fields that SDK models convert through their own types:
   lp-deposit-extreme-prices LiquidityPoolDeposit with minPrice 1/2147483647 and maxPrice 2147483647/1
   lp-withdraw-zero-minimums LiquidityPoolWithdraw with both minimum amounts 0
 
+Batch 4 (--batch 4):
+  memo-text-not-utf8        a payment whose MEMO_TEXT is the bytes ff fe 20 61 62 63, which are
+                            not UTF-8 (stellar-core does not check memo text encoding)
+
 Accounts are fresh friendbot accounts, discarded after the run. Each shape is
 built with py-stellar-base and then edited at the XDR level before signing,
 so the SDK's own builder checks cannot alter it. Prints one JSON line per
 transaction: shape, hash, ledger, status and the envelope in base64.
 
-Usage: PYTHONPATH=runners/python/.deps python3 reproductions/sdk-findings/submit-witnesses.py [--batch 2|3]
+Usage: PYTHONPATH=runners/python/.deps python3 reproductions/sdk-findings/submit-witnesses.py [--batch 2|3|4]
 """
 
 import hashlib
@@ -371,6 +375,16 @@ def batch3():
     )
 
 
+def batch4():
+    a = fund()
+    b = fund()
+
+    def memo_bytes(tx):
+        tx.memo = X.Memo(type=X.MemoType.MEMO_TEXT, text=b"\xff\xfe abc")
+
+    sign_and_submit("memo-text-not-utf8", build(a.public_key, [Payment(b.public_key, Asset.native(), "1")], memo_bytes), [a])
+
+
 def _signed_payload(account, payload):
     from stellar_sdk import SignedPayloadSigner
 
@@ -385,4 +399,4 @@ def _zero_trustline_flags(tx):
 
 if __name__ == "__main__":
     batch = sys.argv[sys.argv.index("--batch") + 1] if "--batch" in sys.argv else "1"
-    {"1": batch1, "2": batch2, "3": batch3}[batch]()
+    {"1": batch1, "2": batch2, "3": batch3, "4": batch4}[batch]()

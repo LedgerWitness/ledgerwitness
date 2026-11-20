@@ -16,6 +16,9 @@ here once filed.
 | FND-005 | kmp-stellar-sdk 1.18.0 (JVM) | `hashHex` is wrong for a `PRECOND_V2` transaction whose fields are at their defaults | 2 mainnet transactions, ledger 55000000 (corpus entry `core.pubnet.cap21.precond-v2-default-fields.p22`) | [Soneso/kmp-stellar-sdk#175](https://github.com/Soneso/kmp-stellar-sdk/issues/175) |
 | FND-006 | kmp-stellar-sdk 1.18.0 (JVM) | `fromEnvelopeXdr` refuses a successful `ExtendFootprintTTL` with `extendTo = 0` | testnet transaction `21f5b9f4…`, ledger 3619212 (corpus entry `core.testnet.cap46.extend-ttl-extend-to-zero.p27`) | [Soneso/kmp-stellar-sdk#176](https://github.com/Soneso/kmp-stellar-sdk/issues/176) |
 | FND-007 | kmp-stellar-sdk 1.18.0 (JVM) | `fromEnvelopeXdr` refuses four kinds of transaction the network applied | 4 testnet transactions, ledgers 5829124 to 5829133 (`reproductions/sdk-findings/witnesses.json`) | [Soneso/kmp-stellar-sdk#177](https://github.com/Soneso/kmp-stellar-sdk/issues/177) |
+| FND-008 | stellar-ios-mac-sdk 3.16.0 | `Transaction(envelopeXdr:)` re-encodes a default-valued `PRECOND_V2` as `PRECOND_TIME`, so the hash is wrong | 2 mainnet transactions, ledger 55000000 | [Soneso/stellar-ios-mac-sdk#330](https://github.com/Soneso/stellar-ios-mac-sdk/issues/330) |
+| FND-009 | stellar-ios-mac-sdk 3.16.0 | `Transaction(envelopeXdr:)` drops the Soroban data of a fee bump's inner transaction | 1,358 of 1,511 mainnet fee bumps in the sweep; Horizon-checkable example `06bf9c12…`, ledger 65566583 | [Soneso/stellar-ios-mac-sdk#331](https://github.com/Soneso/stellar-ios-mac-sdk/issues/331) |
+| FND-010 | stellar-ios-mac-sdk 3.16.0 | A memo text that is not UTF-8 makes the envelope, and the Horizon page containing it, undecodable | testnet transaction `b7fb286b…`, ledger 5830015 | [Soneso/stellar-ios-mac-sdk#332](https://github.com/Soneso/stellar-ios-mac-sdk/issues/332) |
 
 Already-fixed upstream bugs that the corpus reproduces are regression tests,
 not findings; they are described in `docs/research/source-audit.md`.
@@ -265,3 +268,35 @@ not findings; they are described in `docs/research/source-audit.md`.
   nest, LedgerBounds, maxLedger, pool share, RevokeSponsorship).
 - **Severity:** low-medium. Valid transactions, and the ledgers that contain
   them, cannot be loaded through the SDK.
+
+## FND-008 to FND-010: stellar-ios-mac-sdk 3.16.0
+
+All three were found by running the mainnet sweep, the corpus and the
+testnet witnesses through the Swift SDK on Linux. That build vendored the
+SDK and replaced only platform code off the XDR and hash path: CommonCrypto
+was mapped to OpenSSL, and it was checked against 9,249 network hashes. Each
+finding was then re-run on its on-chain example. `master` is the release
+commit.
+
+- **FND-008, default-valued `PRECOND_V2`:** the same defect as FND-001 and
+  FND-005. `TransactionPreconditions` keeps the values but not the decoded
+  arm. Mainnet `b4a6d6a2…` hashes as `8299a5d4…`. SEP-7 signing parses
+  envelopes this way. Medium.
+- **FND-009, fee-bump Soroban data:** `Transaction(envelopeXdr:)` returns the
+  inner transaction of a fee bump, but the `sorobanTransactionData` helper
+  returns `nil` for fee-bump envelopes, while every neighbouring helper
+  returns the inner field. For mainnet fee bump `06bf9c12…` (ledger
+  65566583) Horizon reports the inner hash `7e2fdae0…`; the SDK computes
+  `540fb164…`. This affects 1,358 of the 1,511 fee bumps in the mainnet sweep.
+  Medium-low.
+- **FND-010, memo text that is not UTF-8:** the string decoder throws
+  `invalidUTF8`, so the envelope cannot be decoded. `TransactionResponse`
+  decodes `envelope_xdr` eagerly, so the receiver's whole Horizon history page
+  fails as well; this was confirmed on the real page of the testnet receiving
+  account. Anyone can trigger it with one payment. The repository has no
+  security policy and private reporting is disabled, and the same class is
+  public for the Flutter SDK (#297), so it was filed publicly in neutral terms.
+  Medium.
+- **Known and not re-filed:** fee rounding to a multiple of the operation
+  count (12 mainnet transactions; #83, closed in 2020; fix PR #84 never
+  merged), and the v0 hash with several operations (#91).

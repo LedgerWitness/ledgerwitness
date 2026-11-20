@@ -91,10 +91,10 @@ spec are versioned separately (`schema_version`, `probe_spec`).
 - Corpus entry `core.testnet.cap46.extend-ttl-extend-to-zero.p27` (testnet
   ledger 3619212): `ExtendFootprintTTL` with `extendTo = 0`, the on-chain
   witness of Soneso/kmp-stellar-sdk#176.
-- Testnet witnesses (`submit-witnesses.py`, `witnesses.json`): 20 shapes
-  applied on testnet and parsed by eight SDK releases
+- Testnet witnesses (`submit-witnesses.py`, `witnesses.json`): 21 shapes
+  applied on testnet and parsed by nine SDK releases
   (`docs/evidence/testnet-witnesses/`).
-- First seven findings filed upstream, each with a reproduction in
+- First ten findings filed upstream, each with a reproduction in
   `reproductions/sdk-findings/`: Beans-BV/dotnet-stellar-sdk#281 (wrong
   hash for default-valued `PRECOND_V2`, 2 mainnet transactions),
   Soneso/stellar-php-sdk#252 (wrong hash for a `CREATE_CONTRACT_V2` SAC
@@ -105,7 +105,9 @@ spec are versioned separately (`schema_version`, `probe_spec`).
   (the default-valued `PRECOND_V2` defect, on the corpus entry), and
   Soneso/kmp-stellar-sdk#176 (refuses a successful `ExtendFootprintTTL` with
   `extendTo = 0`), and Soneso/kmp-stellar-sdk#177 (refuses four more kinds of
-  applied transaction, witnessed with `submit-witnesses.py`).
+  applied transaction, witnessed with `submit-witnesses.py`), and
+  Soneso/stellar-ios-mac-sdk#330, #331 and #332 (default `PRECOND_V2`, fee-bump
+  Soroban data, memo text that is not UTF-8).
 - LedgerCloseMeta v0 (legacy transaction sets, before protocol 20) in the
   CLI and all runners. A second mainnet sweep of 3,593 transactions from 20
   ledgers (protocols 9 to 19, 336 V0 envelopes) found no divergence across
