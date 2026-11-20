@@ -10,3 +10,4 @@ __pycache__/
 /reproductions/sdk-findings/dotnet-281/obj/
 /reproductions/sdk-findings/dart-305/.dart_tool/
 /reproductions/sdk-findings/dart-305/pubspec.lock
+/reproductions/sdk-findings/kmp-175/.deps/

@@ -13,6 +13,7 @@ here once filed.
 | FND-002 | stellar-php-sdk 1.18.0 | A SAC deployed with `CREATE_CONTRACT_V2` is re-encoded as `CREATE_CONTRACT`, so `hash()` is wrong | testnet transaction `11446413…`, ledger 5822970 | [Soneso/stellar-php-sdk#252](https://github.com/Soneso/stellar-php-sdk/issues/252) |
 | FND-003 | go-stellar-sdk v0.9.0 `txnbuild` | `RevokeSponsorship` of a pool-share trustline cannot be built, and its asset encodes as native | executed reproduction; core's own tests cover the shape | [stellar/go-stellar-sdk#6062](https://github.com/stellar/go-stellar-sdk/issues/6062) |
 | FND-004 | stellar_flutter_sdk 3.12.0 | A SAC deployed with `CREATE_CONTRACT_V2` is re-encoded as `CREATE_CONTRACT`, so the hash is wrong | testnet transaction `11446413…`, ledger 5822970 | [Soneso/stellar_flutter_sdk#305](https://github.com/Soneso/stellar_flutter_sdk/issues/305) |
+| FND-005 | kmp-stellar-sdk 1.18.0 (JVM) | `hashHex` is wrong for a `PRECOND_V2` transaction whose fields are at their defaults | 2 mainnet transactions, ledger 55000000 (corpus entry `core.pubnet.cap21.precond-v2-default-fields.p22`) | [Soneso/kmp-stellar-sdk#175](https://github.com/Soneso/kmp-stellar-sdk/issues/175) |
 
 Already-fixed upstream bugs that the corpus reproduces are regression tests,
 not findings; they are described in `docs/research/source-audit.md`.
@@ -194,3 +195,23 @@ not findings; they are described in `docs/research/source-audit.md`.
   `UnimplementedError` (they can only appear as failed transactions), and a
   SetOptions signer weight above 255, valid before protocol 10, is masked to
   8 bits. Neither has an on-chain example yet.
+
+## FND-005: kmp-stellar-sdk hashes default-valued `PRECOND_V2` transactions as `PRECOND_TIME`
+
+- **Found by:** the mainnet sweep and the corpus through
+  `AbstractTransaction.fromEnvelopeXdr(...).hashHex()` on kmp-stellar-sdk
+  1.18.0 for the JVM (`main` at 9c11ce11 is identical).
+- **Defect:** the same pattern as FND-001. `TransactionPreconditions.fromXdr`
+  keeps the field values but not the decoded arm, and `toXdr()` picks the
+  arm from `hasV2()`. The SDK hashes mainnet `b4a6d6a2…3db9` as
+  `8299a5d4…209f` and re-encodes the envelope in 468 bytes instead of 496.
+  The inner transaction of a fee bump is affected too.
+- **Duplicates:** none in the repository (searched PRECOND_V2, precondition,
+  hasV2, wrong hash). The same class is FND-001 and Soneso/stellar-php-sdk#222.
+- **Severity:** medium, as FND-001.
+- **Other results of the same run:** a muxed transaction source is turned
+  into a G address (known, #170). The SDK also refuses several shapes core
+  accepts: `RevokeSponsorship` of a pool-share trustline,
+  `ExtendFootprintTTL` with `extendTo` 0, a ManageData name of one space,
+  nested `NOT` claim predicates, `minSeqNum` -1, and `maxLedger` of 2^31 or
+  more. None has an on-chain example yet, so they are not filed.

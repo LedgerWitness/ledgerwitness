@@ -88,14 +88,15 @@ spec are versioned separately (`schema_version`, `probe_spec`).
   (testnet ledger 5822970): the on-chain witnesses of the hash findings. All
   current SDK runners pass both; java-stellar-sdk 6.0.0 hashes the first
   wrongly (#844).
-- First four findings filed upstream, each with a reproduction in
+- First five findings filed upstream, each with a reproduction in
   `reproductions/sdk-findings/`: Beans-BV/dotnet-stellar-sdk#281 (wrong
   hash for default-valued `PRECOND_V2`, 2 mainnet transactions),
   Soneso/stellar-php-sdk#252 (wrong hash for a `CREATE_CONTRACT_V2` SAC
   deploy, confirmed with a testnet transaction), and
   stellar/go-stellar-sdk#6062 (`txnbuild` cannot revoke the sponsorship of a
   pool-share trustline), and Soneso/stellar_flutter_sdk#305 (the same
-  `CREATE_CONTRACT_V2` defect as the PHP SDK).
+  `CREATE_CONTRACT_V2` defect as the PHP SDK), and Soneso/kmp-stellar-sdk#175
+  (the default-valued `PRECOND_V2` defect, on the corpus entry).
 - LedgerCloseMeta v0 (legacy transaction sets, before protocol 20) in the
   CLI and all runners. A second mainnet sweep of 3,593 transactions from 20
   ledgers (protocols 9 to 19, 336 V0 envelopes) found no divergence across
