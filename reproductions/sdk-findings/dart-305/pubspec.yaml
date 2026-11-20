@@ -1,0 +1,9 @@
+name: ledgerwitness_repro_flutter_305
+description: Reproduction of Soneso/stellar_flutter_sdk#305.
+publish_to: none
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  stellar_flutter_sdk: 3.12.0

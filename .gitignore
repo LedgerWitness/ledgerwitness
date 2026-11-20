@@ -8,3 +8,5 @@ __pycache__/
 /reproductions/sdk-findings/php-252/vendor/
 /reproductions/sdk-findings/dotnet-281/bin/
 /reproductions/sdk-findings/dotnet-281/obj/
+/reproductions/sdk-findings/dart-305/.dart_tool/
+/reproductions/sdk-findings/dart-305/pubspec.lock

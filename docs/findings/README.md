@@ -12,6 +12,7 @@ here once filed.
 | FND-001 | stellar-dotnet-sdk 17.0.0 | `Transaction.Hash` is wrong for a `PRECOND_V2` transaction whose fields are at their defaults | 2 mainnet transactions, ledger 55000000 | [Beans-BV/dotnet-stellar-sdk#281](https://github.com/Beans-BV/dotnet-stellar-sdk/issues/281) |
 | FND-002 | stellar-php-sdk 1.18.0 | A SAC deployed with `CREATE_CONTRACT_V2` is re-encoded as `CREATE_CONTRACT`, so `hash()` is wrong | testnet transaction `11446413…`, ledger 5822970 | [Soneso/stellar-php-sdk#252](https://github.com/Soneso/stellar-php-sdk/issues/252) |
 | FND-003 | go-stellar-sdk v0.9.0 `txnbuild` | `RevokeSponsorship` of a pool-share trustline cannot be built, and its asset encodes as native | executed reproduction; core's own tests cover the shape | [stellar/go-stellar-sdk#6062](https://github.com/stellar/go-stellar-sdk/issues/6062) |
+| FND-004 | stellar_flutter_sdk 3.12.0 | A SAC deployed with `CREATE_CONTRACT_V2` is re-encoded as `CREATE_CONTRACT`, so the hash is wrong | testnet transaction `11446413…`, ledger 5822970 | [Soneso/stellar_flutter_sdk#305](https://github.com/Soneso/stellar_flutter_sdk/issues/305) |
 
 Already-fixed upstream bugs that the corpus reproduces are regression tests,
 not findings; they are described in `docs/research/source-audit.md`.
@@ -170,3 +171,26 @@ not findings; they are described in `docs/research/source-audit.md`.
   risk.
 - **Checked and clean:** `txnbuild` keeps the original envelope, so parsing
   then hashing or re-encoding was exact on all 9,351 mainnet envelopes.
+
+## FND-004: stellar_flutter_sdk re-encodes a `CREATE_CONTRACT_V2` SAC deploy as `CREATE_CONTRACT`
+
+- **Found by:** the same crafted host-function cases as FND-002, run on
+  stellar_flutter_sdk 3.12.0 (`master` at 0d7238dd is identical), then
+  confirmed on the testnet transaction from FND-002.
+- **Defect:** in `lib/src/invoke_host_function_operation.dart`, the
+  `CREATE_CONTRACT_V2` branch maps an asset preimage to
+  `DeploySACWithAssetHostFunction`, which keeps only the asset. Its `toXdr`
+  calls `XdrHostFunction.forDeploySACWithAsset`, which always builds
+  `CREATE_CONTRACT`. The SDK hashes testnet transaction `11446413…` as
+  `1fc58031…8e55`, the same wrong value as the PHP SDK. Constructor arguments
+  are dropped.
+- **Cross-check:** java-stellar-sdk 6.0.0, py-stellar-base 17.0.1 and
+  stellar-dotnet-sdk 17.0.0 return the network hash and the original bytes.
+- **Duplicates:** none found (searched CREATE_CONTRACT_V2, CreateContractV2,
+  DeploySAC, constructor args and wrong hash; scanned issues up to #304).
+- **Severity:** medium-low. SEP-7 `signAndSubmitTransaction` and any
+  parse-sign-resubmit flow would sign a different transaction.
+- **Also seen, not filed:** mismatched preimage and executable pairs throw
+  `UnimplementedError` (they can only appear as failed transactions), and a
+  SetOptions signer weight above 255, valid before protocol 10, is masked to
+  8 bits. Neither has an on-chain example yet.
